@@ -42,8 +42,6 @@ export let s = {
             const commonTerms = Object.keys(pair[0].terms)
                 .filter(n => Object.keys(pair[1].terms).includes(n))
 
-                console.log(Object.keys(pair[0].terms).length)
-
             // Create term array
             const terms = commonTerms.reduce((array, term) => {
                 const value = (pair[0].terms[term] + pair[1].terms[term]) / 2
