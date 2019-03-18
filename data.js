@@ -78,7 +78,7 @@ const start = data => {
     /////////////////////////////
 
     const tfidf = new natural.TfIdf()
-    const limitValue = 5 // Set the limit of interest of keywords
+    const limitValue = 3 // Set the limit of interest of keywords
 
     docs.forEach(doc => {
         const text = `${doc.title} ${doc.abstract}`
@@ -109,10 +109,6 @@ const start = data => {
 
     // Claning doubles
     terms = terms.sort().filter((value, index, array) => array.indexOf(value) === index)
-
-    terms.forEach( t => {
-        console.log(typeof(t))
-    })
 
 
 
