@@ -2,7 +2,7 @@ import { s } from './state'
 
 export const drawKeywords = () => {
 
-    const max = 3
+    const max = 1
     const distance = 40
     const fontSize = 5
     const lineSpacing = fontSize * .7
@@ -20,11 +20,18 @@ export const drawKeywords = () => {
             const x = a / 2 + (d.pair[0].x < d.pair[1].x ? d.pair[0].x : d.pair[1].x)
             const y = b / 2 + (d.pair[0].y < d.pair[1].y ? d.pair[0].y : d.pair[1].y)
 
-            s.context.textAlign = 'center'
+            
             
             d.terms.slice(0, max).forEach((term, i) => {
-                s.context.font = `normal 300 ${term[1]}pt Helvetica`
+                s.context.beginPath
+                s.context.textAlign = 'center'
+                s.context.font = `normal 300 8pt Helvetica`
+                // s.context.font = `normal 300 ${term[1]}pt Helvetica
+                // console.log(term[1]*.05)
+                // Compute the max value to tune transparency
+                s.context.fillStyle = 'rgba(0,0,0,`${term[i]*.05}`)'
                 s.context.fillText(term[0], x, (i % 2 === 1) ? i * -lineSpacing + y : (i + 1) * lineSpacing + y)
+                s.context.endPath
             })
             
         }
