@@ -5,7 +5,7 @@ This data visualization relies on the idea to agency network according to a lexi
 ## Commands
 
 Data refinement
-`forever -w data.js`
+`node data.js`
 
 Start development environment
 `npm run start`

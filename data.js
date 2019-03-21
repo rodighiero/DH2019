@@ -1,114 +1,119 @@
-const fs = require('fs')
-const path = require('path')
-const combinatorics = require('js-combinatorics')
+/////////////////////////////
+// Libraries
+/////////////////////////////
+
 const beautify = require('beautify')
-const natural = require('natural')
-const franc = require('franc-min')
-const d3 = require('d3')
+// const d3 = require('d3')
+const combinatorics = require('js-combinatorics')
+// const franc = require('franc-min')
+const fs = require('fs')
 const https = require('https')
+const path = require('path')
+
+// tfidf
+const natural = require('natural')
+const tfidf = new natural.TfIdf()
+
+// xml2js
 const xml2js = require('xml2js')
 const parser = new xml2js.Parser({
-    // explicitArray: false,
-    // ignoreAttrs: true,
     tagNameProcessors: [stripPrefix],
-    // valueProcessors: [attrValueProcessors],
 })
-
 // Keep the part of the tag after the colon
 function stripPrefix(tag) {
     return tag.split(':').pop()
 }
 
-// function attrValueProcessors(value) {
-//     console.log(typeof(value))
-//     return value
-// }
 
 
+/////////////////////////////
+// Variables
+/////////////////////////////
 
-const writeDocs = path.resolve(__dirname, './src/data/docs.json')
-const writeNetwork = path.resolve(__dirname, './src/data/network.json')
-
+const docsFile = path.resolve(__dirname, './src/data/docs.json')
+const networkFile = path.resolve(__dirname, './src/data/network.json')
 const url = 'https://dspace.mit.edu/oai/request?verb=ListRecords&metadataPrefix=mets&set=hdl_1721.1_39094'
+
+
+
+/////////////////////////////
+// Load data
+/////////////////////////////
 
 https.get(url, xml => {
     let data = ''
-    xml.on('data', _data =>
-        data += _data.toString()
-    )
-    xml.on('end', () => {
-        parser.parseString(data, (err, result) =>
-            start(result)
-        )
-    })
+    xml.on('data', _data => data += _data.toString())
+    xml.on('end', () => parser.parseString(data, (err, result) => start(result)))
 })
+
+
 
 const start = data => {
 
+
+
     /////////////////////////////
-    // Parsing in variable 'doc'
+    // Parsing
     /////////////////////////////
 
-    data = data['OAI-PMH'].ListRecords[0].record
+    const records = data['OAI-PMH'].ListRecords[0].record
 
-    let docs = data.reduce((docs, doc) => {
+    let docs = records.reduce((docs, doc) => {
+
         const mods = doc.metadata[0].mets[0].dmdSec[0].mdWrap[0].xmlData[0].mods[0]
-        // console.log(mods)
-        if (typeof (mods.abstract) !== 'undefined') {
+
+        const addDocument = () => {
             const _doc = {}
             _doc.id = doc.header[0].identifier[0]
             _doc.title = mods.titleInfo[0].title[0]
             _doc.abstract = mods.abstract[0]
-            mods.name.forEach(element => {
-                _doc[element.role[0].roleTerm[0]._] = element.namePart[0]
-                // console.log(element.role[0].roleTerm[0]._)
-                // console.log(element.namePart[0])
-            })
+            mods.name.forEach(author => _doc[author.role[0].roleTerm[0]._] = author.namePart[0])
             docs.push(_doc)
         }
+
+        if (mods.abstract) addDocument()
+
         return docs
+
     }, [])
 
-    // console.log(docs)
-
 
 
     /////////////////////////////
-    // Natural lexical analysis
+    // Lexical analysis
     /////////////////////////////
 
-    const tfidf = new natural.TfIdf()
-    const limitValue = 3 // Set the limit of interest of keywords
+    const limitValue = 4 // Limit for keywords
 
     docs.forEach(doc => {
-        const text = `${doc.title} ${doc.abstract}`
-        tfidf.addDocument(text)
+        tfidf.addDocument(`${doc.title} ${doc.abstract}`)
     })
 
     // Set terms and their weights
     docs.forEach((doc, index) => {
-        doc.terms = tfidf.listTerms(index).reduce((object, element) => {
+
+        const list = tfidf.listTerms(index)
+
+        doc.terms = list.reduce((obj, element) => {
             if (element.tfidf > limitValue)
-                object[element.term] = element.tfidf
-            return object
+                obj[element.term] = element.tfidf
+            return obj
         }, {})
+
     })
 
 
 
     /////////////////////////////
-    // Set arrays
+    // Set terms list
     /////////////////////////////
 
-    let terms = []
-    
-    // Set arrays for authors, keywords, and keywords_tfidf
-    docs.forEach(doc => {
-        if (doc.terms) terms.push(...Object.keys(doc.terms))
-    })
-
-    // Claning doubles
-    terms = terms.sort().filter((value, index, array) => array.indexOf(value) === index)
+    // let terms = []
+    // docs.forEach(doc => {
+    //     if (doc.terms) terms.push(...Object.keys(doc.terms))
+    // })
+    // // Claning doubles
+    // terms = terms.sort().filter((value, index, array) => array.indexOf(value) === index)
 
 
 
@@ -117,6 +122,7 @@ const start = data => {
     /////////////////////////////
 
     const pairs = combinatorics.bigCombination(docs, 2)
+
 
 
     /////////////////////////////
@@ -130,7 +136,6 @@ const start = data => {
 
     pairs.forEach(pair => {
 
-        // Terms
         const terms = Object.keys(pair[0].terms)
             .filter(n => Object.keys(pair[1].terms).includes(n))
 
@@ -144,10 +149,7 @@ const start = data => {
     })
 
     // Normalize the value between [0,1]
-    const max = network.links.reduce((int, link) => {
-        return int > link.v ? int : link.v
-    }, 0)
-
+    const max = network.links.reduce((max, link) => max > link.v ? max : link.v, 0)
     network.links.forEach(link => link.v = Math.round(link.v / max * 100) / 100)
 
 
@@ -160,7 +162,7 @@ const start = data => {
     console.log('     --- Report ---')
     console.log('')
     console.log('           docs :', docs.length + '/' + data.length)
-    console.log('          terms :', terms.length)
+    // console.log('          terms :', terms.length)
     console.log('          pairs :', pairs.length)
     console.log('          links :', network.links.length)
     console.log('          nodes :', network.nodes.length)
@@ -172,21 +174,20 @@ const start = data => {
     // File writing and size
     /////////////////////////////
 
-    const thousandSeparation = x =>
-        x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+    const setComma = x => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 
-    const _docs = beautify(JSON.stringify(docs), {
-        format: 'json'
-    })
-    fs.writeFile(writeDocs, _docs, (err) => {
+    const _d = beautify(JSON.stringify(docs), { format: 'json' })
+
+    fs.writeFile(docsFile, _d, (err) => {
         if (err) throw err
-        console.log('      docs.json :', thousandSeparation(_docs.length), 'kb')
+        console.log('      docs.json :', setComma(_d.length), 'kb')
     })
 
-    const _network = JSON.stringify(network)
-    fs.writeFile(writeNetwork, _network, (err) => {
+    const _n = beautify(JSON.stringify(network), { format: 'json' })
+
+    fs.writeFile(networkFile, _n, (err) => {
         if (err) throw err
-        console.log('   network.json :', thousandSeparation(_network.length), 'kb')
+        console.log('   network.json :', setComma(_n.length), 'kb')
     })
 
 }

@@ -15,7 +15,6 @@ export let s = {
 
     zoomIdentity: null,
 
-
     setCanvas: () => {
         s.canvas = d3.select('canvas')
         s.context = document.querySelector('canvas').getContext('2d')

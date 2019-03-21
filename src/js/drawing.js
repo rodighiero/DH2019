@@ -25,11 +25,11 @@ export const drawKeywords = () => {
             d.terms.slice(0, max).forEach((term, i) => {
                 s.context.beginPath
                 s.context.textAlign = 'center'
-                s.context.font = `normal 300 8pt Helvetica`
-                // s.context.font = `normal 300 ${term[1]}pt Helvetica
+                // s.context.font = `normal 300 8pt Helvetica`
+                s.context.font = `normal 300 ${term[1]}pt Helvetica`
                 // console.log(term[1]*.05)
                 // Compute the max value to tune transparency
-                s.context.fillStyle = 'rgba(0,0,0,`${term[i]*.05}`)'
+                // s.context.fillStyle = 'rgba(0,0,0,`${term[i]*.05}`)'
                 s.context.fillText(term[0], x, (i % 2 === 1) ? i * -lineSpacing + y : (i + 1) * lineSpacing + y)
                 s.context.endPath
             })
