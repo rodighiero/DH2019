@@ -12,10 +12,10 @@ const path = require('path')
 
 // tfidf
 const natural = require('natural')
-const tfidf = new natural.TfIdf()
+const tfidf = new natural.TfIdf() // term frequency inverse doc frequency
 
 // xml2js
-const xml2js = require('xml2js')
+const xml2js = require('xml2js') // read xml file
 const parser = new xml2js.Parser({
     tagNameProcessors: [stripPrefix],
 })
@@ -40,7 +40,7 @@ const url = 'https://dspace.mit.edu/oai/request?verb=ListRecords&metadataPrefix=
 // Load data
 /////////////////////////////
 
-https.get(url, xml => {
+https.get(url, xml => { // xml to json
     let data = ''
     xml.on('data', _data => data += _data.toString())
     xml.on('end', () => parser.parseString(data, (err, result) => start(result)))
@@ -58,16 +58,23 @@ const start = data => {
 
     const records = data['OAI-PMH'].ListRecords[0].record
 
-    let docs = records.reduce((docs, doc) => {
+    //console.log(records[0])
+
+    //////////////////////////////////
+    // Parsing when node = by thesis
+    //////////////////////////////////
+    let docs = records.reduce((docs, doc) => { // xml to list of documents (json)
 
         const mods = doc.metadata[0].mets[0].dmdSec[0].mdWrap[0].xmlData[0].mods[0]
-
-        const addDocument = () => {
-            const _doc = {}
+        //console.log(mods)
+        
+        const addDocument = () => { 
+            const _doc = {} // object
             _doc.id = doc.header[0].identifier[0]
             _doc.title = mods.titleInfo[0].title[0]
             _doc.abstract = mods.abstract[0]
             mods.name.forEach(author => _doc[author.role[0].roleTerm[0]._] = author.namePart[0])
+            //console.log(_doc)
             docs.push(_doc)
         }
 
@@ -77,13 +84,42 @@ const start = data => {
 
     }, [])
 
+    //console.log(docs)
+
+
+    /////////////////////////////
+    // Chloe Update 04/07/2019
+    // Trying to make each node as each professor
+    /////////////////////////////
+
+    let professors = docs.reduce((professors, prof) => {
+    
+        docs.forEach(doc => {
+            //console.log(doc.author)
+            const _prof = {}
+
+            // go through the docs array and check if the author is already in the
+            // professor array. If not, 
+            let hasThisAdvisor = professors.some( prof => prof.name === doc.advisor)
+            if (!hasThisAdvisor){ // if author doesn't exist
+                _prof.name = doc.advisor
+                _prof.theses = docs.filter(doc => doc.advisor === _prof.name)
+                //console.log(_prof.name,_prof.theses.length)
+                // will return all objects in docs array where author = that prof's name
+                professors.push(_prof)
+            } 
+        })
+        return professors
+    }, [])
+
+    console.log(professors)
 
 
     /////////////////////////////
     // Lexical analysis
     /////////////////////////////
 
-    const limitValue = 4 // Limit for keywords
+    const limitValue = 0// Limit for keywords
 
     docs.forEach(doc => {
         tfidf.addDocument(`${doc.title} ${doc.abstract}`)
@@ -102,7 +138,7 @@ const start = data => {
 
     })
 
-
+    //console.log(docs.terms)
 
     /////////////////////////////
     // Set terms list
@@ -130,7 +166,7 @@ const start = data => {
     /////////////////////////////
 
     const network = {
-        nodes: docs,
+        nodes: docs, // can chance this to professors
         links: []
     }
 
@@ -147,6 +183,9 @@ const start = data => {
             })
         })
     })
+
+
+    //console.log(network['nodes'][0])
 
     // Normalize the value between [0,1]
     const max = network.links.reduce((max, link) => max > link.v ? max : link.v, 0)
