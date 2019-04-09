@@ -114,6 +114,44 @@ const start = data => {
 
     console.log(professors)
 
+    // Adivisors
+
+    const advisors = docs.reduce((advisors, doc) => {
+
+        // console.log(doc.advisor)
+
+        // Ecample
+        // if (vendors.filter(function(e) { return e.Name === 'Magenic'; }).length > 0) {
+        //     /* vendors contains the element we're looking for */
+        //   }
+
+        if ( advisors[doc.advisor] ) {
+            // Add text value
+            // find the object where name == doc.advisor
+            // use find/filter
+            // use += with the space at the beginning
+
+
+            
+        } else {
+            // Create the advisor
+            const advisor = {
+                name: doc.advisor,
+                text: doc.title // title and abstracts
+            }
+            console.log(advisor)
+            // Add text value
+            advisors.push(advisor)
+        }
+		
+        return advisors
+
+    }, [])
+
+    console.log('advisors', advisors)
+
+
+
 
     /////////////////////////////
     // Lexical analysis
