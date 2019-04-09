@@ -50,28 +50,22 @@ https.get(url, xml => { // xml to json
 
 const start = data => {
 
-
-
-    /////////////////////////////
-    // Parsing
-    /////////////////////////////
-
     const records = data['OAI-PMH'].ListRecords[0].record
 
-    //console.log(records[0])
+    // console.log(records[0])
 
-    //////////////////////////////////
-    // Parsing when node = by thesis
-    //////////////////////////////////
-    let docs = records.reduce((docs, doc, index) => { // xml to list of documents (json)
+    /////////////////////////////
+    // Parsing by document
+    /////////////////////////////
 
+    let docs = records.reduce((docs, doc, index) => {
+
+        // xml to list of documents (json)
         const mods = doc.metadata[0].mets[0].dmdSec[0].mdWrap[0].xmlData[0].mods[0]
-        
-        // if (index === 1) {
-        //     console.log(mods)
-        // }
-        
-        const addDocument = () => { 
+
+        // if (index === 1) console.log(mods)
+
+        const addDocument = () => {
             const _doc = {} // object
             _doc.id = doc.header[0].identifier[0]
             _doc.text = mods.titleInfo[0].title[0] + ' ' + mods.abstract[0] + ' '
@@ -95,21 +89,20 @@ const start = data => {
     /////////////////////////////
 
     let professors = docs.reduce((professors, prof) => {
-    
+
         docs.forEach(doc => {
             //console.log(doc.author)
             const _prof = {}
 
             // go through the docs array and check if the author is already in the
             // professor array. If not, 
-            let hasThisAdvisor = professors.some( prof => prof.id === doc.advisor)
-            
-            if (!hasThisAdvisor){ // if author doesn't exist
+            let hasThisAdvisor = professors.some(prof => prof.id === doc.advisor)
+
+            if (!hasThisAdvisor) { // if author doesn't exist
                 _prof.id = doc.advisor
-                //_prof.theses = docs.filter(doc => doc.advisor === _prof.name)
                 const _theses = docs.filter(doc => doc.advisor === _prof.id)
-                
-                _prof.text = _theses.reduce( (text, thesis) => {
+
+                _prof.text = _theses.reduce((text, thesis) => {
                     // console.log(thesis)
                     return text += thesis.text + ' '
                 }, '')
@@ -118,12 +111,19 @@ const start = data => {
                 //console.log(_prof.id,_prof.theses.length)
                 // will return all objects in docs array where author = that prof's id
                 professors.push(_prof)
-            } 
+            }
         })
         return professors
     }, [])
 
     // console.log(professors)
+
+
+
+
+    /////////////////////////////
+    // Set items
+    /////////////////////////////
 
     const items = professors
 
@@ -165,7 +165,7 @@ const start = data => {
 
 
     /////////////////////////////
-    // Set nodes and links
+    // Set network.json
     /////////////////////////////
 
     const network = {
@@ -187,10 +187,7 @@ const start = data => {
         })
     })
 
-
-    //console.log(network['nodes'][0])
-
-    // Normalize the value between [0,1]
+    // Normalize values between [0,1]
     const max = network.links.reduce((max, link) => max > link.v ? max : link.v, 0)
     network.links.forEach(link => link.v = Math.round(link.v / max * 100) / 100)
 
@@ -201,11 +198,13 @@ const start = data => {
     /////////////////////////////
 
     console.log('')
-    console.log('     --- Report ---')
+    console.log('         Arrays =>')
     console.log('')
     console.log('           docs :', docs.length)
-    console.log('           items :', items.length)
-    console.log('           professors :', professors.length)
+    console.log('     professors :', professors.length)
+    console.log('          items :', items.length)
+    console.log()
+    console.log('        Network =>')
     console.log()
     console.log('          pairs :', pairs.length)
     console.log('          links :', network.links.length)
