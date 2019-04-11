@@ -66,7 +66,8 @@ const start = data => {
     let docs = records.reduce((docs, doc) => { // xml to list of documents (json)
 
         const mods = doc.metadata[0].mets[0].dmdSec[0].mdWrap[0].xmlData[0].mods[0]
-        //console.log(mods)
+        console.log("------------------------------------")
+        console.log(mods)
         
         const addDocument = () => { 
             const _doc = {} // object
@@ -74,7 +75,7 @@ const start = data => {
             _doc.title = mods.titleInfo[0].title[0]
             _doc.abstract = mods.abstract[0]
             mods.name.forEach(author => _doc[author.role[0].roleTerm[0]._] = author.namePart[0])
-            //console.log(_doc)
+            //console.log(mods.text)
             docs.push(_doc)
         }
 
@@ -112,7 +113,7 @@ const start = data => {
         return professors
     }, [])
 
-    console.log(professors)
+    //console.log(professors)
 
     // Adivisors
 
