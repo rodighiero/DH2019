@@ -31,6 +31,8 @@
   },
   "dependencies": {
     "d3": "^5.9.2",
-    "js-combinatorics": "^0.5.4"
+    "js-combinatorics": "^0.5.4",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.4"
   }
 }

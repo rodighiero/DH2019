@@ -24,6 +24,9 @@ function stripPrefix(tag) {
     return tag.split(':').pop()
 }
 
+const thesesData = require('./theses.json')
+const fetch = require('request-promise');
+
 
 
 /////////////////////////////
@@ -32,9 +35,71 @@ function stripPrefix(tag) {
 
 const docsFile = path.resolve(__dirname, './src/data/docs.json')
 const networkFile = path.resolve(__dirname, './src/data/network.json')
+
+
+///////////////////////////////
+// Load the theses.json and go through it by extracting all URL relative to the “Comparative Media Studies” Faculty.
+// Then, retrieve all URLs from the Internet and merge them into a unique object variable, which will be the new one
+// for refining data.
+///////////////////////////////
+
+
+
 // New Theses File
+// a for loop that loops through the theses.json file, get the key when the value is CMS
+
+// console.log(typeof(thesesData))
+// console.log(thesesData['hdl_1721.1_7632'])
+
+
+
+
+const filtered = {}
+
+Object.entries(thesesData).forEach(entry => {
+    let key = entry[0];
+    let value = entry[1];
+    // console.log(key, value)
+    if ( value.includes('Comparative')) filtered[key] = value
+  });
+
+  console.log(filtered)
+
+
+
 const url = 'https://dspace.mit.edu/oai/request?verb=ListRecords&metadataPrefix=mets&set=hdl_1721.1_39094'
-const thesesFile = path.resolve(__dirname,'./theses.json')
+
+// console.log(thesesData)
+
+
+
+
+const iterations = Array.from(Array(1000).keys())
+const urls = iterations.map(i => `http://vonglasersfeld.com/cgi-bin/index.cgi?nr=${i}&full=no`)
+
+
+Promise.all(urls
+
+    .map(url =>
+        fetch(url).then(xml => {
+
+            return xml
+
+        }).catch(err => { })
+    ))
+
+    .then(result => {
+
+        // Do something with all URLS
+
+    })
+
+
+
+
+
+
+
 
 
 
@@ -84,16 +149,7 @@ const start = data => {
     }, [])
 
 
-    ///////////////////////////////
-    // Load the theses.json and go through it by extracting all URL relative to the “Comparative Media Studies” Faculty.
-    // Then, retrieve all URLs from the Internet and merge them into a unique object variable, which will be the new one
-    // for refining data.
-    ///////////////////////////////
 
-
-
-    let t = require('./theses.json')
-    console.log(t)
 
 
     /////////////////////////////
