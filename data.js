@@ -65,15 +65,7 @@ const start = data => {
 
         // if (index === 1) console.log(mods)
 
-<<<<<<< HEAD
-        const mods = doc.metadata[0].mets[0].dmdSec[0].mdWrap[0].xmlData[0].mods[0]
-        console.log("------------------------------------")
-        console.log(mods)
-        
-        const addDocument = () => { 
-=======
         const addDocument = () => {
->>>>>>> 544edefcbe8873a26395d3a337489d9541137269
             const _doc = {} // object
             _doc.id = doc.header[0].identifier[0]
             _doc.text = mods.titleInfo[0].title[0] + ' ' + mods.abstract[0] + ' '
@@ -123,18 +115,6 @@ const start = data => {
         })
         return professors
     }, [])
-
-<<<<<<< HEAD
-    //console.log(professors)
-
-    // Adivisors
-
-    const advisors = docs.reduce((advisors, doc) => {
-
-        // console.log(doc.advisor)
-=======
-    // console.log(professors)
->>>>>>> 544edefcbe8873a26395d3a337489d9541137269
 
 
 
