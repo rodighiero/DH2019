@@ -37,91 +37,67 @@ const docsFile = path.resolve(__dirname, './src/data/docs.json')
 const networkFile = path.resolve(__dirname, './src/data/network.json')
 
 
-///////////////////////////////
-// Load the theses.json and go through it by extracting all URL relative to the “Comparative Media Studies” Faculty.
-// Then, retrieve all URLs from the Internet and merge them into a unique object variable, which will be the new one
-// for refining data.
-///////////////////////////////
-
-
-
-// New Theses File
-// a for loop that loops through the theses.json file, get the key when the value is CMS
-
-// console.log(typeof(thesesData))
-// console.log(thesesData['hdl_1721.1_7632'])
-
-
-
-
+// Filter URLs by title
 const filtered = {}
 
 Object.entries(thesesData).forEach(entry => {
-    let key = entry[0];
-    let value = entry[1];
-    // console.log(key, value)
-    if ( value.includes('Comparative')) filtered[key] = value
-  });
-
-  console.log(filtered)
-
-
-
-const url = 'https://dspace.mit.edu/oai/request?verb=ListRecords&metadataPrefix=mets&set=hdl_1721.1_39094'
-
-// console.log(thesesData)
-
-
-
-
-const iterations = Array.from(Array(1000).keys())
-const urls = iterations.map(i => `http://vonglasersfeld.com/cgi-bin/index.cgi?nr=${i}&full=no`)
-
-
-Promise.all(urls
-
-    .map(url =>
-        fetch(url).then(xml => {
-
-            return xml
-
-        }).catch(err => { })
-    ))
-
-    .then(result => {
-
-        // Do something with all URLS
-
-    })
-
-
-
-
-
-
-
-
-
-
-/////////////////////////////
-// Load data
-/////////////////////////////
-
-https.get(url, xml => { // xml to json
-    let data = ''
-    xml.on('data', _data => data += _data.toString())
-    xml.on('end', () => parser.parseString(data, (err, result) => start(result)))
+    const key = entry[0]
+    const value = entry[1]
+    if (value.includes('Biological')) filtered[key] = value
 })
 
+// Filtered keys
+const filteredKeys = Object.keys(filtered)
+// Full keys
+// const filteredKeys = Object.keys(thesesData)
 
+const urls = filteredKeys.map(i => `https://dspace.mit.edu/oai/request?verb=ListRecords&metadataPrefix=mets&set=${i}`)
+
+Promise.all(urls
+    .map(url => fetch(url)
+        .then(xml => xml)
+        .catch(err => { console.log(err) })
+    ))
+    .then(result => {
+        console.log(result.length)
+        start(result)
+    })
+    .catch(err => { console.log(err) })
+
+
+// Computation
 
 const start = data => {
 
-    const records = data['OAI-PMH'].ListRecords[0].record
 
 
     /////////////////////////////
-    // Parsing by document
+    // Parsing XML
+    /////////////////////////////
+
+    let records = []
+
+    for (let i = 0; i < data.length; i++) {
+
+        parser.parseString(data[i], function (err, result) {            
+
+            if (typeof(result['OAI-PMH'].ListRecords) !== "undefined") {
+                    _array = result['OAI-PMH'].ListRecords[0].record
+                    console.log(_array.length)
+                    _array.forEach(record => records.push(record))
+            }
+
+        })
+
+    }
+
+
+    console.log('records length', records.length)
+
+
+
+    /////////////////////////////
+    // Collecting documents
     /////////////////////////////
 
     let docs = records.reduce((docs, doc, index) => {
@@ -198,7 +174,7 @@ const start = data => {
     // Lexical analysis
     /////////////////////////////
 
-    const limitValue = 6 // Limit for keywords
+    const limitValue = 15 // Limit for keywords
 
     items.forEach(item => {
         tfidf.addDocument(item.text)
