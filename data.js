@@ -36,6 +36,7 @@ const networkFile = path.resolve(__dirname, './src/data/network.json')
 const thesesFile = path.resolve(__dirname,'./theses.json')
 
 const url = 'https://dspace.mit.edu/oai/request?verb=ListRecords&metadataPrefix=mets&set=hdl_1721.1_39094'
+const thesesFile = path.resolve(__dirname,'./theses.json')
 
 
 
@@ -68,8 +69,8 @@ const start = data => {
         // if (index === 1) console.log(mods)
         //console.log("------------------------------------")
         //console.log(mods)
-        
-        const addDocument = () => { 
+
+        const addDocument = () => {
             const _doc = {} // object
             _doc.id = doc.header[0].identifier[0]
             _doc.text = mods.titleInfo[0].title[0] + ' ' + mods.abstract[0] + ' '
@@ -86,8 +87,8 @@ const start = data => {
 
 
     ///////////////////////////////
-    // Load the theses.json and go through it by extracting all URL relative to the “Comparative Media Studies” Faculty. 
-    // Then, retrieve all URLs from the Internet and merge them into a unique object variable, which will be the new one 
+    // Load the theses.json and go through it by extracting all URL relative to the “Comparative Media Studies” Faculty.
+    // Then, retrieve all URLs from the Internet and merge them into a unique object variable, which will be the new one
     // for refining data.
     ///////////////////////////////
 
@@ -95,7 +96,7 @@ const start = data => {
 
     let t = require('./theses.json')
     console.log(t)
-    
+
 
     /////////////////////////////
     // Chloe Update 04/07/2019
@@ -109,7 +110,7 @@ const start = data => {
             const _prof = {}
 
             // go through the docs array and check if the author is already in the
-            // professor array. If not, 
+            // professor array. If not,
             let hasThisAdvisor = professors.some(prof => prof.id === doc.advisor)
 
             if (!hasThisAdvisor) { // if author doesn't exist
