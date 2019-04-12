@@ -32,6 +32,9 @@ function stripPrefix(tag) {
 
 const docsFile = path.resolve(__dirname, './src/data/docs.json')
 const networkFile = path.resolve(__dirname, './src/data/network.json')
+// New Theses File
+const thesesFile = path.resolve(__dirname,'./theses.json')
+
 const url = 'https://dspace.mit.edu/oai/request?verb=ListRecords&metadataPrefix=mets&set=hdl_1721.1_39094'
 
 
@@ -52,7 +55,6 @@ const start = data => {
 
     const records = data['OAI-PMH'].ListRecords[0].record
 
-    // console.log(records[0])
 
     /////////////////////////////
     // Parsing by document
@@ -64,16 +66,10 @@ const start = data => {
         const mods = doc.metadata[0].mets[0].dmdSec[0].mdWrap[0].xmlData[0].mods[0]
 
         // if (index === 1) console.log(mods)
-
-<<<<<<< HEAD
-        const mods = doc.metadata[0].mets[0].dmdSec[0].mdWrap[0].xmlData[0].mods[0]
-        console.log("------------------------------------")
-        console.log(mods)
+        //console.log("------------------------------------")
+        //console.log(mods)
         
         const addDocument = () => { 
-=======
-        const addDocument = () => {
->>>>>>> 544edefcbe8873a26395d3a337489d9541137269
             const _doc = {} // object
             _doc.id = doc.header[0].identifier[0]
             _doc.text = mods.titleInfo[0].title[0] + ' ' + mods.abstract[0] + ' '
@@ -88,8 +84,18 @@ const start = data => {
 
     }, [])
 
-    //console.log(docs)
 
+    ///////////////////////////////
+    // Load the theses.json and go through it by extracting all URL relative to the “Comparative Media Studies” Faculty. 
+    // Then, retrieve all URLs from the Internet and merge them into a unique object variable, which will be the new one 
+    // for refining data.
+    ///////////////////////////////
+
+
+
+    let t = require('./theses.json')
+    console.log(t)
+    
 
     /////////////////////////////
     // Chloe Update 04/07/2019
@@ -124,20 +130,11 @@ const start = data => {
         return professors
     }, [])
 
-<<<<<<< HEAD
     //console.log(professors)
 
-    // Adivisors
-
-    const advisors = docs.reduce((advisors, doc) => {
-
-        // console.log(doc.advisor)
 =======
     // console.log(professors)
 >>>>>>> 544edefcbe8873a26395d3a337489d9541137269
-
-
-
 
     /////////////////////////////
     // Set items
@@ -251,4 +248,4 @@ const start = data => {
         console.log('   network.json :', setComma(_n.length), 'kb')
     })
 
-}
+};
