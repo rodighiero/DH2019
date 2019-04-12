@@ -132,10 +132,6 @@ const start = data => {
 
     //console.log(professors)
 
-=======
-    // console.log(professors)
->>>>>>> 544edefcbe8873a26395d3a337489d9541137269
-
     /////////////////////////////
     // Set items
     /////////////////////////////
