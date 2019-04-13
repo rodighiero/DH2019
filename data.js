@@ -9,23 +9,15 @@ const combinatorics = require('js-combinatorics')
 const fs = require('fs')
 const https = require('https')
 const path = require('path')
+const convert = require('xml-js')
+const fetch = require('request-promise');
 
 // tfidf
 const natural = require('natural')
 const tfidf = new natural.TfIdf() // term frequency inverse doc frequency
 
-// xml2js
-const xml2js = require('xml2js') // read xml file
-const parser = new xml2js.Parser({
-    tagNameProcessors: [stripPrefix],
-})
-// Keep the part of the tag after the colon
-function stripPrefix(tag) {
-    return tag.split(':').pop()
-}
-
+// data
 const thesesData = require('./theses.json')
-const fetch = require('request-promise');
 
 
 
@@ -53,16 +45,26 @@ const filteredKeys = Object.keys(filtered)
 
 const urls = filteredKeys.map(i => `https://dspace.mit.edu/oai/request?verb=ListRecords&metadataPrefix=mets&set=${i}`)
 
+// let counter = 0
+
 Promise.all(urls
     .map(url => fetch(url)
-        .then(xml => xml)
-        .catch(err => { console.log(err) })
+        .then(xml => {
+            // counter++
+            // console.log('URL', counter)
+            return xml
+        })
+        .catch(err => {
+            // console.log(err)
+        })
     ))
     .then(result => {
         console.log(result.length)
         start(result)
     })
-    .catch(err => { console.log(err) })
+    .catch(err => {
+        console.log(err)
+    })
 
 
 // Computation
@@ -75,56 +77,67 @@ const start = data => {
     // Parsing XML
     /////////////////////////////
 
-    let records = []
+    let docs = []
 
-    for (let i = 0; i < data.length; i++) {
+    for (let xml of data) {
 
-        parser.parseString(data[i], function (err, result) {            
+        const json = JSON.parse(convert.xml2json(xml, {
+            compact: true,
+            spaces: 4,
+            trim: true,
+        }))
 
-            if (typeof(result['OAI-PMH'].ListRecords) !== "undefined") {
-                    _array = result['OAI-PMH'].ListRecords[0].record
-                    console.log(_array.length)
-                    _array.forEach(record => records.push(record))
+        const list = json['OAI-PMH'].ListRecords
+        if (!list) continue
+        else for (let record of list.record) {
+
+            const _doc = {}
+
+            // id
+            const id = record.header.identifier
+            if (!id) continue
+            else _doc.id = id._text
+
+            // title
+            const title = record.metadata.mets.dmdSec.mdWrap.xmlData['mods:mods']['mods:titleInfo']['mods:title']
+            if (!title) continue
+            else _doc.title = title._text
+
+            // abstract
+            const abstract = record.metadata.mets.dmdSec.mdWrap.xmlData['mods:mods']['mods:abstract']
+            if (!abstract) continue
+            else {
+                if (abstract.length) {
+                    _doc.abstract = abstract.reduce((string, text) => {
+                        return string += `${text._text} `
+                    }, '')
+                } else {
+                    _doc.abstract = abstract._text
+                }
             }
 
-        })
+            // authors
+            const author = record.metadata.mets.dmdSec.mdWrap.xmlData['mods:mods']['mods:name']
+            author.forEach(author => {
+                // console.log(author['mods:role'])
+                _doc[author['mods:role']['mods:roleTerm']._text] = author['mods:namePart']._text
+            })
+
+            // text
+            _doc.text = `${_doc.title} ${_doc.abstract}`
+
+            // console.log(_doc)
+            docs.push(record)
+
+        }
+
 
     }
 
 
-    console.log('records length', records.length)
+    console.log('records length', docs.length)
 
-
-
-    /////////////////////////////
-    // Collecting documents
-    /////////////////////////////
-
-    let docs = records.reduce((docs, doc, index) => {
-
-        // xml to list of documents (json)
-        const mods = doc.metadata[0].mets[0].dmdSec[0].mdWrap[0].xmlData[0].mods[0]
-
-        // if (index === 1) console.log(mods)
-        //console.log("------------------------------------")
-        //console.log(mods)
-
-        const addDocument = () => {
-            const _doc = {} // object
-            _doc.id = doc.header[0].identifier[0]
-            _doc.text = mods.titleInfo[0].title[0] + ' ' + mods.abstract[0] + ' '
-            mods.name.forEach(author => _doc[author.role[0].roleTerm[0]._] = author.namePart[0])
-            //console.log(mods.text)
-            docs.push(_doc)
-        }
-
-        if (mods.abstract) addDocument()
-
-        return docs
-
-    }, [])
-
-
+    return
 
 
 
