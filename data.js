@@ -25,10 +25,6 @@ const thesesData = require('./theses.json')
 // Variables
 /////////////////////////////
 
-const docsFile = path.resolve(__dirname, './src/data/docs.json')
-const networkFile = path.resolve(__dirname, './src/data/network.json')
-
-
 // Filter URLs by title
 const filtered = {}
 
@@ -244,40 +240,30 @@ const start = data => {
     // Report
     /////////////////////////////
 
-    console.log('')
+    console.log()
     console.log('         Arrays =>')
-    console.log('')
-    console.log('           docs :', docs.length)
-    console.log('       advisors :', advisors.length)
-    console.log('          items :', items.length)
+    console.log('                     docs :', docs.length)
+    console.log('                 advisors :', advisors.length)
     console.log()
     console.log('        Network =>')
-    console.log()
-    console.log('          pairs :', pairs.length)
-    console.log('          links :', network.links.length)
-    console.log('          nodes :', network.nodes.length)
-
+    console.log('                    pairs :', pairs.length)
+    console.log('                    links :', network.links.length)
+    console.log('                    nodes :', network.nodes.length)
 
 
 
     /////////////////////////////
-    // File writing and size
+    // Writing network.json
     /////////////////////////////
 
+    const directory = './src/data'
+    const format = json => beautify(JSON.stringify(json), { format: 'json' })
     const setComma = x => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-
-    const _d = beautify(JSON.stringify(docs), { format: 'json' })
-
-    fs.writeFile(docsFile, _d, (err) => {
+    
+    const networkFile = path.resolve(__dirname, `${directory}/network.json`)
+    fs.writeFile(networkFile, format(network), err => {
         if (err) throw err
-        console.log('      docs.json :', setComma(_d.length), 'kb')
-    })
-
-    const _n = beautify(JSON.stringify(network), { format: 'json' })
-
-    fs.writeFile(networkFile, _n, (err) => {
-        if (err) throw err
-        console.log('   network.json :', setComma(_n.length), 'kb')
+        console.log('                     size :', setComma(format(network).length), 'kb')
     })
 
 }
