@@ -9,20 +9,15 @@ const combinatorics = require('js-combinatorics')
 const fs = require('fs')
 const https = require('https')
 const path = require('path')
+const convert = require('xml-js')
+const fetch = require('request-promise');
 
 // tfidf
 const natural = require('natural')
 const tfidf = new natural.TfIdf() // term frequency inverse doc frequency
 
-// xml2js
-const xml2js = require('xml2js') // read xml file
-const parser = new xml2js.Parser({
-    tagNameProcessors: [stripPrefix],
-})
-// Keep the part of the tag after the colon
-function stripPrefix(tag) {
-    return tag.split(':').pop()
-}
+// data
+const thesesData = require('./theses.json')
 
 
 
@@ -32,118 +27,159 @@ function stripPrefix(tag) {
 
 const docsFile = path.resolve(__dirname, './src/data/docs.json')
 const networkFile = path.resolve(__dirname, './src/data/network.json')
-// New Theses File
-// const thesesFile = path.resolve(__dirname,'./theses.json')
-
-const url = 'https://dspace.mit.edu/oai/request?verb=ListRecords&metadataPrefix=mets&set=hdl_1721.1_39094'
-const thesesFile = path.resolve(__dirname,'./theses.json')
 
 
+// Filter URLs by title
+const filtered = {}
 
-/////////////////////////////
-// Load data
-/////////////////////////////
-
-https.get(url, xml => { // xml to json
-    let data = ''
-    xml.on('data', _data => data += _data.toString())
-    xml.on('end', () => parser.parseString(data, (err, result) => start(result)))
+Object.entries(thesesData).forEach(entry => {
+    const key = entry[0]
+    const value = entry[1]
+    if (value.includes('Comparative')) filtered[key] = value
 })
 
+// Filtered keys
+const filteredKeys = Object.keys(filtered)
+// Full keys
+// const filteredKeys = Object.keys(thesesData)
 
+const urls = filteredKeys.map(i => `https://dspace.mit.edu/oai/request?verb=ListRecords&metadataPrefix=mets&set=${i}`)
+
+// let counter = 0
+
+Promise.all(urls
+    .map(url => fetch(url)
+        .then(xml => {
+            // counter++
+            // console.log('URL', counter)
+            return xml
+        })
+        .catch(err => {
+            // console.log(err)
+        })
+    ))
+    .then(result => {
+        console.log(result.length)
+        start(result)
+    })
+    .catch(err => {
+        console.log(err)
+    })
+
+
+// Computation
 
 const start = data => {
 
-    const records = data['OAI-PMH'].ListRecords[0].record
 
 
     /////////////////////////////
-    // Parsing by document
+    // Parsing XML
     /////////////////////////////
 
-    let docs = records.reduce((docs, doc, index) => {
+    let docs = []
 
-        // xml to list of documents (json)
-        const mods = doc.metadata[0].mets[0].dmdSec[0].mdWrap[0].xmlData[0].mods[0]
+    for (let xml of data) {
 
-        // if (index === 1) console.log(mods)
-        //console.log("------------------------------------")
-        //console.log(mods)
+        const json = JSON.parse(convert.xml2json(xml, {
+            compact: true,
+            spaces: 4,
+            trim: true,
+        }))
 
-        const addDocument = () => {
-            const _doc = {} // object
-            _doc.id = doc.header[0].identifier[0]
-            _doc.text = mods.titleInfo[0].title[0] + ' ' + mods.abstract[0] + ' '
-            mods.name.forEach(author => _doc[author.role[0].roleTerm[0]._] = author.namePart[0])
-            //console.log(mods.text)
+        const list = json['OAI-PMH'].ListRecords
+        if (!list) continue
+        else for (let record of list.record) {
+
+            const _doc = {}
+
+            // id
+            const id = record.header.identifier
+            if (!id) continue
+            else _doc.id = id._text
+
+            // title
+            const title = record.metadata.mets.dmdSec.mdWrap.xmlData['mods:mods']['mods:titleInfo']['mods:title']
+            if (!title) continue
+            else _doc.title = title._text
+
+            // abstract
+            const abstract = record.metadata.mets.dmdSec.mdWrap.xmlData['mods:mods']['mods:abstract']
+            if (!abstract) continue
+            else {
+                if (abstract.length) {
+                    _doc.abstract = abstract.reduce((string, text) => {
+                        return string += `${text._text} `
+                    }, '')
+                } else {
+                    _doc.abstract = abstract._text
+                }
+            }
+
+            // authors
+            const author = record.metadata.mets.dmdSec.mdWrap.xmlData['mods:mods']['mods:name']
+            author.forEach(author => {
+                // console.log(author['mods:role'])
+                _doc[author['mods:role']['mods:roleTerm']._text] = author['mods:namePart']._text
+            })
+
+            // text
+            _doc.text = `${_doc.title} ${_doc.abstract}`
+
+            // console.log(_doc)
             docs.push(_doc)
+
         }
 
-        if (mods.abstract) addDocument()
 
-        return docs
+    }
 
-    }, [])
+    console.log('records #1', docs[0])
 
-
-    ///////////////////////////////
-    // Load the theses.json and go through it by extracting all URL relative to the “Comparative Media Studies” Faculty.
-    // Then, retrieve all URLs from the Internet and merge them into a unique object variable, which will be the new one
-    // for refining data.
-    ///////////////////////////////
-
-
-
-    // let theses_json = require('./theses.json')
 
 
     /////////////////////////////
-    // Chloe Update 04/07/2019
-    // Trying to make each node as each professor
+    // Assemble by advisor
     /////////////////////////////
 
-    let professors = docs.reduce((professors, prof) => {
+    let advisors = []
 
-        docs.forEach(doc => {
-            //console.log(doc.author)
-            const _prof = {}
+    for (let doc of docs) {
 
-            // go through the docs array and check if the author is already in the
-            // professor array. If not,
-            let hasThisAdvisor = professors.some(prof => prof.id === doc.advisor)
+        // Check if advisor already exists
+        const hasAdvisor = advisors.some(adv => adv.id === doc.advisor)
+        if (hasAdvisor) continue
 
-            if (!hasThisAdvisor) { // if author doesn't exist
-                _prof.id = doc.advisor
-                const _theses = docs.filter(doc => doc.advisor === _prof.id)
+        // Create advisor
+        const _adv = {}
 
-                _prof.text = _theses.reduce((text, thesis) => {
-                    // console.log(thesis)
-                    return text += thesis.text + ' '
-                }, '')
+        _adv.id = doc.advisor
 
-                // _prof.abstractSum += docs.abstract + ' '
-                //console.log(_prof.id,_prof.theses.length)
-                // will return all objects in docs array where author = that prof's id
-                professors.push(_prof)
-            }
-        })
-        return professors
-    }, [])
+        const _theses = docs.filter(doc => doc.advisor === _adv.id)
+        _adv.text = _theses.reduce((text, thesis) => {
+            // console.log(thesis)
+            return text += thesis.text + ' '
+        }, '')
 
-    //console.log(professors)
+        advisors.push(_adv)
+    }
+
+    console.log('advisor #1', advisors[0])
+
+
 
     /////////////////////////////
     // Set items
     /////////////////////////////
 
-    const items = professors
+    const items = advisors
 
 
     /////////////////////////////
     // Lexical analysis
     /////////////////////////////
 
-    const limitValue = 6 // Limit for keywords
+    const limitValue = 15 // Limit for keywords
 
     items.forEach(item => {
         tfidf.addDocument(item.text)
@@ -212,7 +248,7 @@ const start = data => {
     console.log('         Arrays =>')
     console.log('')
     console.log('           docs :', docs.length)
-    console.log('     professors :', professors.length)
+    console.log('       advisors :', advisors.length)
     console.log('          items :', items.length)
     console.log()
     console.log('        Network =>')
@@ -244,4 +280,4 @@ const start = data => {
         console.log('   network.json :', setComma(_n.length), 'kb')
     })
 
-};
+}
