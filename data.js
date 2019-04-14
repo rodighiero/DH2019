@@ -33,7 +33,7 @@ function stripPrefix(tag) {
 const docsFile = path.resolve(__dirname, './src/data/docs.json')
 const networkFile = path.resolve(__dirname, './src/data/network.json')
 // New Theses File
-const thesesFile = path.resolve(__dirname,'./theses.json')
+// const thesesFile = path.resolve(__dirname,'./theses.json')
 
 const url = 'https://dspace.mit.edu/oai/request?verb=ListRecords&metadataPrefix=mets&set=hdl_1721.1_39094'
 const thesesFile = path.resolve(__dirname,'./theses.json')
@@ -94,8 +94,7 @@ const start = data => {
 
 
 
-    let t = require('./theses.json')
-    console.log(t)
+    // let theses_json = require('./theses.json')
 
 
     /////////////////////////////
