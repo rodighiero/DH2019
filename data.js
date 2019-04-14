@@ -35,7 +35,7 @@ const filtered = {}
 Object.entries(thesesData).forEach(entry => {
     const key = entry[0]
     const value = entry[1]
-    if (value.includes('Biological')) filtered[key] = value
+    if (value.includes('Comparative')) filtered[key] = value
 })
 
 // Filtered keys
