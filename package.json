@@ -24,16 +24,15 @@
     "mini-css-extract-plugin": "^0.5.0",
     "natural": "^0.6.3",
     "path": "^0.12.7",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.4",
     "webpack": "^4.29.6",
     "webpack-cli": "^3.3.0",
     "webpack-dev-server": "^3.2.1",
-    "xml2js": "^0.4.19"
+    "xml-js": "^1.6.11"
   },
   "dependencies": {
     "d3": "^5.9.2",
-    "js-combinatorics": "^0.5.4",
-    "request": "^2.88.0",
-    "request-promise": "^4.2.4",
-    "xml-js": "^1.6.11"
+    "js-combinatorics": "^0.5.4"
   }
 }

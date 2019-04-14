@@ -127,60 +127,52 @@ const start = data => {
             _doc.text = `${_doc.title} ${_doc.abstract}`
 
             // console.log(_doc)
-            docs.push(record)
+            docs.push(_doc)
 
         }
 
 
     }
 
-
-    console.log('records length', docs.length)
-
-    return
+    console.log('records #1', docs[0])
 
 
 
     /////////////////////////////
-    // Chloe Update 04/07/2019
-    // Trying to make each node as each professor
+    // Assemble by advisor
     /////////////////////////////
 
-    let professors = docs.reduce((professors, prof) => {
+    let advisors = []
 
-        docs.forEach(doc => {
-            //console.log(doc.author)
-            const _prof = {}
+    for (let doc of docs) {
 
-            // go through the docs array and check if the author is already in the
-            // professor array. If not,
-            let hasThisAdvisor = professors.some(prof => prof.id === doc.advisor)
+        // Check if advisor already exists
+        const hasAdvisor = advisors.some(adv => adv.id === doc.advisor)
+        if (hasAdvisor) continue
 
-            if (!hasThisAdvisor) { // if author doesn't exist
-                _prof.id = doc.advisor
-                const _theses = docs.filter(doc => doc.advisor === _prof.id)
+        // Create advisor
+        const _adv = {}
 
-                _prof.text = _theses.reduce((text, thesis) => {
-                    // console.log(thesis)
-                    return text += thesis.text + ' '
-                }, '')
+        _adv.id = doc.advisor
 
-                // _prof.abstractSum += docs.abstract + ' '
-                //console.log(_prof.id,_prof.theses.length)
-                // will return all objects in docs array where author = that prof's id
-                professors.push(_prof)
-            }
-        })
-        return professors
-    }, [])
+        const _theses = docs.filter(doc => doc.advisor === _adv.id)
+        _adv.text = _theses.reduce((text, thesis) => {
+            // console.log(thesis)
+            return text += thesis.text + ' '
+        }, '')
 
-    //console.log(professors)
+        advisors.push(_adv)
+    }
+
+    console.log('advisor #1', advisors[0])
+
+
 
     /////////////////////////////
     // Set items
     /////////////////////////////
 
-    const items = professors
+    const items = advisors
 
 
     /////////////////////////////
@@ -256,7 +248,7 @@ const start = data => {
     console.log('         Arrays =>')
     console.log('')
     console.log('           docs :', docs.length)
-    console.log('     professors :', professors.length)
+    console.log('       advisors :', advisors.length)
     console.log('          items :', items.length)
     console.log()
     console.log('        Network =>')
@@ -288,4 +280,4 @@ const start = data => {
         console.log('   network.json :', setComma(_n.length), 'kb')
     })
 
-};
+}
