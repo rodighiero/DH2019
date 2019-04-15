@@ -102,20 +102,30 @@ const start = data => {
             // abstract
             const abstract = record.metadata.mets.dmdSec.mdWrap.xmlData['mods:mods']['mods:abstract']
             if (!abstract) continue
-            else {
-                if (abstract.length) {
-                    _doc.abstract = abstract.reduce((string, text) => {
-                        return string += `${text._text} `
-                    }, '')
-                } else {
-                    _doc.abstract = abstract._text
-                }
+            else if (abstract.length) {
+                _doc.abstract = abstract.reduce((string, text) => {
+                    return string += `${text._text} `
+                }, '')
+            } else {
+                _doc.abstract = abstract._text
             }
 
             // authors
             const author = record.metadata.mets.dmdSec.mdWrap.xmlData['mods:mods']['mods:name']
             author.forEach(author => {
-                // console.log(author['mods:role'])
+                console.log()
+                console.log()
+                console.log()
+                console.log(author)
+                console.log(author['mods:namePart'])
+
+                // Filter by keeping just "advisor"
+                // Remove the dot at the end
+                // Check if there is " and "
+                // if yes, split by " and "
+                // write the data as an array _doc.advisor = [adv1, adv2, etc.] or [adv1]
+
+
                 _doc[author['mods:role']['mods:roleTerm']._text] = author['mods:namePart']._text
             })
 
@@ -130,7 +140,7 @@ const start = data => {
 
     }
 
-    console.log('records #1', docs[0])
+    // console.log('records #1', docs[0])
 
 
 
@@ -160,7 +170,7 @@ const start = data => {
         advisors.push(_adv)
     }
 
-    console.log('advisor #1', advisors[0])
+    // console.log('advisor #1', advisors[0])
 
 
 
@@ -259,7 +269,7 @@ const start = data => {
     const directory = './src/data'
     const format = json => beautify(JSON.stringify(json), { format: 'json' })
     const setComma = x => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-    
+
     const networkFile = path.resolve(__dirname, `${directory}/network.json`)
     fs.writeFile(networkFile, format(network), err => {
         if (err) throw err
