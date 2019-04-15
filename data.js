@@ -59,19 +59,18 @@ Promise.all(urls
         })
     ))
     .then(result => {
+        console.log('---------- data.js line 62 -----------')
         console.log(result.length)
-        start(result)
+        start(result) 
     })
     .catch(err => {
         console.log(err)
     })
 
 
-// Computation
+// Computation (XML to JSON)
 
 const start = data => {
-
-
 
     /////////////////////////////
     // Parsing XML
@@ -134,7 +133,7 @@ const start = data => {
 
     }
 
-    console.log('records #1', docs[0])
+    console.log('------------ records #1 --------------', docs[0])
 
 
 
@@ -164,7 +163,7 @@ const start = data => {
         advisors.push(_adv)
     }
 
-    console.log('advisor #1', advisors[0])
+    //console.log('advisor #1', advisors[0])
 
 
 
