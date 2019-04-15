@@ -143,35 +143,24 @@ const start = data => {
     let advisors = []
 
     for (let doc of docs) {
-
-        // Check if advisor already exists
-        // console.log()
-        const hasAdvisor = advisors.some(adv => {
-            console.log("------ line 150 ---------")
-            console.log(adv.id)
-            console.log(doc.advisors)
-            console.log(doc.advisors.includes(adv.id))})
-            // return doc.advisors.includes(adv.id)})
-        // if (hasAdvisor) continue
-
-        // return
-
-        // // Create advisor
-        // const _adv = {}
-
-        // _adv.id = doc.advisor
-
-        // const _theses = docs.filter(doc => doc.advisor === _adv.id)
-        // _adv.text = _theses.reduce((text, thesis) => {
-        //     // console.log(thesis)
-        //     return text += thesis.text + ' '
-        // }, '')
-
-
-        // advisors.push(_adv)
+        for (let advisor of doc.advisors) {
+            const hasAdvisor = advisors.some(adv => adv.id === advisor)
+            if (hasAdvisor) {
+                let _advisor = advisors.filter(adv => adv.id === advisor)
+                // console.log(_advisor)
+                _advisor[0].text += doc.text + ' '
+            } else {
+                const _adv = {}
+                _adv.id = advisor
+                _adv.text = doc.text+' '
+                advisors.push(_adv)
+            }
+        }
     }
 
-    return
+    console.log(advisors)
+
+    // return
 
 
     /////////////////////////////
