@@ -1,3 +1,4 @@
+
 /////////////////////////////
 // Libraries
 /////////////////////////////
@@ -110,23 +111,17 @@ const start = data => {
             }
 
             // authors
-            const author = record.metadata.mets.dmdSec.mdWrap.xmlData['mods:mods']['mods:name']
-            author.forEach(author => {
-                console.log()
-                console.log()
-                console.log()
-                console.log(author)
-                console.log(author['mods:namePart'])
+            const authorships = record.metadata.mets.dmdSec.mdWrap.xmlData['mods:mods']['mods:name']
+            
+            for (let authorship of authorships) {
+
+                if (authorship['mods:role']['mods:roleTerm']._text !== 'advisor') continue
 
                 // Filter by keeping just "advisor"
-                // Remove the dot at the end
-                // Check if there is " and "
-                // if yes, split by " and "
-                // write the data as an array _doc.advisor = [adv1, adv2, etc.] or [adv1]
+                const author = authorship['mods:namePart']._text.replace(/\.$/, "")
+                _doc.advisors = author.split(" and ")
 
-
-                _doc[author['mods:role']['mods:roleTerm']._text] = author['mods:namePart']._text
-            })
+            }
 
             // text
             _doc.text = `${_doc.title} ${_doc.abstract}`
@@ -138,9 +133,9 @@ const start = data => {
 
 
     }
-
-
     
+    console.log('test')
+
     /////////////////////////////
     // Assemble by advisor
     /////////////////////////////
@@ -150,23 +145,33 @@ const start = data => {
     for (let doc of docs) {
 
         // Check if advisor already exists
-        const hasAdvisor = advisors.some(adv => adv.id === doc.advisor)
-        if (hasAdvisor) continue
+        // console.log()
+        const hasAdvisor = advisors.some(adv => {
+            console.log("------ line 150 ---------")
+            console.log(adv.id)
+            console.log(doc.advisors)
+            console.log(doc.advisors.includes(adv.id))})
+            // return doc.advisors.includes(adv.id)})
+        // if (hasAdvisor) continue
 
-        // Create advisor
-        const _adv = {}
+        // return
 
-        _adv.id = doc.advisor
+        // // Create advisor
+        // const _adv = {}
 
-        const _theses = docs.filter(doc => doc.advisor === _adv.id)
-        _adv.text = _theses.reduce((text, thesis) => {
-            // console.log(thesis)
-            return text += thesis.text + ' '
-        }, '')
+        // _adv.id = doc.advisor
 
-        advisors.push(_adv)
+        // const _theses = docs.filter(doc => doc.advisor === _adv.id)
+        // _adv.text = _theses.reduce((text, thesis) => {
+        //     // console.log(thesis)
+        //     return text += thesis.text + ' '
+        // }, '')
+
+
+        // advisors.push(_adv)
     }
 
+    return
 
 
     /////////////////////////////
