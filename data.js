@@ -167,7 +167,7 @@ const start = urls => {
     // Lexical analysis
     /////////////////////////////
 
-    const maxLimit = 15 // Limit for keywords
+    const maxLimit = 20 // Limit for keywords
 
     items.forEach(item => tfidf.addDocument(item.text)) // Send test for computation
 
@@ -194,7 +194,9 @@ const start = urls => {
     /////////////////////////////
 
     const network = {
-        nodes: items,
+        nodes: items.map(item => {return {
+            'id': item.id, 'terms': item.terms
+        }}),
         links: []
     }
 
@@ -264,10 +266,10 @@ const start = urls => {
         console.log('                     docs :', setComma(format(docs).length), 'kb /', docs.length, 'records')
     })
 
-    fileName = path.resolve(__dirname, `${directory}/url.json`)
-    fs.writeFile(fileName, format(urls), err => {
-        if (err) throw err
-        console.log('                     urls :', setComma(format(urls).length), 'kb /', urls.length, 'records')
-    })
+    // fileName = path.resolve(__dirname, `${directory}/url.json`)
+    // fs.writeFile(fileName, format(urls), err => {
+    //     if (err) throw err
+    //     console.log('                     urls :', setComma(format(urls).length), 'kb /', urls.length, 'records')
+    // })
 
 }
