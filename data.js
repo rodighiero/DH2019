@@ -71,7 +71,9 @@ const start = urls => {
 
         const list = json['OAI-PMH'].ListRecords
         if (!list) continue
-        else for (let record of list.record) {
+        const records = json['OAI-PMH'].ListRecords.records
+        if (!records) continue
+        else for (let record of records) {
 
             const _doc = {}
 
@@ -128,6 +130,7 @@ const start = urls => {
     let advisors = []
 
     for (let doc of docs) {
+        if (!doc.advisors) continue // Skip empty advisors
         for (let advisor of doc.advisors) {
             const hasAdvisor = advisors.some(adv => adv.id === advisor)
             if (hasAdvisor) {
