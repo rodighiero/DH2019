@@ -28,7 +28,7 @@ const theses = require('./theses.json')
 const urls = Object.entries(theses).reduce((urls, entry) => {
     const key = entry[0]
     const value = entry[1]
-    if (value.includes('Comparative')) // Filter on URLs
+    if (value.includes('Architecture')) // Filter on URLs
         urls.push(`https://dspace.mit.edu/oai/request?verb=ListRecords&metadataPrefix=mets&set=${key}`)
     return urls
 }, [])
@@ -61,7 +61,7 @@ const start = urls => {
 
     let docs = []
 
-    for (let url of urls) {
+    for (let url of urls) {        
 
         const json = JSON.parse(convert.xml2json(url, {
             compact: true,
@@ -71,9 +71,9 @@ const start = urls => {
 
         const list = json['OAI-PMH'].ListRecords
         if (!list) continue
-        const records = json['OAI-PMH'].ListRecords.records
+        const records = json['OAI-PMH'].ListRecords.record
         if (!records) continue
-        else for (let record of records) {
+        for (let record of records) {
 
             const _doc = {}
 
@@ -120,7 +120,6 @@ const start = urls => {
         }
 
     }
-
 
 
     /////////////////////////////
