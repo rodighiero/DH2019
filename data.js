@@ -28,7 +28,7 @@ const theses = require('./theses.json')
 const urls = Object.entries(theses).reduce((urls, entry) => {
     const key = entry[0]
     const value = entry[1]
-    if (value.includes('Architecture')) // Filter on URLs
+    if (value.includes('Ph.D.')) // Filter on URLs
         urls.push(`https://dspace.mit.edu/oai/request?verb=ListRecords&metadataPrefix=mets&set=${key}`)
     return urls
 }, [])
@@ -82,13 +82,20 @@ const start = urls => {
             if (!id) continue
             else _doc.id = id._text
 
+            // check metadata
+            const metadata = record.metadata
+            if (!metadata) continue
+            // check mets
+            const mets = record.metadata.mets
+            if (!mets) continue
+
             // title
-            const title = record.metadata.mets.dmdSec.mdWrap.xmlData['mods:mods']['mods:titleInfo']['mods:title']
+            const title = mets.dmdSec.mdWrap.xmlData['mods:mods']['mods:titleInfo']['mods:title']
             if (!title) continue
             else _doc.title = title._text
 
             // abstract
-            const abstract = record.metadata.mets.dmdSec.mdWrap.xmlData['mods:mods']['mods:abstract']
+            const abstract = mets.dmdSec.mdWrap.xmlData['mods:mods']['mods:abstract']
             if (!abstract) continue
             else if (abstract.length) {
                 _doc.abstract = abstract.reduce((string, text) => {
@@ -99,7 +106,7 @@ const start = urls => {
             }
 
             // authors
-            const authorships = record.metadata.mets.dmdSec.mdWrap.xmlData['mods:mods']['mods:name']
+            const authorships = mets.dmdSec.mdWrap.xmlData['mods:mods']['mods:name']
 
             for (let authorship of authorships) {
 
