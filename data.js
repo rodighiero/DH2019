@@ -4,7 +4,6 @@
 /////////////////////////////
 
 const beautify = require('beautify')
-// const d3 = require('d3')
 const combinatorics = require('js-combinatorics')
 // const franc = require('franc-min')
 const fs = require('fs')
@@ -18,56 +17,43 @@ const natural = require('natural')
 const tfidf = new natural.TfIdf() // term frequency inverse doc frequency
 
 // data
-const thesesData = require('./theses.json')
+const theses = require('./theses.json')
 
 
 
 /////////////////////////////
-// Variables
+// Collect URLs and filter them
 /////////////////////////////
 
-// Filter URLs by title
-const filtered = {}
-
-Object.entries(thesesData).forEach(entry => {
+const urls = Object.entries(theses).reduce((urls, entry) => {
     const key = entry[0]
     const value = entry[1]
-    if (value.includes('Comparative')) filtered[key] = value
-})
+    if (value.includes('Comparative')) // Filter on URLs
+        urls.push(`https://dspace.mit.edu/oai/request?verb=ListRecords&metadataPrefix=mets&set=${key}`)
+    return urls
+}, [])
 
-// Filtered keys
-const filteredKeys = Object.keys(filtered)
-// Full keys
-// const filteredKeys = Object.keys(thesesData)
 
-const urls = filteredKeys.map(i => `https://dspace.mit.edu/oai/request?verb=ListRecords&metadataPrefix=mets&set=${i}`)
 
-// let counter = 0
+/////////////////////////////
+// Call URLs
+/////////////////////////////
 
 Promise.all(urls
     .map(url => fetch(url)
-        .then(xml => {
-            // counter++
-            // console.log('URL', counter)
-            return xml
-        })
-        .catch(err => {
-            // console.log(err)
-        })
+        .then(xml => xml)
+        .catch(err => console.log(err))
     ))
-    .then(result => {
-        console.log('---------- data.js line 62 -----------')
-        console.log(result.length)
-        start(result) 
-    })
-    .catch(err => {
-        console.log(err)
-    })
+    .then(result => start(result))
+    .catch(err => console.log(err))
 
 
-// Computation (XML to JSON)
 
-const start = data => {
+/////////////////////////////
+// Start
+/////////////////////////////
+
+const start = urls => {
 
     /////////////////////////////
     // Parsing XML
@@ -75,9 +61,9 @@ const start = data => {
 
     let docs = []
 
-    for (let xml of data) {
+    for (let url of urls) {
 
-        const json = JSON.parse(convert.xml2json(xml, {
+        const json = JSON.parse(convert.xml2json(url, {
             compact: true,
             spaces: 4,
             trim: true,
@@ -112,7 +98,7 @@ const start = data => {
 
             // authors
             const authorships = record.metadata.mets.dmdSec.mdWrap.xmlData['mods:mods']['mods:name']
-            
+
             for (let authorship of authorships) {
 
                 if (authorship['mods:role']['mods:roleTerm']._text !== 'advisor') continue
@@ -131,10 +117,9 @@ const start = data => {
 
         }
 
-
     }
-    
-    console.log('test')
+
+
 
     /////////////////////////////
     // Assemble by advisor
@@ -146,55 +131,44 @@ const start = data => {
         for (let advisor of doc.advisors) {
             const hasAdvisor = advisors.some(adv => adv.id === advisor)
             if (hasAdvisor) {
+                // Append text to the advisor
                 let _advisor = advisors.filter(adv => adv.id === advisor)
-                // console.log(_advisor)
                 _advisor[0].text += doc.text + ' '
             } else {
-                const _adv = {}
-                _adv.id = advisor
-                _adv.text = doc.text+' '
-                advisors.push(_adv)
+                // Create the advisor
+                advisors.push({
+                    id: advisor,
+                    text: doc.text + ' ',
+                })
             }
         }
     }
 
-    console.log(advisors)
-
-    // return
 
 
     /////////////////////////////
-    // Set items
+    // Set items for the network
     /////////////////////////////
 
     const items = advisors
+
 
 
     /////////////////////////////
     // Lexical analysis
     /////////////////////////////
 
-    const limitValue = 15 // Limit for keywords
+    const maxLimit = 15 // Limit for keywords
 
-    items.forEach(item => {
-        tfidf.addDocument(item.text)
-    })
+    items.forEach(item => tfidf.addDocument(item.text)) // Send test for computation
 
-
-    /////////////////////////////
-    // Set terms and their weights
-    /////////////////////////////
-
-    items.forEach((item, index) => {
-
-        const list = tfidf.listTerms(index)
-
-        item.terms = list.reduce((obj, element) => {
-            if (element.tfidf > limitValue)
-                obj[element.term] = element.tfidf
-            return obj
-        }, {})
-
+    items.forEach((item, i) => { // Writing computation terms in items
+        item.terms = tfidf.listTerms(i)
+            .reduce((obj, element) => {
+                if (element.tfidf > maxLimit)
+                    obj[element.term] = element.tfidf
+                return obj
+            }, {})
     })
 
 
@@ -211,7 +185,7 @@ const start = data => {
     /////////////////////////////
 
     const network = {
-        nodes: items, // can chance this to professors
+        nodes: items,
         links: []
     }
 
@@ -255,14 +229,36 @@ const start = data => {
     // Writing network.json
     /////////////////////////////
 
+    console.log()
+    console.log('          Files =>')
+
     const directory = './src/data'
     const format = json => beautify(JSON.stringify(json), { format: 'json' })
     const setComma = x => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+    let fileName
 
-    const networkFile = path.resolve(__dirname, `${directory}/network.json`)
-    fs.writeFile(networkFile, format(network), err => {
+    fileName = path.resolve(__dirname, `${directory}/network.json`)
+    fs.writeFile(fileName, format(network), err => {
         if (err) throw err
-        console.log('                     size :', setComma(format(network).length), 'kb')
+        console.log('                  network :', setComma(format(network).length), 'kb /', network.nodes.length, 'records')
+    })
+
+    fileName = path.resolve(__dirname, `${directory}/advisors.json`)
+    fs.writeFile(fileName, format(advisors), err => {
+        if (err) throw err
+        console.log('                 advisors :', setComma(format(advisors).length), 'kb /', advisors.length, 'records')
+    })
+
+    fileName = path.resolve(__dirname, `${directory}/docs.json`)
+    fs.writeFile(fileName, format(docs), err => {
+        if (err) throw err
+        console.log('                     docs :', setComma(format(docs).length), 'kb /', docs.length, 'records')
+    })
+
+    fileName = path.resolve(__dirname, `${directory}/url.json`)
+    fs.writeFile(fileName, format(urls), err => {
+        if (err) throw err
+        console.log('                     urls :', setComma(format(urls).length), 'kb /', urls.length, 'records')
     })
 
 }
