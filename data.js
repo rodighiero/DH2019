@@ -28,9 +28,13 @@ const theses = require('./theses.json')
 const urls = Object.entries(theses).reduce((urls, entry) => {
     const key = entry[0]
     const value = entry[1]
-    if (value.includes('Ph.D.')) // Filter on URLs
+    
+    // Filter on URLs
+    if (value.includes('Ph.D.'))
+    // if (value.includes('Comparative'))
         urls.push(`https://dspace.mit.edu/oai/request?verb=ListRecords&metadataPrefix=mets&set=${key}`)
     return urls
+
 }, [])
 
 
@@ -61,7 +65,7 @@ const start = urls => {
 
     let docs = []
 
-    for (let url of urls) {        
+    for (let url of urls) {
 
         const json = JSON.parse(convert.xml2json(url, {
             compact: true,
@@ -167,7 +171,7 @@ const start = urls => {
     // Lexical analysis
     /////////////////////////////
 
-    const maxLimit = 20 // Limit for keywords
+    const maxLimit = 0 // Limit for keywords
 
     items.forEach(item => tfidf.addDocument(item.text)) // Send test for computation
 
@@ -194,9 +198,11 @@ const start = urls => {
     /////////////////////////////
 
     const network = {
-        nodes: items.map(item => {return {
-            'id': item.id, 'terms': item.terms
-        }}),
+        nodes: items.map(item => {
+            return {
+                'id': item.id, 'terms': item.terms
+            }
+        }),
         links: []
     }
 
@@ -206,11 +212,26 @@ const start = urls => {
             .filter(n => Object.keys(pair[1].terms).includes(n))
 
         terms.forEach(term => {
-            network.links.push({
-                s: pair[0].id,
-                t: pair[1].id,
-                v: pair[0].terms[term] + pair[1].terms[term],
-            })
+
+            // Check of the link exists or not
+            const link = network.links.filter(link =>
+                link.s === pair[0].id && link.t === pair[1].id
+            )
+
+            if (link.length > 0) {
+                // console.log()
+                // console.log(link[0].v)
+                link[0].v += pair[0].terms[term] + pair[1].terms[term]
+                // console.log(link[0].v)
+            } else {
+                network.links.push({
+                    s: pair[0].id,
+                    t: pair[1].id,
+                    v: pair[0].terms[term] + pair[1].terms[term],
+                })
+            }
+
+
         })
     })
 
