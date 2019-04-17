@@ -28,10 +28,10 @@ const theses = require('./theses.json')
 const urls = Object.entries(theses).reduce((urls, entry) => {
     const key = entry[0]
     const value = entry[1]
-    
+
     // Filter on URLs
-    if (value.includes('Ph.D.'))
-    // if (value.includes('Comparative'))
+    // if (value.includes('Ph.D.'))
+    if (value.includes('Comparative'))
         urls.push(`https://dspace.mit.edu/oai/request?verb=ListRecords&metadataPrefix=mets&set=${key}`)
     return urls
 
@@ -171,7 +171,7 @@ const start = urls => {
     // Lexical analysis
     /////////////////////////////
 
-    const maxLimit = 0 // Limit for keywords
+    const maxLimit = 20 // Limit for keywords
 
     items.forEach(item => tfidf.addDocument(item.text)) // Send test for computation
 
