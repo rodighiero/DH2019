@@ -132,6 +132,44 @@ const start = urls => {
 
     }
 
+    docs.forEach(doc => console.log(doc.id))
+
+    function getUnique(arr, comp) {
+
+        const unique = arr
+            .map(e => e[comp])
+
+
+            .map((e, i, final) => final.indexOf(e) === i && i)
+
+
+            .filter(e => arr[e]).map(e => arr[e]);
+
+        return unique;
+    }
+
+    // Filter unique ID
+
+    // console.log(getUnique(arr, 'id')
+
+    // const getUnique (arr, comp) {
+
+    //     const unique = arr
+    //          .map(e => e[comp])
+      
+           
+    //       .map((e, i, final) => final.indexOf(e) === i && i)
+      
+          
+    //       .filter(e => arr[e]).map(e => arr[e]);
+      
+    //      return unique;
+    //   }
+      
+    //   console.log(getUnique(arr,'id')
+
+    // return
+
 
     /////////////////////////////
     // Assemble by advisor
@@ -237,7 +275,7 @@ const start = urls => {
 
     // Normalize values between [0,1]
     const max = network.links.reduce((max, link) => max > link.v ? max : link.v, 0)
-    network.links.forEach(link => link.v = Math.round(link.v / max * 100) / 100)
+    network.links.forEach(link => link.v = link.v / max)
 
 
 
