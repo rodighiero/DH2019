@@ -3,7 +3,7 @@ import { s } from './state'
 export const drawKeywords = () => {
 
     const max = 1
-    const distance = 40
+    const distance = 60
     const fontSize = 5
     const lineSpacing = fontSize * .7
     const d_min = Math.pow(distance * 2 - 20, 2)
@@ -42,14 +42,17 @@ export const drawKeywords = () => {
 
 export const drawLinks = () => {
 
-    const lineWidth = .01
+    // const lineWidth = 1
+
+    // console.log()
 
     s.context.beginPath()
     s.graph.links.forEach(link => {
         s.context.moveTo(link.source.x, link.source.y)
         s.context.lineTo(link.target.x, link.target.y)
+        s.context.lineWidth = link.value
+        // const lineWidth = 1
     })
-    s.context.lineWidth = lineWidth
     s.context.strokeStyle = '#0000FF'
     s.context.stroke()
 
