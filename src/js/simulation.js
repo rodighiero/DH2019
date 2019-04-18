@@ -46,7 +46,7 @@ export default () => {
         .force('center', d3.forceCenter(s.screen.width / 2, s.screen.height / 2))
         .force('link', d3.forceLink()
             .id(d => d.id)
-            .strength(d => d.value * .1)
+            .strength(d => d.value)
             .distance(distance)
         )
         .alpha(0.3)

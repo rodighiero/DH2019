@@ -30,8 +30,8 @@ const urls = Object.entries(theses).reduce((urls, entry) => {
     const value = entry[1]
 
     // Filter on URLs
-    // if (value.includes('Ph.D.'))
-    if (value.includes('Comparative'))
+    if (value.includes('Ph.D.'))
+    // if (value.includes('Comparative'))
         urls.push(`https://dspace.mit.edu/oai/request?verb=ListRecords&metadataPrefix=mets&set=${key}`)
     return urls
 
@@ -132,43 +132,10 @@ const start = urls => {
 
     }
 
-    docs.forEach(doc => console.log(doc.id))
+    // Filter by unique ID
+    docs = Object.values(docs.reduce((obj, el) =>
+        Object.assign(obj, { [el.id]: el }), {}))
 
-    function getUnique(arr, comp) {
-
-        const unique = arr
-            .map(e => e[comp])
-
-
-            .map((e, i, final) => final.indexOf(e) === i && i)
-
-
-            .filter(e => arr[e]).map(e => arr[e]);
-
-        return unique;
-    }
-
-    // Filter unique ID
-
-    // console.log(getUnique(arr, 'id')
-
-    // const getUnique (arr, comp) {
-
-    //     const unique = arr
-    //          .map(e => e[comp])
-      
-           
-    //       .map((e, i, final) => final.indexOf(e) === i && i)
-      
-          
-    //       .filter(e => arr[e]).map(e => arr[e]);
-      
-    //      return unique;
-    //   }
-      
-    //   console.log(getUnique(arr,'id')
-
-    // return
 
 
     /////////////////////////////
@@ -209,7 +176,7 @@ const start = urls => {
     // Lexical analysis
     /////////////////////////////
 
-    const maxLimit = 20 // Limit for keywords
+    const maxLimit = 10 // Limit for keywords
 
     items.forEach(item => tfidf.addDocument(item.text)) // Send test for computation
 
