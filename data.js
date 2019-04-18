@@ -151,11 +151,13 @@ const start = urls => {
             if (hasAdvisor) {
                 // Append text to the advisor
                 let _advisor = advisors.filter(adv => adv.id === advisor)
+                _advisor[0].docs ++
                 _advisor[0].text += doc.text + ' '
             } else {
                 // Create the advisor
                 advisors.push({
                     id: advisor,
+                    docs: 1,
                     text: doc.text + ' ',
                 })
             }
