@@ -26,7 +26,7 @@ export const drawKeywords = () => {
                 const value = term[1]
                 s.context.beginPath
                 s.context.textAlign = 'center'
-                s.context.font = `normal 300 ${Math.log(value)}pt Helvetica`
+                s.context.font = `normal 300 ${Math.log(value)*2}pt Helvetica`
                 // s.context.font = `normal 300 6pt Helvetica`
                 // console.log(term[1]*.05)
                 // Compute the max value to tune transparency

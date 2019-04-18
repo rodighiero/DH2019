@@ -40,7 +40,7 @@ export default () => {
         )
         .force('collide', d3.forceCollide()
             .radius(distance)
-            .strength(.3)
+            .strength(1)
         //     .iterations(5)
         )
         .force('center', d3.forceCenter(s.screen.width / 2, s.screen.height / 2))
