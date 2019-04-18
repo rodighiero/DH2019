@@ -31,7 +31,7 @@ const urls = Object.entries(theses).reduce((urls, entry) => {
 
     // Filter on URLs
     // if (value.includes('Ph.D.'))
-    if (value.includes('Comparative'))
+    if (value.includes('Science'))
         urls.push(`https://dspace.mit.edu/oai/request?verb=ListRecords&metadataPrefix=mets&set=${key}`)
     return urls
 
@@ -178,7 +178,7 @@ const start = urls => {
     // Lexical analysis
     /////////////////////////////
 
-    const maxLimit = 10 // Limit for keywords
+    const maxLimit = 15 // Limit for keywords
 
     items.forEach(item => tfidf.addDocument(item.text)) // Send test for computation
 
