@@ -114,11 +114,17 @@ const start = urls => {
 
             for (let authorship of authorships) {
 
+                // Filter by keeping just "advisor"
                 if (authorship['mods:role']['mods:roleTerm']._text !== 'advisor') continue
 
-                // Filter by keeping just "advisor"
-                const author = authorship['mods:namePart']._text.replace(/\.$/, "")
-                _doc.advisors = author.split(" and ")
+                // Cleaning
+                let a = authorship['mods:namePart']._text
+                a = a.replace(/\.$/, '') // Delete dot at the end
+                a = a.replace(' and ', '___') 
+                a = a.replace(',', '___')
+                a = a.split('___') // Split by author
+                a = a.filter(item => item.length > 5) // Remove very short names
+                _doc.advisors = a
 
             }
 
