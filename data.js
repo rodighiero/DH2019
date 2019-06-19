@@ -30,7 +30,7 @@ const urls = Object.entries(theses).reduce((urls, entry) => {
     const value = entry[1]
 
     // Filter on URLs
-    if (value.includes('Ph.D.'))
+    if (value.includes('Comparative'))
     // if (value.includes('Science'))
         urls.push(`https://dspace.mit.edu/oai/request?verb=ListRecords&metadataPrefix=mets&set=${key}`)
     return urls
@@ -163,6 +163,21 @@ const start = urls => {
             }
         }
     }
+
+
+
+
+
+
+    // Chloe's homework
+
+    // const AdvisorPairs = combinatorics.bigCombination(advisors, 2)
+
+    // AdvisorPairs.forEach(pair => {
+    //     console.log(pair[0].id, pair[1].id, natural.DiceCoefficient(pair[0].id, pair[1].id))
+    // })
+
+
 
 
 
