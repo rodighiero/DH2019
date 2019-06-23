@@ -64,11 +64,16 @@ export const drawLinks = () => {
 export const drawNodes = () => {
 
     s.context.beginPath()
+    
     s.graph.nodes.forEach(node => {
         s.context.moveTo(node.x, node.y)
         s.context.arc(node.x, node.y, 3, 0, 2 * Math.PI)
+        s.context.font = "6px Helvetica"
+        s.context.fillText(node.id, node.x, node.y + 12)
     })
+
     s.context.fill()
+    
 }
 
 
