@@ -1,3 +1,4 @@
+const d3 = require('d3')
 import { s } from './state'
 
 export const drawKeywords = () => {
@@ -20,13 +21,13 @@ export const drawKeywords = () => {
             const x = a / 2 + (d.pair[0].x < d.pair[1].x ? d.pair[0].x : d.pair[1].x)
             const y = b / 2 + (d.pair[0].y < d.pair[1].y ? d.pair[0].y : d.pair[1].y)
 
-            
-            
+
+
             d.terms.slice(0, max).forEach((term, i) => {
                 const value = term[1]
                 s.context.beginPath
                 s.context.textAlign = 'center'
-                s.context.font = `normal 300 ${Math.log(value)*2}pt Helvetica`
+                s.context.font = `normal 300 ${Math.log(value) * 2}pt Helvetica`
                 // s.context.font = `normal 300 6pt Helvetica`
                 // console.log(term[1]*.05)
                 // Compute the max value to tune transparency
@@ -34,7 +35,7 @@ export const drawKeywords = () => {
                 s.context.fillText(term[0], x, (i % 2 === 1) ? i * -lineSpacing + y : (i + 1) * lineSpacing + y)
                 s.context.endPath
             })
-            
+
         }
 
     })
@@ -68,4 +69,26 @@ export const drawNodes = () => {
         s.context.arc(node.x, node.y, 3, 0, 2 * Math.PI)
     })
     s.context.fill()
+}
+
+
+export const drawContours = () => {
+
+    const densityData = d3.contourDensity()
+        .x(d => d.x)
+        .y(d => d.y)
+        .size([1000, 1000])
+        .bandwidth(30)
+        (s.graph.nodes)
+
+    const path = d3.geoPath().context(s.context);
+
+    // s.context.fillStyle = 'yellow'
+    s.context.strokeStyle = 'black';
+    s.context.beginPath();
+    path(densityData[0]);
+    // s.context.fill();
+    s.context.stroke()
+
+
 }

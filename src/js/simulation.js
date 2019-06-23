@@ -1,6 +1,6 @@
 const d3 = require('d3')
 
-import { drawKeywords, drawLinks, drawNodes } from './drawing'
+import { drawKeywords, drawLinks, drawNodes, drawContours } from './drawing'
 import click from './click'
 import { s } from './state'
 
@@ -24,6 +24,7 @@ export const ticked = () => {
     if (s.visibility.keywords) drawKeywords()
     if (s.visibility.links) drawLinks()
     if (s.visibility.nodes) drawNodes()
+    if (s.visibility.contours) drawContours()
     s.context.restore()
 
 }
