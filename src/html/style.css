@@ -50,16 +50,17 @@ canvas {
 
 #focus {
 	color: black;
-	width: 100%;
-	height: auto;
+	width: 30%;
+	height: 98%;
 	background-color: rgba(255, 255, 255, 0.6);
 	position: absolute;
-	left: 0;
+	left: 10;
 	top: 0;
+	border: solid .5px #999;
 }
 
 h1 {
-	font-size: 120%;
+	font-size: 80%;
 	margin: 15px 15px 5px 15px;
 }
 
@@ -69,6 +70,6 @@ h2 {
 }
 
 p {
-	font-size: 80%;
+	font-size: 70%;
 	margin: 5px 15px;
 }

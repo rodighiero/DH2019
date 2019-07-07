@@ -30,8 +30,9 @@ const urls = Object.entries(theses).reduce((urls, entry) => {
     const value = entry[1]
 
     // Filter on URLs
-    if (value.includes('Ph.D.'))
-        // if (value.includes('Science'))
+    if (value.includes('Computer')) // 122 Advisors
+    // if (value.includes('Ph.D.')) // 691 Advisors
+    // if (value.includes('Astronautics')) // 69 Advisors
         urls.push(`https://dspace.mit.edu/oai/request?verb=ListRecords&metadataPrefix=mets&set=${key}`)
     return urls
 
