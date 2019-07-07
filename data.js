@@ -228,7 +228,7 @@ const start = urls => {
     // Lexical analysis
     /////////////////////////////
 
-    const maxLimit = 10 // Limit for keywords
+    const maxLimit = 5 // Limit for keywords
 
     // items.forEach(item => tfidf.addDocument(item.text)) // Send text
     items.forEach(item => tfidf.addDocument(item.tokens)) // Send tokens
@@ -260,7 +260,8 @@ const start = urls => {
             return {
                 'id': item.id,
                 'docs': item.docs,
-                'terms': item.terms
+                'tokens': item.tokens,
+                'terms': item.terms,
             }
         }),
         links: []
