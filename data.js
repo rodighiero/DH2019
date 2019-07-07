@@ -30,9 +30,9 @@ const urls = Object.entries(theses).reduce((urls, entry) => {
     const value = entry[1]
 
     // Filter on URLs
-    if (value.includes('Computer')) // 122 Advisors
+    // if (value.includes('Computer')) // 122 Advisors
     // if (value.includes('Ph.D.')) // 691 Advisors
-    // if (value.includes('Astronautics')) // 69 Advisors
+    if (value.includes('Astronautics')) // 69 Advisors
         urls.push(`https://dspace.mit.edu/oai/request?verb=ListRecords&metadataPrefix=mets&set=${key}`)
     return urls
 
@@ -212,6 +212,16 @@ const start = urls => {
 
     const items = advisors
 
+    /////////////////////////////
+    // Tokenization
+    /////////////////////////////
+
+    // natural.PorterStemmer.attach() // Perter stemmer
+    natural.LancasterStemmer.attach() // Lancaster stemmer
+    items.forEach( item => {
+        item.tokens = item.text.tokenizeAndStem()
+    })
+
 
 
     /////////////////////////////
@@ -220,7 +230,9 @@ const start = urls => {
 
     const maxLimit = 10 // Limit for keywords
 
-    items.forEach(item => tfidf.addDocument(item.text)) // Send test for computation
+    // items.forEach(item => tfidf.addDocument(item.text)) // Send text
+    items.forEach(item => tfidf.addDocument(item.tokens)) // Send tokens
+    
 
     items.forEach((item, i) => { // Writing computation terms in items
         item.terms = tfidf.listTerms(i)
@@ -237,7 +249,6 @@ const start = urls => {
     /////////////////////////////
 
     const pairs = combinatorics.bigCombination(items, 2)
-
 
 
     /////////////////////////////

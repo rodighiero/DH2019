@@ -3,7 +3,7 @@ import { s } from './state'
 
 export const drawKeywords = () => {
 
-    const max = 1
+    const max = 5
     const distance = 30
     const fontSize = 1
     const lineSpacing = fontSize * .8
