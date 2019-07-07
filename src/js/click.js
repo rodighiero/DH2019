@@ -18,7 +18,7 @@ export default () => {
                 dy = y - node.y
             if (dx * dx + dy * dy < radius * radius) {
                 let text = ''
-                text += `<h1><strong>${node.id}</strong></h1>`
+                text += `<h1><strong>${node.id} (${node.docs})</strong></h1>`
                 // text += `<h2>${node.authors.join(' - ')}</h2>`
                 text +=  `<p>${Object.keys(node.terms).join(', ')}</p>`
                 d3.select('#focus').html(text)

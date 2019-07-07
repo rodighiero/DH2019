@@ -30,7 +30,7 @@ const urls = Object.entries(theses).reduce((urls, entry) => {
     const value = entry[1]
 
     // Filter on URLs
-    if (value.includes('Comparative'))
+    if (value.includes('Ph.D.'))
         // if (value.includes('Science'))
         urls.push(`https://dspace.mit.edu/oai/request?verb=ListRecords&metadataPrefix=mets&set=${key}`)
     return urls
@@ -45,7 +45,10 @@ const urls = Object.entries(theses).reduce((urls, entry) => {
 
 Promise.all(urls
     .map(url => fetch(url)
-        .then(xml => xml)
+        .then(xml => {
+            console.log('Got', url)
+            return xml
+        })
         .catch(err => console.log(err))
     ))
     .then(result => start(result))
@@ -142,6 +145,9 @@ const start = urls => {
     docs = Object.values(docs.reduce((obj, el) =>
         Object.assign(obj, { [el.id]: el }), {}))
 
+    console.log('* Length of urls ', urls.length)
+    console.log('* Length of documents ', docs.length)
+
 
 
     /////////////////////////////
@@ -171,20 +177,16 @@ const start = urls => {
     }
 
 
-
+    /////////////////////////////
     // Merging mispelled authors
+    /////////////////////////////
 
     for (let i = 0; i < advisors.length - 1; i++) {
         for (let j = i + 1; j < advisors.length; j++) {
-            // console.log(i, j)
-
             if (natural.DiceCoefficient(advisors[i].id, advisors[j].id) > .5) {
-
                 // console.log(advisors[i].id, ' - ', advisors[j].id,
                 //     natural.DiceCoefficient(advisors[i].id, advisors[j].id))
-
                 // console.log(advisors[i])
-
                 // Increase counter
                 advisors[i].docs = advisors[i].docs + advisors[j].docs
                 // Merge texts
@@ -193,11 +195,7 @@ const start = urls => {
                 advisors = advisors.slice(0, j).concat(advisors.slice(j + 1, advisors.length))
                 // Reset j position
                 j = j - 1
-
                 // console.log(advisors[i])
-
-                // console.log('------------------------')
-
             }
 
         }
@@ -248,7 +246,9 @@ const start = urls => {
     const network = {
         nodes: items.map(item => {
             return {
-                'id': item.id, 'terms': item.terms
+                'id': item.id,
+                'docs': item.docs,
+                'terms': item.terms
             }
         }),
         links: []
