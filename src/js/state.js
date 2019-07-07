@@ -10,7 +10,7 @@ export let s = {
     visibility: {
         contours: false,
         keywords: true,
-        links: false,
+        links: true,
         nodes: true,
     },
 

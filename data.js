@@ -31,7 +31,7 @@ const urls = Object.entries(theses).reduce((urls, entry) => {
 
     // Filter on URLs
     if (value.includes('Comparative'))
-    // if (value.includes('Science'))
+        // if (value.includes('Science'))
         urls.push(`https://dspace.mit.edu/oai/request?verb=ListRecords&metadataPrefix=mets&set=${key}`)
     return urls
 
@@ -120,7 +120,7 @@ const start = urls => {
                 // Cleaning
                 let a = authorship['mods:namePart']._text
                 a = a.replace(/\.$/, '') // Delete dot at the end
-                a = a.replace(' and ', '___') 
+                a = a.replace(' and ', '___')
                 a = a.replace(',', '___')
                 a = a.split('___') // Split by author
                 a = a.filter(item => item.length > 5) // Remove very short names
@@ -157,7 +157,7 @@ const start = urls => {
             if (hasAdvisor) {
                 // Append text to the advisor
                 let _advisor = advisors.filter(adv => adv.id === advisor)
-                _advisor[0].docs ++
+                _advisor[0].docs++
                 _advisor[0].text += doc.text + ' '
             } else {
                 // Create the advisor
@@ -172,16 +172,36 @@ const start = urls => {
 
 
 
+    // Merging mispelled authors
 
+    for (let i = 0; i < advisors.length - 1; i++) {
+        for (let j = i + 1; j < advisors.length; j++) {
+            // console.log(i, j)
 
+            if (natural.DiceCoefficient(advisors[i].id, advisors[j].id) > .5) {
 
-    // Chloe's homework
+                // console.log(advisors[i].id, ' - ', advisors[j].id,
+                //     natural.DiceCoefficient(advisors[i].id, advisors[j].id))
 
-    // const AdvisorPairs = combinatorics.bigCombination(advisors, 2)
+                // console.log(advisors[i])
 
-    // AdvisorPairs.forEach(pair => {
-    //     console.log(pair[0].id, pair[1].id, natural.DiceCoefficient(pair[0].id, pair[1].id))
-    // })
+                // Increase counter
+                advisors[i].docs = advisors[i].docs + advisors[j].docs
+                // Merge texts
+                advisors[i].text = advisors[i].text + ' ' + advisors[j].text
+                // Remove second advisor
+                advisors = advisors.slice(0, j).concat(advisors.slice(j + 1, advisors.length))
+                // Reset j position
+                j = j - 1
+
+                // console.log(advisors[i])
+
+                // console.log('------------------------')
+
+            }
+
+        }
+    }
 
 
 

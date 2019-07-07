@@ -70,9 +70,9 @@ export const drawNodes = () => {
     
     s.graph.nodes.forEach(node => {
         s.context.moveTo(node.x, node.y)
-        s.context.arc(node.x, node.y, 3, 0, 2 * Math.PI)
-        s.context.font = "6px Helvetica"
-        s.context.fillText(node.id, node.x, node.y + 12)
+        s.context.arc(node.x, node.y, 2, 0, 2 * Math.PI)
+        s.context.font = "3pt Helvetica"
+        s.context.fillText(node.id, node.x, node.y + 8)
     })
 
     s.context.fill()
