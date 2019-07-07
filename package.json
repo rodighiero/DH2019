@@ -34,6 +34,7 @@
   "dependencies": {
     "d3": "^5.9.7",
     "franc": "^4.1.0",
-    "js-combinatorics": "^0.5.4"
+    "js-combinatorics": "^0.5.4",
+    "keyword-extractor": "0.0.16"
   }
 }

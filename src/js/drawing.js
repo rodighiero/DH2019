@@ -3,10 +3,10 @@ import { s } from './state'
 
 export const drawKeywords = () => {
 
-    const max = 5
+    const max = 11
     const distance = 40
-    const fontSize = 1
-    const lineSpacing = fontSize * .8
+    const fontSize = 1.5
+    const lineSpacing = 1.5
     const d_min = Math.pow(distance * 2 - 20, 2)
     const d_max = Math.pow(distance * 2 + 20, 2)
 
@@ -20,16 +20,15 @@ export const drawKeywords = () => {
 
             const x = a / 2 + (d.pair[0].x < d.pair[1].x ? d.pair[0].x : d.pair[1].x)
             const y = b / 2 + (d.pair[0].y < d.pair[1].y ? d.pair[0].y : d.pair[1].y)
-            const height = d.terms.slice(0, max).reduce((int, term) => int += Math.log(term[1]) * 1.3, 0)
+            const height = d.terms.slice(0, max).reduce((int, term) => int += fontSize * Math.log(term[1]) * lineSpacing, 0)
             let shiftY = 0
 
             d.terms.slice(0, max).forEach((term, i) => {
-                const value = term[1]
                 s.context.beginPath
                 s.context.textAlign = 'center'
-                const size = fontSize * Math.log(value)
+                const size = fontSize * Math.log(term[1])
                 s.context.font = `normal 300 ${size}pt Helvetica`
-                shiftY += size * 1.3
+                shiftY += size * lineSpacing
                 s.context.fillText(term[0], x, y + shiftY - height / 2)
                 s.context.endPath
             })

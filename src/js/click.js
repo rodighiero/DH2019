@@ -20,6 +20,7 @@ export default () => {
                 let text = ''
                 text += `<h1><strong>${node.id}</strong></h1>`
                 text +=  `<p><strong>Documents:</strong> ${node.docs}</p>`
+                text +=  `<p><strong>keywords:</strong> ${Object.values(node.keywords).join(', ')}</p>`
                 text +=  `<p><strong>Terms:</strong> ${Object.keys(node.terms).join(', ')}</p>`
                 text +=  `<p><strong>Tokens:</strong> ${Object.values(node.tokens).join(', ')}</p>`
                 d3.select('#focus').html(text)

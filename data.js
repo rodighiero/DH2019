@@ -19,6 +19,8 @@ const tfidf = new natural.TfIdf() // term frequency inverse doc frequency
 // data
 const theses = require('./theses.json')
 
+const keyword_extractor = require("keyword-extractor")
+
 
 
 /////////////////////////////
@@ -30,9 +32,10 @@ const urls = Object.entries(theses).reduce((urls, entry) => {
     const value = entry[1]
 
     // Filter on URLs
-    if (value.includes('Computer')) // 122 Advisors
-    // if (value.includes('Ph.D.')) // 691 Advisors
-    // if (value.includes('Astronautics')) // 69 Advisors
+    // if (value.includes('Computer')) // 122 Advisors
+    // if (value.includes('Architecture')) // 122 Advisors
+        if (value.includes('Ph.D.')) // 691 Advisors
+        // if (value.includes('Astronautics')) // 69 Advisors
         urls.push(`https://dspace.mit.edu/oai/request?verb=ListRecords&metadataPrefix=mets&set=${key}`)
     return urls
 
@@ -212,27 +215,48 @@ const start = urls => {
 
     const items = advisors
 
+
+
+
     /////////////////////////////
     // Tokenization
     /////////////////////////////
 
     // natural.PorterStemmer.attach() // Perter stemmer
     natural.LancasterStemmer.attach() // Lancaster stemmer
-    items.forEach( item => {
+    items.forEach(item => {
         item.tokens = item.text.tokenizeAndStem()
     })
 
 
 
     /////////////////////////////
+    // Keyword extractor
+    /////////////////////////////
+
+    items.forEach(item => {
+        item.keywords = keyword_extractor.extract(item.text, {
+            language: "english",
+            remove_digits: true,
+            return_chained_words: false,
+            return_changed_case: true,
+            remove_duplicates: true,
+            return_max_ngrams: false,
+        })
+    })
+
+    
+
+    /////////////////////////////
     // Lexical analysis
     /////////////////////////////
 
-    const maxLimit = 5 // Limit for keywords
+    const maxLimit = 3 // Limit for keywords
 
     // items.forEach(item => tfidf.addDocument(item.text)) // Send text
-    items.forEach(item => tfidf.addDocument(item.tokens)) // Send tokens
-    
+    // items.forEach(item => tfidf.addDocument(item.tokens)) // Send tokens
+    items.forEach(item => tfidf.addDocument(item.keywords)) // Send keywords
+
 
     items.forEach((item, i) => { // Writing computation terms in items
         item.terms = tfidf.listTerms(i)
@@ -261,6 +285,7 @@ const start = urls => {
                 'id': item.id,
                 'docs': item.docs,
                 'tokens': item.tokens,
+                'keywords': item.keywords,
                 'terms': item.terms,
             }
         }),
