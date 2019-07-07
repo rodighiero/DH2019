@@ -5,26 +5,26 @@
 
 const beautify = require('beautify')
 const combinatorics = require('js-combinatorics')
-// const franc = require('franc-min')
 const fs = require('fs')
-const https = require('https')
 const path = require('path')
-const convert = require('xml-js')
-const fetch = require('request-promise');
-
-// tfidf
+const keyword_extractor = require("keyword-extractor")
 const natural = require('natural')
 const tfidf = new natural.TfIdf() // term frequency inverse doc frequency
 
-// Keyword extractor
-const keyword_extractor = require("keyword-extractor")
 
 
+
+/////////////////////////////
+// Reading dics.json
+/////////////////////////////
 
 fs.readFile(__dirname + '/src/data/docs.json', (err, data) => {
     if (err) throw err
 
     docs = JSON.parse(data)
+
+
+
 
     /////////////////////////////
     // Assemble by advisor
@@ -48,6 +48,7 @@ fs.readFile(__dirname + '/src/data/docs.json', (err, data) => {
                     docs: 1,
                     text: doc.text + ' ',
                 })
+                console.log('Created advisor', advisors.length)
             }
         }
     }
@@ -66,14 +67,15 @@ fs.readFile(__dirname + '/src/data/docs.json', (err, data) => {
                 //     natural.DiceCoefficient(advisors[i].id, advisors[j].id))
                 // console.log(advisors[i])
                 // Increase counter
-                advisors[i].docs = advisors[i].docs + advisors[j].docs
+                advisors[i].docs += advisors[j].docs
                 // Merge texts
-                advisors[i].text = advisors[i].text + ' ' + advisors[j].text
+                advisors[i].text += ' ' + advisors[j].text
                 // Remove second advisor
                 advisors = advisors.slice(0, j).concat(advisors.slice(j + 1, advisors.length))
                 // Reset j position
                 j = j - 1
                 // console.log(advisors[i])
+                console.log('Reducing advisors', advisors.length)
             }
 
         }
@@ -84,7 +86,7 @@ fs.readFile(__dirname + '/src/data/docs.json', (err, data) => {
 
 
     /////////////////////////////
-    // Set items for the network
+    // Set items for nodes
     /////////////////////////////
 
     const items = advisors
@@ -96,6 +98,7 @@ fs.readFile(__dirname + '/src/data/docs.json', (err, data) => {
     // Tokenization
     /////////////////////////////
 
+    console.log('Tokenization')
     // natural.PorterStemmer.attach() // Perter stemmer
     natural.LancasterStemmer.attach() // Lancaster stemmer
     items.forEach(item => {
@@ -104,10 +107,12 @@ fs.readFile(__dirname + '/src/data/docs.json', (err, data) => {
 
 
 
+
     /////////////////////////////
     // Keyword extractor
     /////////////////////////////
 
+    console.log('Keyword extraction')
     items.forEach(item => {
         item.keywords = keyword_extractor.extract(item.text, {
             language: "english",
@@ -121,9 +126,12 @@ fs.readFile(__dirname + '/src/data/docs.json', (err, data) => {
 
 
 
+
     /////////////////////////////
-    // Lexical analysis
+    // Lexical Analysis
     /////////////////////////////
+    
+    console.log('Lexical Analysis')
 
     const maxLimit = 10 // Limit for keywords
 
@@ -132,6 +140,8 @@ fs.readFile(__dirname + '/src/data/docs.json', (err, data) => {
     items.forEach(item => tfidf.addDocument(item.keywords)) // Send keywords
 
 
+    console.log('Writing Lexical Analysis')
+    
     items.forEach((item, i) => { // Writing computation terms in items
         item.terms = tfidf.listTerms(i)
             .reduce((obj, element) => {
@@ -142,16 +152,24 @@ fs.readFile(__dirname + '/src/data/docs.json', (err, data) => {
     })
 
 
+
+
     /////////////////////////////
     // Set pairs
     /////////////////////////////
 
+    console.log('Set pairs')
+
     const pairs = combinatorics.bigCombination(items, 2)
 
 
+
+
     /////////////////////////////
-    // Set network.json
+    // Set nodes and edges
     /////////////////////////////
+
+    console.log('Set nodes and edges')
 
     const network = {
         nodes: items.map(item => {
@@ -195,9 +213,10 @@ fs.readFile(__dirname + '/src/data/docs.json', (err, data) => {
         })
     })
 
-    // Normalize values between [0,1]
+    // Normalizing values between [0,1]
     const max = network.links.reduce((max, link) => max > link.v ? max : link.v, 0)
     network.links.forEach(link => link.v = link.v / max)
+
 
 
 
@@ -206,14 +225,11 @@ fs.readFile(__dirname + '/src/data/docs.json', (err, data) => {
     /////////////////////////////
 
     console.log()
-    console.log('         Arrays =>')
-    console.log('                     docs :', docs.length)
-    console.log('                 advisors :', advisors.length)
-    console.log()
     console.log('        Network =>')
     console.log('                    pairs :', pairs.length)
     console.log('                    links :', network.links.length)
     console.log('                    nodes :', network.nodes.length)
+
 
 
 
