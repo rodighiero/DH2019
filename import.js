@@ -4,23 +4,11 @@
 /////////////////////////////
 
 const beautify = require('beautify')
-const combinatorics = require('js-combinatorics')
-// const franc = require('franc-min')
 const fs = require('fs')
-const https = require('https')
 const path = require('path')
 const convert = require('xml-js')
 const fetch = require('request-promise');
-
-// tfidf
-const natural = require('natural')
-const tfidf = new natural.TfIdf() // term frequency inverse doc frequency
-
-// data
 const theses = require('./theses.json')
-
-const keyword_extractor = require("keyword-extractor")
-
 
 
 /////////////////////////////
@@ -31,12 +19,12 @@ const urls = Object.entries(theses).reduce((urls, entry) => {
     const key = entry[0]
     const value = entry[1]
 
-    // Filter on URLs
     // if (value.includes('Computer')) // 122 Advisors
     // if (value.includes('Architecture')) // 122 Advisors
-        if (value.includes('Ph.D.')) // 691 Advisors
+    if (value.includes('Ph.D.')) // 691 Advisors
         // if (value.includes('Astronautics')) // 69 Advisors
         urls.push(`https://dspace.mit.edu/oai/request?verb=ListRecords&metadataPrefix=mets&set=${key}`)
+
     return urls
 
 }, [])
@@ -50,7 +38,7 @@ const urls = Object.entries(theses).reduce((urls, entry) => {
 Promise.all(urls
     .map(url => fetch(url)
         .then(xml => {
-            console.log('Got', url)
+            console.log('Received', url)
             return xml
         })
         .catch(err => console.log(err))
@@ -71,8 +59,11 @@ const start = urls => {
     /////////////////////////////
 
     let docs = []
+    let counter = 1
 
     for (let url of urls) {
+
+        console.log('Parsing url', counter++)
 
         const json = JSON.parse(convert.xml2json(url, {
             compact: true,
@@ -145,36 +136,29 @@ const start = urls => {
 
     }
 
-    console.log('Number of urls ', urls.length)
-
-    console.log('Number of all documents ', docs.length)
+    console.log('Received documents', docs.length)
 
     // Filter by unique ID
     docs = Object.values(docs.reduce((obj, el) => Object.assign(obj, { [el.id]: el }), {}))
 
-    console.log('Number of unique documents ', docs.length)
+    console.log('Unique documents', docs.length)
 
 
 
-    
+
 
 
     /////////////////////////////
     // Writing docs.json
     /////////////////////////////
 
-    console.log()
-    console.log('          Files =>')
-
-    const directory = './src/data'
     const format = json => beautify(JSON.stringify(json), { format: 'json' })
     const setComma = x => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-    let fileName
-
-    fileName = path.resolve(__dirname, `${directory}/docs.json`)
+    let fileName = path.resolve(__dirname, `./src/data/docs.json`)
+    
     fs.writeFile(fileName, format(docs), err => {
         if (err) throw err
-        console.log('                     docs :', setComma(format(docs).length), 'kb /', docs.length, 'records')
+        console.log('Size of docs.json', setComma(format(docs).length), 'kb')
     })
 
 }
