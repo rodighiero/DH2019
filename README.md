@@ -4,8 +4,11 @@ This data visualization relies on the idea to agency network according to a lexi
 
 ## Commands
 
-Data refinement
-`node data.js`
+Import data
+`node import`
+
+Data analysis
+`node analysis`
 
 Start development environment
 `npm run start`
