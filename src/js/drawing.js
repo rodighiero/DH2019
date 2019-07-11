@@ -79,9 +79,9 @@ export const drawContours = () => {
     const densityData = d3.contourDensity()
         .x(d => d.x)
         .y(d => d.y)
-        // .weight
+        .weight(d => d.docs)
         .size([2000, 2000])
-        .bandwidth(20)
+        .bandwidth(40)
         (s.graph.nodes)
 
     const path = d3.geoPath().context(s.context);
