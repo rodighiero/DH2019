@@ -78,11 +78,15 @@ export const drawContours = () => {
     const max = d3.max(s.graph.nodes, n => n.docs)
     const myColor = d3.scaleSequential(d3.interpolateInferno).domain([0,max])
 
+    const x = s.zoomIdentity.x * s.screen.density
+    const y = s.zoomIdentity.y * s.screen.density
+    const k = s.zoomIdentity.k
+
     const densityData = d3.contourDensity()
-        .x(d => d.x)
-        .y(d => d.y)
-        .weight(d => d.docs)
-        // .size([10000, 10000])
+        .x(d => x + d.x * k)
+        .y(d => y + d.y * k)
+        .weight(d => k * d.docs)
+        .size([s.screen.width, s.screen.height])
         .bandwidth(30)
         (s.graph.nodes)
 
