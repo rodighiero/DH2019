@@ -66,7 +66,7 @@ export const drawNodes = () => {
         s.context.moveTo(node.x, node.y)
         s.context.arc(node.x, node.y, 2, 0, 2 * Math.PI)
         s.context.font = "3pt Helvetica"
-        s.context.fillText(node.id, node.x, node.y + 8)
+        s.context.fillText(`${node.id} (${node.docs})`, node.x, node.y + 8);
     })
 
     s.context.fill()
@@ -75,21 +75,36 @@ export const drawNodes = () => {
 
 
 export const drawContours = () => {
+    // 
+
+    const max = d3.max(s.graph.nodes, n => n.docs)
+    const myColor = d3.scaleSequential().domain([2,max]).interpolator(d3.interpolateInferno);
 
     const densityData = d3.contourDensity()
         .x(d => d.x)
         .y(d => d.y)
         .weight(d => d.docs)
         .size([2000, 2000])
-        .bandwidth(40)
+        .bandwidth(30)
         (s.graph.nodes)
 
-    const path = d3.geoPath().context(s.context);
+    const path = d3.geoPath().context(s.context)
 
     // s.context.fillStyle = 'yellow'
-    densityData.forEach(level => {
-        s.context.strokeStyle = 'blue'
-        s.context.lineWidth = .1
+    densityData.forEach((level, i) => {
+        // if (i === 0) {
+        //     s.context.strokeStyle = 'blue'
+        
+        // } else {
+        //     s.context.strokeStyle = 'red'
+        
+        // }
+        
+        
+        s.context.strokeStyle = myColor(i)
+
+
+        s.context.lineWidth = .1 + .05 * i
         s.context.beginPath()
         path(level)
         s.context.stroke()
