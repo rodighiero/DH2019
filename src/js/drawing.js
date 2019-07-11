@@ -24,13 +24,11 @@ export const drawKeywords = () => {
             let shiftY = 0
 
             d.terms.slice(0, max).forEach((term, i) => {
-                s.context.beginPath
                 s.context.textAlign = 'center'
                 const size = fontSize * Math.log(term[1])
                 s.context.font = `normal 300 ${size}pt Helvetica`
                 shiftY += size * lineSpacing
                 s.context.fillText(term[0], x, y + shiftY - height / 2)
-                s.context.endPath
             })
 
         }
