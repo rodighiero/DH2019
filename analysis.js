@@ -81,6 +81,15 @@ fs.readFile(__dirname + '/src/data/docs.json', (err, data) => {
         }
     }
 
+    /////////////////////////////
+    // Remove authors with a few documents
+    /////////////////////////////
+
+    for (let i = 0; i < advisors.length; i++) {
+        if ( advisors[i].docs < 2 )
+        advisors = advisors.slice(0, i).concat(advisors.slice(i + 1, advisors.length))
+    }
+
 
 
 
@@ -133,7 +142,7 @@ fs.readFile(__dirname + '/src/data/docs.json', (err, data) => {
     
     console.log('Lexical Analysis')
 
-    const maxLimit = 10 // Limit for keywords
+    const maxLimit = 5 // Limit for keywords
 
     // items.forEach(item => tfidf.addDocument(item.text)) // Send text
     // items.forEach(item => tfidf.addDocument(item.tokens)) // Send tokens
