@@ -52,7 +52,7 @@ export const drawLinks = () => {
         s.context.lineWidth = link.value
         // const lineWidth = 1
     })
-    s.context.strokeStyle = '#0000FF'
+    s.context.strokeStyle = d3.rgb(251,253,166)
     s.context.stroke()
 
 }
@@ -61,14 +61,15 @@ export const drawLinks = () => {
 export const drawNodes = () => {
 
     s.context.beginPath()
-    
+    s.context.fillStyle = d3.rgb(251,253,166)
     s.graph.nodes.forEach(node => {
         s.context.moveTo(node.x, node.y)
         s.context.arc(node.x, node.y, 2, 0, 2 * Math.PI)
         s.context.font = "3pt Helvetica"
         s.context.fillText(`${node.id} (${node.docs})`, node.x, node.y + 8);
     })
-
+    
+    s.context.fillStyle = d3.rgb(251,253,166)
     s.context.fill()
     
 }
@@ -78,7 +79,8 @@ export const drawContours = () => {
     // 
 
     const max = d3.max(s.graph.nodes, n => n.docs)
-    const myColor = d3.scaleSequential(d3.interpolateInferno).domain([0,max/2])
+    console.log('max', max);
+    const myColor = d3.scaleSequential(d3.interpolateInferno).domain([0,max])
 
     const densityData = d3.contourDensity()
         .x(d => d.x)

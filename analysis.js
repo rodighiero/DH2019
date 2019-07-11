@@ -18,7 +18,7 @@ const tfidf = new natural.TfIdf() // term frequency inverse doc frequency
 // Reading dics.json
 /////////////////////////////
 
-fs.readFile(__dirname + '/src/data/docs.json', (err, data) => {
+fs.readFile(__dirname + '/src/data/docs-inferno.json', (err, data) => {
     if (err) throw err
 
     docs = JSON.parse(data)
@@ -33,6 +33,7 @@ fs.readFile(__dirname + '/src/data/docs.json', (err, data) => {
     let advisors = []
 
     for (let doc of docs) {
+        // console.log(doc);
         if (!doc.advisors) continue // Skip empty advisors
         for (let advisor of doc.advisors) {
             const hasAdvisor = advisors.some(adv => adv.id === advisor)
@@ -60,35 +61,35 @@ fs.readFile(__dirname + '/src/data/docs.json', (err, data) => {
     // Merging mispelled authors
     /////////////////////////////
 
-    for (let i = 0; i < advisors.length - 1; i++) {
-        for (let j = i + 1; j < advisors.length; j++) {
-            if (natural.DiceCoefficient(advisors[i].id, advisors[j].id) > .5) {
-                // console.log(advisors[i].id, ' - ', advisors[j].id,
-                //     natural.DiceCoefficient(advisors[i].id, advisors[j].id))
-                // console.log(advisors[i])
-                // Increase counter
-                advisors[i].docs += advisors[j].docs
-                // Merge texts
-                advisors[i].text += ' ' + advisors[j].text
-                // Remove second advisor
-                advisors = advisors.slice(0, j).concat(advisors.slice(j + 1, advisors.length))
-                // Reset j position
-                j = j - 1
-                // console.log(advisors[i])
-                console.log('Reducing advisors', advisors.length)
-            }
+    // for (let i = 0; i < advisors.length - 1; i++) {
+    //     for (let j = i + 1; j < advisors.length; j++) {
+    //         if (natural.DiceCoefficient(advisors[i].id, advisors[j].id) > .5) {
+    //             // console.log(advisors[i].id, ' - ', advisors[j].id,
+    //             //     natural.DiceCoefficient(advisors[i].id, advisors[j].id))
+    //             // console.log(advisors[i])
+    //             // Increase counter
+    //             advisors[i].docs += advisors[j].docs
+    //             // Merge texts
+    //             advisors[i].text += ' ' + advisors[j].text
+    //             // Remove second advisor
+    //             advisors = advisors.slice(0, j).concat(advisors.slice(j + 1, advisors.length))
+    //             // Reset j position
+    //             j = j - 1
+    //             // console.log(advisors[i])
+    //             console.log('Reducing advisors', advisors.length)
+    //         }
 
-        }
-    }
+    //     }
+    // }
 
     /////////////////////////////
     // Remove authors with a few documents
     /////////////////////////////
 
-    for (let i = 0; i < advisors.length; i++) {
-        if ( advisors[i].docs < 2 )
-        advisors = advisors.slice(0, i).concat(advisors.slice(i + 1, advisors.length))
-    }
+    // for (let i = 0; i < advisors.length; i++) {
+    //     if ( advisors[i].docs < 2 )
+    //     advisors = advisors.slice(0, i).concat(advisors.slice(i + 1, advisors.length))
+    // }
 
 
 
