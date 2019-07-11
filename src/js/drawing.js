@@ -78,7 +78,7 @@ export const drawContours = () => {
     // 
 
     const max = d3.max(s.graph.nodes, n => n.docs)
-    const myColor = d3.scaleSequential().domain([2,max]).interpolator(d3.interpolateInferno);
+    const myColor = d3.scaleSequential(d3.interpolateInferno).domain([0,max/2])
 
     const densityData = d3.contourDensity()
         .x(d => d.x)
