@@ -88,7 +88,7 @@ export const drawContours = () => {
 
     // s.context.fillStyle = 'yellow'
     densityData.forEach(level => {
-        s.context.strokeStyle = 'black'
+        s.context.strokeStyle = 'blue'
         s.context.lineWidth = .1
         s.context.beginPath()
         path(level)
