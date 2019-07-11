@@ -24,13 +24,11 @@ export const drawKeywords = () => {
             let shiftY = 0
 
             d.terms.slice(0, max).forEach((term, i) => {
-                s.context.beginPath
                 s.context.textAlign = 'center'
                 const size = fontSize * Math.log(term[1])
                 s.context.font = `normal 300 ${size}pt Helvetica`
                 shiftY += size * lineSpacing
                 s.context.fillText(term[0], x, y + shiftY - height / 2)
-                s.context.endPath
             })
 
         }
@@ -80,11 +78,15 @@ export const drawContours = () => {
     const max = d3.max(s.graph.nodes, n => n.docs)
     const myColor = d3.scaleSequential(d3.interpolateInferno).domain([0,max])
 
+    const x = s.zoomIdentity.x * s.screen.density
+    const y = s.zoomIdentity.y * s.screen.density
+    const k = s.zoomIdentity.k
+
     const densityData = d3.contourDensity()
-        .x(d => d.x)
-        .y(d => d.y)
-        .weight(d => d.docs)
-        // .size([10000, 10000])
+        .x(d => x + d.x * k)
+        .y(d => y + d.y * k)
+        .weight(d => k * d.docs)
+        .size([s.screen.width, s.screen.height])
         .bandwidth(30)
         (s.graph.nodes)
 

@@ -24,13 +24,13 @@ export const ticked = () => {
     if (s.visibility.keywords) drawKeywords()
     if (s.visibility.links) drawLinks()
     if (s.visibility.nodes) drawNodes()
-    if (s.visibility.contours) drawContours()
 
     // while (simulation.alpha() > simulation.alphaMin()) {
     //     // simulation.tick();
     // }
 
     s.context.restore()
+    if (s.visibility.contours) drawContours()
 
 }
 
