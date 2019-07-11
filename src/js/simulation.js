@@ -25,6 +25,11 @@ export const ticked = () => {
     if (s.visibility.links) drawLinks()
     if (s.visibility.nodes) drawNodes()
     if (s.visibility.contours) drawContours()
+
+    // while (simulation.alpha() > simulation.alphaMin()) {
+    //     // simulation.tick();
+    // }
+
     s.context.restore()
 
 }
@@ -34,20 +39,20 @@ export default () => {
     // Simulation
 
     const simulation = d3.forceSimulation()
-        .force('charge', d3.forceManyBody()
-            .strength(-600)
-        //     .strength(-300)
-        //     .distanceMin(distance)
-        )
+        // .force('charge', d3.forceManyBody()
+        //     .strength(-100)
+        // //     .strength(-300)
+        // //     .distanceMin(distance)
+        // )
         .force('collide', d3.forceCollide()
             .radius(distance)
-            .strength(1)
+            // .strength(1)
         //     .iterations(5)
         )
         .force('center', d3.forceCenter(s.screen.width / 2, s.screen.height / 2))
         .force('link', d3.forceLink()
             .id(d => d.id)
-            .strength(d => d.value * .1)
+            .strength(d => d.value * .001)
             // .distance(d=> 1 - d.value)
             // .distance(distance)
         )
@@ -57,9 +62,11 @@ export default () => {
     simulation.nodes(s.graph.nodes)
     simulation.force('link').links(s.graph.links)
 
-    simulation
-        .on('tick', () => ticked())
-        .on('end', () => console.log('network has been computed'))
+    // simulation
+    //     .on('tick', () => ticked())
+    //     .on('end', () => console.log('network has been computed'))
+
+    simulation.tick(300)
 
 
 

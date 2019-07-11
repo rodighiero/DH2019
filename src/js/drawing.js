@@ -76,17 +76,15 @@ export const drawNodes = () => {
 
 
 export const drawContours = () => {
-    // 
 
     const max = d3.max(s.graph.nodes, n => n.docs)
-    console.log('max', max);
     const myColor = d3.scaleSequential(d3.interpolateInferno).domain([0,max])
 
     const densityData = d3.contourDensity()
         .x(d => d.x)
         .y(d => d.y)
         .weight(d => d.docs)
-        .size([2000, 2000])
+        // .size([10000, 10000])
         .bandwidth(30)
         (s.graph.nodes)
 
@@ -94,24 +92,12 @@ export const drawContours = () => {
 
     // s.context.fillStyle = 'yellow'
     densityData.forEach((level, i) => {
-        // if (i === 0) {
-        //     s.context.strokeStyle = 'blue'
-        
-        // } else {
-        //     s.context.strokeStyle = 'red'
-        
-        // }
-        
-        
         s.context.strokeStyle = myColor(i)
-
-
         s.context.lineWidth = .1 + .05 * i
         s.context.beginPath()
         path(level)
         s.context.stroke()
         // s.context.fill()
-
     })
 
 
