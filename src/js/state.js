@@ -8,9 +8,9 @@ export let s = {
     distance: 40,
 
     visibility: {
-        contours: false,
+        contours: true,
         keywords: true,
-        links: true,
+        links: false,
         nodes: true,
     },
 

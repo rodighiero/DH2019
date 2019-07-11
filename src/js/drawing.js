@@ -79,18 +79,23 @@ export const drawContours = () => {
     const densityData = d3.contourDensity()
         .x(d => d.x)
         .y(d => d.y)
-        .size([1000, 1000])
-        .bandwidth(30)
+        // .weight
+        .size([2000, 2000])
+        .bandwidth(20)
         (s.graph.nodes)
 
     const path = d3.geoPath().context(s.context);
 
     // s.context.fillStyle = 'yellow'
-    s.context.strokeStyle = 'black';
-    s.context.beginPath();
-    path(densityData[0]);
-    // s.context.fill();
-    s.context.stroke()
+    densityData.forEach(level => {
+        s.context.strokeStyle = 'black'
+        s.context.lineWidth = .1
+        s.context.beginPath()
+        path(level)
+        s.context.stroke()
+        // s.context.fill()
+
+    })
 
 
 }
