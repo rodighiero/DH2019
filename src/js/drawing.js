@@ -101,6 +101,9 @@ function _computeDensityData() {
 }
 
 export const drawContours = () => {
+    if (s.computed && !s.densityData.length) _computeDensityData();
+    
+    const path = d3.geoPath().context(s.context)
 
     s.densityData.forEach((level, i) => {
         s.context.beginPath()
