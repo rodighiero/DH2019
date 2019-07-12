@@ -108,7 +108,7 @@ export const drawContours = () => {
     s.densityData.forEach((level, i) => {
         s.context.beginPath()
         s.context.strokeStyle = d3.rgb(251, 253, 166)
-        s.context.lineWidth = .1 + .05 * i / s.zoomIdentity.k
+        s.context.lineWidth = (.1 + .05 * i) / s.zoomIdentity.k
         path(level)
         s.context.stroke()
     })
