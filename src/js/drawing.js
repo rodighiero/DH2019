@@ -18,6 +18,8 @@ export const drawKeywords = () => {
 
         if ((d_min < distance) && (distance < d_max)) {
 
+            // console.log(d.terms)
+
             const x = a / 2 + (d.pair[0].x < d.pair[1].x ? d.pair[0].x : d.pair[1].x)
             const y = b / 2 + (d.pair[0].y < d.pair[1].y ? d.pair[0].y : d.pair[1].y)
             const height = d.terms.slice(0, max).reduce((int, term) => int += fontSize * Math.log(term[1]) * lineSpacing, 0)
@@ -74,7 +76,11 @@ export const drawNodes = () => {
 
 
 export const drawContours = () => {
+    
+    // const myColor = d3.scaleSequential(d3.interpolateInferno).domain([0, densityData.length])
+    // s.context.strokeStyle = myColor(i)
 
+    const path = d3.geoPath().context(s.context)
     const x = s.zoomIdentity.x * s.screen.density
     const y = s.zoomIdentity.y * s.screen.density
     const k = s.zoomIdentity.k
@@ -84,15 +90,15 @@ export const drawContours = () => {
         .y(d => y + d.y * k)
         .weight(d => k * d.docs)
         .size([s.screen.width, s.screen.height])
-        .bandwidth(30 * k) // This is the scale constant
+        .bandwidth(30) // This is the scale constant
+        // .bandwidth(30 * k) // This is the scale constant
         (s.graph.nodes)
 
-    // const myColor = d3.scaleSequential(d3.interpolateInferno).domain([0, densityData.length])
-    const path = d3.geoPath().context(s.context)
+    if (!s.densityData)
+        s.densityData = densityData
 
-    densityData.forEach((level, i) => {
+    s.densityData.forEach((level, i) => {
         s.context.beginPath()
-        // s.context.strokeStyle = myColor(i)
         s.context.strokeStyle = d3.rgb(251, 253, 166)
         s.context.lineWidth = .1 + .05 * i
         path(level)
