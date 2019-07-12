@@ -1,5 +1,4 @@
 import {s} from "./state";
-import {ticked} from "./simulation";
 
 
 export const init_researcher_autocomplete = () => {
@@ -13,6 +12,8 @@ export const init_researcher_autocomplete = () => {
 }
 
 export function autocomplete(inp, arr) {
+
+    //SR: Copied from the internets. Search for "autocomplete javascript" to find it.
 
     /*the autocomplete function takes two arguments,
     the text field element and an array of possible autocompleted values:*/
