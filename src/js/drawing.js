@@ -50,7 +50,7 @@ export const drawLinks = () => {
         s.context.lineWidth = link.value
         // const lineWidth = 1
     })
-    s.context.strokeStyle = d3.rgb(251,253,166)
+    s.context.strokeStyle = d3.rgb(251, 253, 166)
     s.context.stroke()
 
 }
@@ -59,24 +59,24 @@ export const drawLinks = () => {
 export const drawNodes = () => {
 
     s.context.beginPath()
-    s.context.fillStyle = d3.rgb(251,253,166)
+    s.context.fillStyle = d3.rgb(251, 253, 166)
     s.graph.nodes.forEach(node => {
         s.context.moveTo(node.x, node.y)
         s.context.arc(node.x, node.y, 2, 0, 2 * Math.PI)
         s.context.font = "3pt Helvetica"
         s.context.fillText(`${node.id} (${node.docs})`, node.x, node.y + 8);
     })
-    
-    s.context.fillStyle = d3.rgb(251,253,166)
+
+    s.context.fillStyle = d3.rgb(251, 253, 166)
     s.context.fill()
-    
+
 }
 
 
 export const drawContours = () => {
 
     const max = d3.max(s.graph.nodes, n => n.docs)
-    const myColor = d3.scaleSequential(d3.interpolateInferno).domain([0,max])
+    const myColor = d3.scaleSequential(d3.interpolateInferno).domain([0, max])
 
     const x = s.zoomIdentity.x * s.screen.density
     const y = s.zoomIdentity.y * s.screen.density
@@ -87,7 +87,7 @@ export const drawContours = () => {
         .y(d => y + d.y * k)
         .weight(d => k * d.docs)
         .size([s.screen.width, s.screen.height])
-        .bandwidth(30)
+        .bandwidth(30 * k) // This is the scale constant
         (s.graph.nodes)
 
     const path = d3.geoPath().context(s.context)
