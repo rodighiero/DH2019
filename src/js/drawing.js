@@ -92,14 +92,12 @@ export const drawContours = () => {
 
     const path = d3.geoPath().context(s.context)
 
-    // s.context.fillStyle = 'yellow'
     densityData.forEach((level, i) => {
         s.context.strokeStyle = myColor(i)
         s.context.lineWidth = .1 + .05 * i
         s.context.beginPath()
         path(level)
         s.context.stroke()
-        // s.context.fill()
     })
 
 
