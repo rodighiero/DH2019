@@ -25,6 +25,12 @@ export const ticked = () => {
     if (s.visibility.keywords) drawKeywords()
     if (s.visibility.links) drawLinks()
     if (s.visibility.nodes) drawNodes()
+    if (s.visibility.contours) drawContours()
+
+    // while (simulation.alpha() > simulation.alphaMin()) {
+    //     // simulation.tick();
+    // }
+
     s.context.restore()
 }
 
@@ -56,11 +62,20 @@ export default () => {
     simulation.nodes(s.graph.nodes)
     simulation.force('link').links(s.graph.links)
 
-    // simulation
-    //     .on('tick', () => ticked())
-    //     .on('end', () => console.log('network has been computed'))
-
-    simulation.tick(600)
+    const synchronous = true;
+    if (synchronous) {
+      simulation.stop();
+      simulation.tick(300)
+      s.computed = true
+      ticked();
+    } else {
+      simulation
+         .on('tick', ticked)
+         .on('end', () => {
+           s.computed = true;
+           ticked();
+         })
+    }
 
 
 

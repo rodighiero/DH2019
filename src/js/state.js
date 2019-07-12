@@ -5,7 +5,7 @@ import combinatorics from 'js-combinatorics'
 
 export let s = {
 
-    densityData: null,
+    densityData: [],
     distance: 40,
     visibility: {
         contours: true,
