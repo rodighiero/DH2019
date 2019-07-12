@@ -75,21 +75,19 @@ export const drawNodes = () => {
 
 export const drawContours = () => {
 
-    const max = d3.max(s.graph.nodes, n => n.docs)
-    const myColor = d3.scaleSequential(d3.interpolateInferno).domain([0, max])
-
     const x = s.zoomIdentity.x * s.screen.density
     const y = s.zoomIdentity.y * s.screen.density
     const k = s.zoomIdentity.k
-
+    
     const densityData = d3.contourDensity()
-        .x(d => x + d.x * k)
-        .y(d => y + d.y * k)
-        .weight(d => k * d.docs)
-        .size([s.screen.width, s.screen.height])
-        .bandwidth(30 * k) // This is the scale constant
-        (s.graph.nodes)
-
+    .x(d => x + d.x * k)
+    .y(d => y + d.y * k)
+    .weight(d => k * d.docs)
+    .size([s.screen.width, s.screen.height])
+    .bandwidth(30 * k) // This is the scale constant
+    (s.graph.nodes)
+    
+    const myColor = d3.scaleSequential(d3.interpolateInferno).domain([0, densityData.length])
     const path = d3.geoPath().context(s.context)
 
     densityData.forEach((level, i) => {
