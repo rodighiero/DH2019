@@ -81,7 +81,7 @@ function _computeDensityData() {
       ey = d3.extent(s.graph.nodes, d => d.y),
       em = Math.max(ex[1]-ex[0], ey[1]-ey[0]);
 
-    const w = 3 * s.screen.width; // definition of the grid for the contours
+    const w = 4 * s.screen.width; // definition of the grid for the contours
     z0.k = w / (em + 1000);
     z0.x = -ex[0] * z0.k;
     z0.y = -ey[0] * z0.k;
