@@ -23,17 +23,10 @@ fs.readFile(__dirname + '/src/data/docs-inferno.json', (err, data) => {
 
     docs = JSON.parse(data)
 
-
-
-
-    /////////////////////////////
     // Assemble by advisor
-    /////////////////////////////
-
     let advisors = []
-
     for (let doc of docs) {
-        // console.log(doc);
+        // console.log(doc)
         if (!doc.advisors) continue // Skip empty advisors
         for (let advisor of doc.advisors) {
             const hasAdvisor = advisors.some(adv => adv.id === advisor)
@@ -41,26 +34,20 @@ fs.readFile(__dirname + '/src/data/docs-inferno.json', (err, data) => {
                 // Append text to the advisor
                 let _advisor = advisors.filter(adv => adv.id === advisor)
                 _advisor[0].docs++
-                _advisor[0].text += doc.text + ' '
+                _advisor[0].text += doc.title + ' ' + doc.text + ' '
             } else {
                 // Create the advisor
                 advisors.push({
                     id: advisor,
                     docs: 1,
-                    text: doc.text + ' ',
+                    text: doc.title + ' ' + doc.text + ' ',
                 })
                 console.log('Created advisor', advisors.length)
             }
         }
     }
 
-
-
-
-    /////////////////////////////
     // Merging mispelled authors
-    /////////////////////////////
-
     // for (let i = 0; i < advisors.length - 1; i++) {
     //     for (let j = i + 1; j < advisors.length; j++) {
     //         if (natural.DiceCoefficient(advisors[i].id, advisors[j].id) > .5) {
@@ -82,32 +69,16 @@ fs.readFile(__dirname + '/src/data/docs-inferno.json', (err, data) => {
     //     }
     // }
 
-    /////////////////////////////
     // Remove authors with a few documents
-    /////////////////////////////
-
     // for (let i = 0; i < advisors.length; i++) {
     //     if ( advisors[i].docs < 2 )
     //     advisors = advisors.slice(0, i).concat(advisors.slice(i + 1, advisors.length))
     // }
 
-
-
-
-
-    /////////////////////////////
     // Set items for nodes
-    /////////////////////////////
-
     const items = advisors
 
-
-
-
-    /////////////////////////////
     // Tokenization
-    /////////////////////////////
-
     console.log('Tokenization')
     // natural.PorterStemmer.attach() // Perter stemmer
     natural.LancasterStemmer.attach() // Lancaster stemmer
@@ -115,13 +86,7 @@ fs.readFile(__dirname + '/src/data/docs-inferno.json', (err, data) => {
         item.tokens = item.text.tokenizeAndStem()
     })
 
-
-
-
-    /////////////////////////////
     // Keyword extractor
-    /////////////////////////////
-
     console.log('Keyword extraction')
     items.forEach(item => {
         item.keywords = keyword_extractor.extract(item.text, {
@@ -134,24 +99,14 @@ fs.readFile(__dirname + '/src/data/docs-inferno.json', (err, data) => {
         })
     })
 
-
-
-
-    /////////////////////////////
     // Lexical Analysis
-    /////////////////////////////
-    
     console.log('Lexical Analysis')
-
-    const maxLimit = 5 // Limit for keywords
-
-    // items.forEach(item => tfidf.addDocument(item.text)) // Send text
+    const maxLimit = 7 // Limit for keywords
+    items.forEach(item => tfidf.addDocument(item.text)) // Send text
     // items.forEach(item => tfidf.addDocument(item.tokens)) // Send tokens
-    items.forEach(item => tfidf.addDocument(item.keywords)) // Send keywords
-
+    // items.forEach(item => tfidf.addDocument(item.keywords)) // Send keywords
 
     console.log('Writing Lexical Analysis')
-    
     items.forEach((item, i) => { // Writing computation terms in items
         item.terms = tfidf.listTerms(i)
             .reduce((obj, element) => {

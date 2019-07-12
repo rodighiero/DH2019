@@ -6,13 +6,7 @@ import combinatorics from 'js-combinatorics'
 export let s = {
 
     densityData: [],
-    distance: 40,
-    visibility: {
-        contours: true,
-        keywords: false,
-        links: false,
-        nodes: true,
-    },
+    distance: 30,
     zoomIdentity: null,
 
     setCanvas: () => {
@@ -20,6 +14,9 @@ export let s = {
         s.context = document.querySelector('canvas').getContext('2d')
     },
 
+    setMatches: (matches) => {
+        s.matches = matches;
+    },
 
     // Rename shortened keys (ex. s => source)
     setGraph: graph => {

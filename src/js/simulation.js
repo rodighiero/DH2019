@@ -1,6 +1,6 @@
 const d3 = require('d3')
 
-import { drawKeywords, drawLinks, drawNodes, drawContours } from './drawing'
+import { drawKeywords, drawLinks, drawNodes, drawContours, drawMatches } from './drawing'
 import click from './click'
 import { s } from './state'
 
@@ -21,16 +21,12 @@ export const ticked = () => {
     s.context.clearRect(0, 0, s.screen.width, s.screen.height)
     s.context.translate(x, y)
     s.context.scale(k, k)
-    if (s.visibility.contours) drawContours()
-    if (s.visibility.keywords) drawKeywords()
-    if (s.visibility.links) drawLinks()
-    if (s.visibility.nodes) drawNodes()
-    if (s.visibility.contours) drawContours()
 
-    // while (simulation.alpha() > simulation.alphaMin()) {
-    //     // simulation.tick();
-    // }
-
+    // drawKeywords()
+    drawLinks()
+    drawNodes()
+    drawContours()
+    
     s.context.restore()
 }
 
@@ -40,7 +36,7 @@ export default () => {
 
     const simulation = d3.forceSimulation()
         // .force('charge', d3.forceManyBody()
-        //     .strength(-100)
+        //     .strength(30)
         // //     .strength(-300)
         // //     .distanceMin(distance)
         // )
@@ -52,7 +48,7 @@ export default () => {
         .force('center', d3.forceCenter(s.screen.width / 2, s.screen.height / 2))
         .force('link', d3.forceLink()
             .id(d => d.id)
-            .strength(d => d.value)
+            .strength(d => d.value * .001)
             // .distance(d=> 1 - d.value)
             // .distance(distance)
         )

@@ -4,11 +4,14 @@ import { s } from './state'
 export const drawKeywords = () => {
 
     const max = 5
-    const distance = 40
+    const distance = 50
     const fontSize = 1.5
     const lineSpacing = 1.5
     const d_min = Math.pow(distance * 2 - 20, 2)
     const d_max = Math.pow(distance * 2 + 20, 2)
+
+    s.context.fillStyle = d3.rgb(251, 253, 166)
+    s.context.fill()
 
     s.pairs.forEach(d => {
 
@@ -41,19 +44,16 @@ export const drawKeywords = () => {
 
 export const drawLinks = () => {
 
-    // const lineWidth = 1
-
-    // console.log()
-
     s.context.beginPath()
+    s.context.strokeStyle = d3.rgb(251, 253, 166)
+    s.context.stroke()
     s.graph.links.forEach(link => {
         s.context.moveTo(link.source.x, link.source.y)
         s.context.lineTo(link.target.x, link.target.y)
         s.context.lineWidth = link.value
         // const lineWidth = 1
     })
-    s.context.strokeStyle = d3.rgb(251, 253, 166)
-    s.context.stroke()
+    
 
 }
 
@@ -74,6 +74,16 @@ export const drawNodes = () => {
 
 }
 
+// export const drawMatches = () => {
+//     console.log("matching elements", s.matches.length);
+//     s.context.beginPath()
+//     s.context.fillStyle = d3.rgb(255,255,255)
+//     s.matches.forEach(node => {
+//         s.context.moveTo(node.x, node.y)
+//         s.context.arc(node.x, node.y, 10, 0, 2 * Math.PI)
+//     });
+//     s.context.fill()
+// }
 
 const z0 = {x:0, y:0, k: 0};
 function _computeDensityData() {
@@ -108,7 +118,7 @@ export const drawContours = () => {
     s.densityData.forEach((level, i) => {
         s.context.beginPath()
         s.context.strokeStyle = d3.rgb(251, 253, 166)
-        s.context.lineWidth = (.1 + .05 * i) / s.zoomIdentity.k
+        s.context.lineWidth = (.1 + .02 * i) / s.zoomIdentity.k
         path(level)
         s.context.stroke()
     })

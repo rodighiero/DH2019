@@ -17,19 +17,18 @@ export default () => {
                 dx = x - node.x,
                 dy = y - node.y
 
-            let terms = ''
+            let terms = []
             for (var term in node.terms) {
                 const value = node.terms[term].toFixed(2)
-                terms += `${term} (${value})<br/>`
+                terms.push(`${term} (${value})`);
             }
-
 
             if (dx * dx + dy * dy < radius * radius) {
                 let text = ''
                 text += `<p><strong>${node.id}</strong></p>`
                 text += `<p>Number of papers: ${node.docs}</p>`
                 // text +=  `<p><strong>keywords:</strong> ${Object.values(node.keywords).join(', ')}</p>`
-                text += `<p>Terms:<br/>${terms}</p>`
+                text += `<p>Terms:<br/>${terms.slice(0,10).join('<br/>')}</p>`
                 // text +=  `<p><strong>Tokens:</strong> ${Object.values(node.tokens).join(', ')}</p>`
                 d3.select('#focus').html(text)
             }
