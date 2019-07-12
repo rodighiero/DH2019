@@ -5,15 +5,14 @@ import combinatorics from 'js-combinatorics'
 
 export let s = {
 
+    densityData: null,
     distance: 40,
-
     visibility: {
         contours: true,
         keywords: false,
         links: false,
         nodes: true,
     },
-
     zoomIdentity: null,
 
     setCanvas: () => {

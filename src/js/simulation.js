@@ -21,6 +21,7 @@ export const ticked = () => {
     s.context.clearRect(0, 0, s.screen.width, s.screen.height)
     s.context.translate(x, y)
     s.context.scale(k, k)
+    if (s.visibility.contours) drawContours()
     if (s.visibility.keywords) drawKeywords()
     if (s.visibility.links) drawLinks()
     if (s.visibility.nodes) drawNodes()
@@ -31,7 +32,6 @@ export const ticked = () => {
     // }
 
     s.context.restore()
-
 }
 
 export default () => {

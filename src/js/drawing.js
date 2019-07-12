@@ -18,6 +18,8 @@ export const drawKeywords = () => {
 
         if ((d_min < distance) && (distance < d_max)) {
 
+            // console.log(d.terms)
+
             const x = a / 2 + (d.pair[0].x < d.pair[1].x ? d.pair[0].x : d.pair[1].x)
             const y = b / 2 + (d.pair[0].y < d.pair[1].y ? d.pair[0].y : d.pair[1].y)
             const height = d.terms.slice(0, max).reduce((int, term) => int += fontSize * Math.log(term[1]) * lineSpacing, 0)
@@ -106,12 +108,11 @@ function _computeDensityData() {
 
 export const drawContours = () => {
 
-    // const myColor = d3.scaleSequential(d3.interpolateInferno).domain([0, densityData.length])
-    const path = d3.geoPath().context(s.context)
+    if (!s.densityData)
+        s.densityData = densityData
 
     _getDensityData().forEach((level, i) => {
         s.context.beginPath()
-        // s.context.strokeStyle = myColor(i)
         s.context.strokeStyle = d3.rgb(251, 253, 166)
         s.context.lineWidth = .1 + .05 * i / s.zoomIdentity.k
         path(level)
