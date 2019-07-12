@@ -60,7 +60,7 @@ export default () => {
     //     .on('tick', () => ticked())
     //     .on('end', () => console.log('network has been computed'))
 
-    simulation.tick(600)
+    simulation.tick(3000)
 
 
 
