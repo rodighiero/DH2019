@@ -76,12 +76,6 @@ export const drawNodes = () => {
 
 
 const z0 = {x:0, y:0, k: 0};
-var densityData;
-function _getDensityData() {
-  if (s.computed && !densityData) _computeDensityData();
-  return densityData || [];
-}
-
 function _computeDensityData() {
     const ex = d3.extent(s.graph.nodes, d => d.x),
       ey = d3.extent(s.graph.nodes, d => d.y),
@@ -92,14 +86,14 @@ function _computeDensityData() {
     z0.x = -ex[0] * z0.k;
     z0.y = -ey[0] * z0.k;
 
-    densityData = d3.contourDensity()
+    s.densityData = d3.contourDensity()
         .x(d => z0.x + d.x * z0.k)
         .y(d => z0.y + d.y * z0.k)
         .weight(d => z0.k * d.docs)
         .size([w, w])
         .bandwidth(30 * z0.k)
         (s.graph.nodes)
-    densityData.forEach(d => d.coordinates = d.coordinates
+    s.densityData.forEach(d => d.coordinates = d.coordinates
       .map(d => d.map(d => d.map(
         d => [(d[0] - z0.x) / z0.k, (d[1] - z0.y) / z0.k]
       )))
@@ -108,10 +102,7 @@ function _computeDensityData() {
 
 export const drawContours = () => {
 
-    if (!s.densityData)
-        s.densityData = densityData
-
-    _getDensityData().forEach((level, i) => {
+    s.densityData.forEach((level, i) => {
         s.context.beginPath()
         s.context.strokeStyle = d3.rgb(251, 253, 166)
         s.context.lineWidth = .1 + .05 * i / s.zoomIdentity.k
