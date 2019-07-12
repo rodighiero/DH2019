@@ -4,7 +4,7 @@ import { s } from './state'
 export const drawKeywords = () => {
 
     const max = 5
-    const distance = 50
+    const distance = 30
     const fontSize = 1.5
     const lineSpacing = 1.5
     const d_min = Math.pow(distance * 2 - 20, 2)
@@ -118,7 +118,8 @@ export const drawContours = () => {
     s.densityData.forEach((level, i) => {
         s.context.beginPath()
         s.context.strokeStyle = d3.rgb(251, 253, 166)
-        s.context.lineWidth = (.1 + .02 * i) / s.zoomIdentity.k
+        // console.log(s.zoomIdentity.k)
+        s.context.lineWidth = (.1 + (.05 * i)) / s.zoomIdentity.k
         path(level)
         s.context.stroke()
     })

@@ -101,8 +101,12 @@ fs.readFile(__dirname + '/src/data/docs-inferno.json', (err, data) => {
 
     // Lexical Analysis
     console.log('Lexical Analysis')
-    const maxLimit = 7 // Limit for keywords
-    items.forEach(item => tfidf.addDocument(item.text)) // Send text
+    const maxLimit = 5 // Limit for keywords
+    // Send text
+    items.forEach( (item, i) => {
+        console.log('Frequency analysis #', i)
+        tfidf.addDocument(item.text)
+    })
     // items.forEach(item => tfidf.addDocument(item.tokens)) // Send tokens
     // items.forEach(item => tfidf.addDocument(item.keywords)) // Send keywords
 
@@ -149,7 +153,12 @@ fs.readFile(__dirname + '/src/data/docs-inferno.json', (err, data) => {
         links: []
     }
 
-    pairs.forEach(pair => {
+    let i = 0
+
+    pairs.forEach( pair => {
+
+        // i = i++
+        console.log('Boundaries #1', i++, 'between', pair[0].id, 'and', pair[1].id)
 
         const terms = Object.keys(pair[0].terms)
             .filter(n => Object.keys(pair[1].terms).includes(n))
