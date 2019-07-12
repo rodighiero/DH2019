@@ -73,28 +73,47 @@ export const drawNodes = () => {
 }
 
 
-export const drawContours = () => {
+const z0 = {x:0, y:0, k: 0};
+var densityData;
+function _getDensityData() {
+  if (s.computed && !densityData) _computeDensityData();
+  return densityData || [];
+}
 
-    const x = s.zoomIdentity.x * s.screen.density
-    const y = s.zoomIdentity.y * s.screen.density
-    const k = s.zoomIdentity.k
+function _computeDensityData() {
+    const ex = d3.extent(s.graph.nodes, d => d.x),
+      ey = d3.extent(s.graph.nodes, d => d.y),
+      em = Math.max(ex[1]-ex[0], ey[1]-ey[0]);
 
-    const densityData = d3.contourDensity()
-        .x(d => x + d.x * k)
-        .y(d => y + d.y * k)
-        .weight(d => k * d.docs)
-        .size([s.screen.width, s.screen.height])
-        .bandwidth(30 * k) // This is the scale constant
+    const w = 3 * s.screen.width; // definition of the grid for the contours
+    z0.k = w / (em + 1000);
+    z0.x = -ex[0] * z0.k;
+    z0.y = -ey[0] * z0.k;
+
+    densityData = d3.contourDensity()
+        .x(d => z0.x + d.x * z0.k)
+        .y(d => z0.y + d.y * z0.k)
+        .weight(d => z0.k * d.docs)
+        .size([w, w])
+        .bandwidth(30 * z0.k)
         (s.graph.nodes)
+    densityData.forEach(d => d.coordinates = d.coordinates
+      .map(d => d.map(d => d.map(
+        d => [(d[0] - z0.x) / z0.k, (d[1] - z0.y) / z0.k]
+      )))
+    );
+}
+
+export const drawContours = () => {
 
     // const myColor = d3.scaleSequential(d3.interpolateInferno).domain([0, densityData.length])
     const path = d3.geoPath().context(s.context)
 
-    densityData.forEach((level, i) => {
+    _getDensityData().forEach((level, i) => {
         s.context.beginPath()
         // s.context.strokeStyle = myColor(i)
         s.context.strokeStyle = d3.rgb(251, 253, 166)
-        s.context.lineWidth = .1 + .05 * i
+        s.context.lineWidth = .1 + .05 * i / s.zoomIdentity.k
         path(level)
         s.context.stroke()
     })
