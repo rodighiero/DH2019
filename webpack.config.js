@@ -29,7 +29,18 @@ module.exports = {
       {
         test: /\.css$/,
         use: [MiniCssExtractPlugin.loader, "css-loader"]
-      }
+      },
+      {
+				type: 'javascript/auto',
+				test: /\.json$/,
+				use: [{
+						loader: 'file-loader',
+						options: {
+							name: "[path][name].[ext]"
+						}
+					}
+				]
+			}
     ]
   },
   plugins: [

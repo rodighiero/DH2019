@@ -6,15 +6,13 @@ const d3 = require('d3')
 import simulation, { ticked } from './js/simulation.js'
 import { s } from './js/state'
 
-const graph = require('./data/network.json');
-
-console.log(graph)
-
-s.setCanvas()
-s.setGraph(graph)
-s.setPairs(graph.nodes)
-s.setScreen()
-simulation()
+d3.json('./src/data/network.json').then(graph => {
+    s.setCanvas()
+    s.setGraph(graph)
+    s.setPairs(graph.nodes)
+    s.setScreen()
+    simulation()
+})
 
 // const searchField = d3.select("#searchField").on('input', function(e){ 
 //     const matchingNodes = graph.nodes.filter(d => d.id.toLowerCase().indexOf(this.value.toLowerCase()) !== -1);
