@@ -6,7 +6,7 @@ const d3 = require('d3')
 import simulation, { ticked } from './js/simulation.js'
 import { s } from './js/state'
 
-d3.json('./src/data/network.json').then(graph => {
+d3.json('./docs/network.json').then(graph => {
     s.setCanvas()
     s.setGraph(graph)
     s.setPairs(graph.nodes)

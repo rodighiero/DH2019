@@ -218,13 +218,13 @@ fs.readFile(__dirname + '/data/docs-DH2019.json', (err, data) => {
     const setComma = x => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
     let fileName
 
-    fileName = path.resolve(__dirname, './src/data/network.json')
+    fileName = path.resolve(__dirname, './docs/network.json')
     fs.writeFile(fileName, format(network), err => {
         if (err) throw err
         console.log('                  network :', setComma(format(network).length), 'kb /', network.nodes.length, 'records')
     })
 
-    fileName = path.resolve(__dirname, './data/advisors.json')
+    fileName = path.resolve(__dirname, './docs/advisors.json')
     fs.writeFile(fileName, format(advisors), err => {
         if (err) throw err
         console.log('                 advisors :', setComma(format(advisors).length), 'kb /', advisors.length, 'records')
