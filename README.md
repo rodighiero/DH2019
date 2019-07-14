@@ -6,6 +6,9 @@ The project currently hosts two datasets, one of MIT thesis presenting the carto
 ## Installation
 The code is based on JavaScript, and needs node.js to be computed. Installation is composed of these steps:
 
+Install libraries
+`npm install`
+
 Import data
 `node import-DH2019`
 or `node import-MIT`
