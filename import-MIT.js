@@ -8,7 +8,7 @@ const fs = require('fs')
 const path = require('path')
 const convert = require('xml-js')
 const fetch = require('request-promise');
-const theses = require('./sources/MIT/theses.json')
+const theses = require('./data/MIT/theses.json')
 
 
 /////////////////////////////

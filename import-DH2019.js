@@ -1,5 +1,5 @@
 const fs = require('fs')
-const theses = require('./sources/DH2019/DH2019.json')
+const theses = require('./data/DH2019/DH2019.json')
 
 json = []
 
