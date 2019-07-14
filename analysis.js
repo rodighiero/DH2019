@@ -101,12 +101,9 @@ fs.readFile(__dirname + '/data/docs-DH2019.json', (err, data) => {
 
     // Lexical Analysis
     console.log('Lexical Analysis')
-    const maxLimit = 5 // Limit for keywords
-    // Send text
-    items.forEach((item, i) => {
-        console.log('Frequency analysis #', i)
-        tfidf.addDocument(item.text)
-    })
+    const maxLimit = 6 // Limit for keywords
+    
+    items.forEach(item => tfidf.addDocument(item.text)) // Send texts
     // items.forEach(item => tfidf.addDocument(item.tokens)) // Send tokens
     // items.forEach(item => tfidf.addDocument(item.keywords)) // Send keywords
 
@@ -166,6 +163,7 @@ fs.readFile(__dirname + '/data/docs-DH2019.json', (err, data) => {
 
         terms.forEach(term => {
 
+            
             // Check of the link exists or not
             const link = network.links.filter(link =>
                 link.s === p1.id && link.t === p2.id
@@ -176,11 +174,12 @@ fs.readFile(__dirname + '/data/docs-DH2019.json', (err, data) => {
             if (link.length > 0) {
                 link[0].v += value
             } else {
-                network.links.push({
+                const obj = {
                     s: p1.id,
                     t: p2.id,
                     v: value,
-                })
+                }
+                network.links.push(obj)
             }
 
 
@@ -214,12 +213,13 @@ fs.readFile(__dirname + '/data/docs-DH2019.json', (err, data) => {
     console.log()
     console.log('          Files =>')
 
+    const stringify = json => JSON.stringify(json)
     const format = json => beautify(JSON.stringify(json), { format: 'json' })
     const setComma = x => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
     let fileName
 
     fileName = path.resolve(__dirname, './docs/network.json')
-    fs.writeFile(fileName, format(network), err => {
+    fs.writeFile(fileName, stringify(network), err => {
         if (err) throw err
         console.log('                  network :', setComma(format(network).length), 'kb /', network.nodes.length, 'records')
     })
