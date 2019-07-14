@@ -18,7 +18,7 @@ const tfidf = new natural.TfIdf() // term frequency inverse doc frequency
 // Reading dics.json
 /////////////////////////////
 
-fs.readFile(__dirname + '/src/data/docs-inferno.json', (err, data) => {
+fs.readFile(__dirname + '/data/docs-DH2019.json', (err, data) => {
     if (err) throw err
 
     docs = JSON.parse(data)
@@ -103,7 +103,7 @@ fs.readFile(__dirname + '/src/data/docs-inferno.json', (err, data) => {
     console.log('Lexical Analysis')
     const maxLimit = 5 // Limit for keywords
     // Send text
-    items.forEach( (item, i) => {
+    items.forEach((item, i) => {
         console.log('Frequency analysis #', i)
         tfidf.addDocument(item.text)
     })
@@ -153,33 +153,33 @@ fs.readFile(__dirname + '/src/data/docs-inferno.json', (err, data) => {
         links: []
     }
 
-    let i = 0
+    let i = pairs.length
 
-    pairs.forEach( pair => {
+    pairs.forEach(pair => {
 
-        // i = i++
-        console.log('Boundaries #1', i++, 'between', pair[0].id, 'and', pair[1].id)
+        const p1 = pair[0]
+        const p2 = pair[1]
+        const terms = Object.keys(p1.terms)
+            .filter(n => Object.keys(p2.terms).includes(n))
 
-        const terms = Object.keys(pair[0].terms)
-            .filter(n => Object.keys(pair[1].terms).includes(n))
+        console.log(i--, 'Terms', terms.length, 'between', p1.id, 'and', p2.id)
 
         terms.forEach(term => {
 
             // Check of the link exists or not
             const link = network.links.filter(link =>
-                link.s === pair[0].id && link.t === pair[1].id
+                link.s === p1.id && link.t === p2.id
             )
 
+            const value = p1.terms[term] + p2.terms[term]
+
             if (link.length > 0) {
-                // console.log()
-                // console.log(link[0].v)
-                link[0].v += pair[0].terms[term] + pair[1].terms[term]
-                // console.log(link[0].v)
+                link[0].v += value
             } else {
                 network.links.push({
-                    s: pair[0].id,
-                    t: pair[1].id,
-                    v: pair[0].terms[term] + pair[1].terms[term],
+                    s: p1.id,
+                    t: p2.id,
+                    v: value,
                 })
             }
 
@@ -214,18 +214,17 @@ fs.readFile(__dirname + '/src/data/docs-inferno.json', (err, data) => {
     console.log()
     console.log('          Files =>')
 
-    const directory = './src/data'
     const format = json => beautify(JSON.stringify(json), { format: 'json' })
     const setComma = x => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
     let fileName
 
-    fileName = path.resolve(__dirname, `${directory}/network.json`)
+    fileName = path.resolve(__dirname, './src/data/network.json')
     fs.writeFile(fileName, format(network), err => {
         if (err) throw err
         console.log('                  network :', setComma(format(network).length), 'kb /', network.nodes.length, 'records')
     })
 
-    fileName = path.resolve(__dirname, `${directory}/advisors.json`)
+    fileName = path.resolve(__dirname, './data/advisors.json')
     fs.writeFile(fileName, format(advisors), err => {
         if (err) throw err
         console.log('                 advisors :', setComma(format(advisors).length), 'kb /', advisors.length, 'records')
