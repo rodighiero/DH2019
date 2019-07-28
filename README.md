@@ -20,7 +20,7 @@ The import is strored into the same folder in a file called docs-XXX.json that c
 ```
 P.S. "Advisors has to be renamed with a more generic authors"  
   
-The docs-XXX.json is then parsed collecting texts by author and running text analysis to create different metrics. To run the analysis type:  
+The docs-XXX.json is then loaded and parsed in the _analysis.js_, collecting texts by author and running text analysis to create different metrics. To run the analysis type:  
 `node analysis`  
 
 The analysis produced the _advisors.json_ (to be renamed _authors.json_), which is an array of obejcts composed in this form:
