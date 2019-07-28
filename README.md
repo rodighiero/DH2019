@@ -12,18 +12,10 @@ Currently the project hosts two datasets, one of MIT thesis presenting the carto
 The import is strored into the same folder in a file called docs-XXX.json that contains the normalized documents, each of them being composed in this way:
 ```
   {
-    "id": 108,
-    "title": "I-Media-Cities: A Digital Ecosystem Enriching A Searchable Treasure Trove Of Audio Visual Assets",
-    "text": "Cultural heritage and museum institutions across Europe are progressively holding vast digital collections – either digitized or born digital – that can significantly affect many research fields, both in Social Sciences and Humanities   The I-Media-Cities platform is an interactive ecosystem aiming to share, provide access to and use 9 European film archives AV digital contents to allow multidisciplinary research by means of manual and automatic annotations   This contribution describes the approach and the actions taken in order to perform an effective design and implementation for the visual interfaces required by the project in order to foster the User Experiences for different audiences, such as researchers and citizens ",
-    "advisors": [
-      "Gabriella Scipione",
-      "Antonella Guidazzoli",
-      "Silvano Imboden",
-      "Giuseppe Trotta",
-      "Margherita Montanari",
-      "Maria Chiara Liguori",
-      "Simona Caraceni"
-    ]
+    "id":
+    "title":
+    "text": 
+    "advisors": []]
   }
 ```
 P.S. "Advisors has to be renamed with a more generic authors"  
@@ -31,31 +23,19 @@ P.S. "Advisors has to be renamed with a more generic authors"
 The docs-XXX.json is then parsed collecting texts by author and running text analysis to create different metrics. To run the analysis type:  
 `node analysis`  
 
-
- associated to authors with the intent to create different metrics that can be used to create the cartography. Currently 
-
-
-idea to create a cartograhpy of specific domains and areas where distance represents the lexical similarity and hight the quantity of contribution, for example the number of paper.
-The project currently hosts 
-
-
-The code is based on JavaScript, and needs node.js to be computed. Installation is composed of these steps:
-
-
-Import data
-
-
-Data analysis
-
-
-Start localhost
-`npm run start`
-
-Then open this [URL](http://localhost:8080) in your browser 
-
-## Build
-`npm run build`
-
-
-
-
+The analysis produced the _advisors.json_ (to be renamed _authors.json_), which is an array of obejcts composed in this form:
+```
+{
+    "id":  
+    "docs":  
+    "text":  
+    "tokens": []  
+    "keywords": []  
+    "terms": {
+        "term": value,
+    }
+},
+```
+  
+  
+The project can be tested on localhost by using `npm run start` and opening this [URL](http://localhost:8080) in your browser. Inversely the project can be built typing `npm run build`
