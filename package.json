@@ -15,7 +15,7 @@
     "@babel/preset-env": "^7.5.5",
     "babel-loader": "^8.0.6",
     "beautify": "0.0.8",
-    "css-loader": "^3.1.0",
+    "css-loader": "^3.2.0",
     "file-loader": "^4.1.0",
     "franc-min": "^4.1.0",
     "fs": "0.0.2",
@@ -27,12 +27,13 @@
     "path": "^0.12.7",
     "request": "^2.88.0",
     "request-promise": "^4.2.4",
-    "webpack": "^4.38.0",
+    "webpack": "^4.39.1",
     "webpack-cli": "^3.3.6",
     "webpack-dev-server": "^3.7.2",
     "xml-js": "^1.6.11"
   },
   "dependencies": {
+    "cheerio": "^1.0.0-rc.3",
     "d3": "^5.9.7",
     "js-combinatorics": "^0.5.4"
   }
