@@ -18,6 +18,7 @@ const tfidf = new natural.TfIdf() // term frequency inverse doc frequency
 // Reading dics.json
 /////////////////////////////
 
+///data/docs-DH2019.json
 fs.readFile(__dirname + '/data/docs-DH2019.json', (err, data) => {
     if (err) throw err
 
