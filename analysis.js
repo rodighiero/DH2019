@@ -116,16 +116,17 @@ fs.readFile(__dirname + '/data/docs-DH2019.json', (err, data) => {
     // Token Frequency Analysis
     //
 
+    const tfidfLimit = 30
     const tokenFrequency = new natural.TfIdf() // term frequency inverse doc frequency
     const tokenizer = new natural.WordTokenizer()
-    const stopWords = ['of']
+    // const stopWords = ['of']
 
     items.forEach((item, i) => {
         console.log('Computing token for author #', i)
         item.tokens = tokenizer.tokenize(item.text)
     })
 
-    items.forEach(item => item.tokens = item.tokens.filter(token => !stopWords.includes(token)))
+    // items.forEach(item => item.tokens = item.tokens.filter(token => !stopWords.includes(token)))
     items.forEach(item => item.tokens = item.tokens.filter(token => !parseInt(token)))
     items.forEach(item => item.tokens = sw.removeStopwords(item.tokens))
 
@@ -139,11 +140,11 @@ fs.readFile(__dirname + '/data/docs-DH2019.json', (err, data) => {
     items.forEach((item, i) => {
         console.log('Copying tokens for author #', i)
         item.tokens = tokenFrequency.listTerms(i)
-        // .filter(el => el.tfidf > 20)
-        // .reduce((obj, el) => {
-        //     obj[el.term] = el.tfidf
-        //     return obj
-        // }, {})
+            .filter(el => el.tfidf > tfidfLimit)
+            .reduce((obj, el) => {
+                obj[el.term] = el.tfidf
+                return obj
+            }, {})
     })
 
 
@@ -211,100 +212,67 @@ fs.readFile(__dirname + '/data/docs-DH2019.json', (err, data) => {
     // Set network
     //
 
-    // console.log('Set pairs')
-    // const pairs = combinatorics.bigCombination(items, 2)
+    const pairs = combinatorics.bigCombination(items, 2) // Set pairs
+    const network = { nodes: items, links: [] } // Set network object
+    let i = pairs.length
+    let maxCommonTokens = 0
 
-    // console.log('Set nodes and edges')
-    // const network = { nodes: items, links: [] }
+    pairs.forEach(pair => {
 
-    // let i = pairs.length
+        const p1 = pair[0], p2 = pair[1]
+        const t1 = p1.tokens, t2 = p2.tokens
+        // const terms = Object.keys(p1.terms).filter(n => Object.keys(p2.terms).includes(n))
+        const tokens = Object.keys(p1.tokens).filter(n => Object.keys(p2.tokens).includes(n))
 
-    // pairs.forEach(pair => {
+        maxCommonTokens = maxCommonTokens > tokens.length ? maxCommonTokens : tokens.length
 
-    //     const p1 = pair[0], p2 = pair[1]
-    //     const terms = Object.keys(p1.terms).filter(n => Object.keys(p2.terms).includes(n))
+        if (tokens.length > 0)
+            console.log('#' + i--, '|', tokens.length, 'terms between', p2.id, 'and', p1.id)
 
-    //     console.log('#' + i--, '|', terms.length, 'terms between', p2.id, 'and', p1.id)
+        tokens.forEach(token => {
 
-    //     terms.forEach(term => {
+            const link = network.links.find(link => link.s === p1.id && link.t === p2.id)
+            const value = t1[token] + t2[token]
 
-    //         const link = network.links.filter(link => link.s === p1.id && link.t === p2.id)
-    //         const value = p1.terms[term] + p2.terms[term]
+            if (link) {
+                link.v += value
+            } else {
+                network.links.push({
+                    s: p1.id,
+                    t: p2.id,
+                    v: value
+                })
+            }
 
-    //         if (link.length > 0) {
-    //             link[0].v += value
-    //         } else {
-    //             network.links.push({
-    //                 s: p1.id,
-    //                 t: p2.id,
-    //                 v: value
-    //             })
-    //         }
+        })
 
-    //     })
-    // })
-
-    // Normalizing values between [0,1]
-    // const max = network.links.reduce((max, link) => max > link.v ? max : link.v, 0)
-    // network.links.forEach(link => link.v = link.v / max)
-
-
-
-
-    /////////////////////////////
-    // Report
-    /////////////////////////////
-
-    // console.log()
-    // console.log('        Network =>')
-    // console.log('                    pairs :', pairs.length)
-    // console.log('                    links :', network.links.length)
-    // console.log('                    nodes :', network.nodes.length)
-
-
-
-
-    /////////////////////////////
-    // Writing network.json
-    /////////////////////////////
-
-    console.log()
-    console.log('          Files =>')
-
-    // const stringify = json => JSON.stringify(json)
-    // const format = json => beautify(JSON.stringify(json), { format: 'json' })
-    // const setComma = x => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-    // let fileName
-    // console.log('                 authors :', setComma(format(authors).length), 'kb /', authors.length, 'records')
-    // console.log('                  network :', setComma(format(network).length), 'kb /', network.nodes.length, 'records')
-
-    // fileName = path.resolve(__dirname, './docs/network.json')
-    // fs.writeFile(fileName, stringify(network), err => {
-    //     if (err) throw err
-    // })
-
-    fileName = path.resolve(__dirname, './docs/authors.json')
-    fs.writeFile(fileName, JSON.stringify(authors, null, '\t'), err => {
-        if (err) throw err
     })
 
-    // fileName = path.resolve(__dirname, './src/data/network.json')
-    // fs.writeFile(fileName, stringify(network), err => {
-    //     if (err) throw err
-    // })
+    // Normalizing values between [0,1]
+    const maxLinkValue = network.links.reduce((max, link) => max > link.v ? max : link.v, 0)
+    network.links.forEach(link => link.v = link.v / maxLinkValue)
 
-    // fileName = path.resolve(__dirname, './src/data/authors.json')
-    // fs.writeFile(fileName, format(authors), err => {
-    //     if (err) throw err
-    // })
 
-    // 
-    // End of computation
-    // 
+
+    //
+    // Report and file writing
+    //
+
+    const format = x => JSON.stringify(x).length.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+    console.log(`   authors.json : ${format(authors)}kb for ${authors.length} authors`)
+    console.log(`   network.json : ${format(network)}kb for ${network.links.length} links`)
+    console.log(`   maxLinkValue : ${maxLinkValue}`)
+    console.log(`maxCommonTokens : ${maxCommonTokens}`)
+    
+    fs.writeFile('./src/data/authors.json', JSON.stringify(authors, null, '\t'), err => { if (err) throw err })
+    fs.writeFile('./src/data/network.json', JSON.stringify(network, null, '\t'), err => { if (err) throw err })
+
+
+
+    //
+    // END
+    //
+
+
 
 })
-
-
-
-
-
