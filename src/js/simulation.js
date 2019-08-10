@@ -22,8 +22,8 @@ export const ticked = () => {
     s.context.translate(x, y)
     s.context.scale(k, k)
 
-    // drawKeywords()
-    drawLinks()
+    drawKeywords()
+    // drawLinks()
     drawNodes()
     drawContours()
     
@@ -48,7 +48,7 @@ export default () => {
         .force('center', d3.forceCenter(s.screen.width / 2, s.screen.height / 2))
         .force('link', d3.forceLink()
             .id(d => d.id)
-            .strength(d => d.value * .1)
+            .strength(d => d.value * 1)
             // .distance(d=> 1 - d.value)
             // .distance(distance)
         )
@@ -61,7 +61,7 @@ export default () => {
     const synchronous = true;
     if (synchronous) {
       simulation.stop();
-      simulation.tick(300)
+      simulation.tick(16000)
       s.computed = true
       ticked();
     } else {
