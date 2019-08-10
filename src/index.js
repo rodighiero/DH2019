@@ -14,15 +14,10 @@ const start = graph => {
     simulation()
 }
 
-d3.json('./docs/netwok.json')
-    .then(graph => start(graph))
-    .catch(error => {
-        // console.log('error catched')
-        d3.json('https://raw.githubusercontent.com/rodighiero/LexicalNetwork/master/docs/network.json')
-            .then(graph => start(graph))
-        })
-        
-        
+const network = require('./data/network.json')
+start(network)
+
+
 
 // const searchField = d3.select("#searchField").on('input', function(e){ 
 //     const matchingNodes = graph.nodes.filter(d => d.id.toLowerCase().indexOf(this.value.toLowerCase()) !== -1);

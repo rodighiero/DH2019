@@ -16,7 +16,7 @@
     "babel-loader": "^8.0.6",
     "beautify": "0.0.8",
     "css-loader": "^3.2.0",
-    "file-loader": "^4.1.0",
+    "file-loader": "^4.2.0",
     "franc-min": "^4.1.0",
     "fs": "0.0.2",
     "html-loader": "^0.5.5",
@@ -29,7 +29,7 @@
     "request-promise": "^4.2.4",
     "webpack": "^4.39.1",
     "webpack-cli": "^3.3.6",
-    "webpack-dev-server": "^3.7.2",
+    "webpack-dev-server": "^3.8.0",
     "xml-js": "^1.6.11"
   },
   "dependencies": {

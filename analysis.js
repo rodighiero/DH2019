@@ -24,98 +24,108 @@ fs.readFile(__dirname + '/data/docs-DH2019.json', (err, data) => {
 
     docs = JSON.parse(data)
 
-    // Assemble by advisor
-    let advisors = []
+    // Assemble by author
+    let authors = []
     for (let doc of docs) {
         // console.log(doc)
-        if (!doc.advisors) continue // Skip empty advisors
-        for (let advisor of doc.advisors) {
-            const hasAdvisor = advisors.some(adv => adv.id === advisor)
-            if (hasAdvisor) {
-                // Append text to the advisor
-                let _advisor = advisors.filter(adv => adv.id === advisor)
-                _advisor[0].docs++
-                _advisor[0].text += doc.title + ' ' + doc.text + ' '
+        if (!doc.authors) continue // Skip empty authors
+        for (let author of doc.authors) {
+            const hasauthor = authors.some(adv => adv.id === author)
+            if (hasauthor) {
+                // Append text to the author
+                let _author = authors.filter(adv => adv.id === author)
+                _author[0].docs++
+                _author[0].text += doc.title + ' ' + doc.text + ' '
             } else {
-                // Create the advisor
-                advisors.push({
-                    id: advisor,
+                // Create the author
+                authors.push({
+                    id: author,
                     docs: 1,
-                    text: doc.title + ' ' + doc.text + ' ',
+                    text: `${doc.title} ${doc.body} `
                 })
-                console.log('Created advisor', advisors.length)
+                console.log('Created author', authors.length)
             }
         }
     }
 
     // Merging mispelled authors
-    // for (let i = 0; i < advisors.length - 1; i++) {
-    //     for (let j = i + 1; j < advisors.length; j++) {
-    //         if (natural.DiceCoefficient(advisors[i].id, advisors[j].id) > .5) {
-    //             // console.log(advisors[i].id, ' - ', advisors[j].id,
-    //             //     natural.DiceCoefficient(advisors[i].id, advisors[j].id))
-    //             // console.log(advisors[i])
+    // for (let i = 0; i < authors.length - 1; i++) {
+    //     for (let j = i + 1; j < authors.length; j++) {
+    //         if (natural.DiceCoefficient(authors[i].id, authors[j].id) > .5) {
+    //             // console.log(authors[i].id, ' - ', authors[j].id,
+    //             //     natural.DiceCoefficient(authors[i].id, authors[j].id))
+    //             // console.log(authors[i])
     //             // Increase counter
-    //             advisors[i].docs += advisors[j].docs
+    //             authors[i].docs += authors[j].docs
     //             // Merge texts
-    //             advisors[i].text += ' ' + advisors[j].text
-    //             // Remove second advisor
-    //             advisors = advisors.slice(0, j).concat(advisors.slice(j + 1, advisors.length))
+    //             authors[i].text += ' ' + authors[j].text
+    //             // Remove second author
+    //             authors = authors.slice(0, j).concat(authors.slice(j + 1, authors.length))
     //             // Reset j position
     //             j = j - 1
-    //             // console.log(advisors[i])
-    //             console.log('Reducing advisors', advisors.length)
+    //             // console.log(authors[i])
+    //             console.log('Reducing authors', authors.length)
     //         }
 
     //     }
     // }
 
     // Remove authors with a few documents
-    // for (let i = 0; i < advisors.length; i++) {
-    //     if ( advisors[i].docs < 2 )
-    //     advisors = advisors.slice(0, i).concat(advisors.slice(i + 1, advisors.length))
+    // for (let i = 0; i < authors.length; i++) {
+    //     if ( authors[i].docs < 2 )
+    //     authors = authors.slice(0, i).concat(authors.slice(i + 1, authors.length))
     // }
 
     // Set items for nodes
-    const items = advisors
+    const items = authors
 
     // Tokenization
-    console.log('Tokenization')
-    // natural.PorterStemmer.attach() // Perter stemmer
-    natural.LancasterStemmer.attach() // Lancaster stemmer
-    items.forEach(item => {
-        item.tokens = item.text.tokenizeAndStem()
-    })
+    // console.log('Tokenization')
+    // // natural.PorterStemmer.attach() // Perter stemmer
+    // natural.LancasterStemmer.attach() // Lancaster stemmer
+    // items.forEach(item => {
+    //     item.tokens = item.text.tokenizeAndStem()
+    // })
 
     // Keyword extractor
-    console.log('Keyword extraction')
-    items.forEach(item => {
-        item.keywords = keyword_extractor.extract(item.text, {
-            language: "english",
-            remove_digits: true,
-            return_chained_words: false,
-            return_changed_case: true,
-            remove_duplicates: true,
-            return_max_ngrams: false,
-        })
-    })
+    // console.log('Keyword extraction')
+    // items.forEach(item => {
+    //     item.keywords = keyword_extractor.extract(item.text, {
+    //         language: "english",
+    //         remove_digits: true,
+    //         return_chained_words: false,
+    //         return_changed_case: true,
+    //         remove_duplicates: true,
+    //         return_max_ngrams: false,
+    //     })
+    // })
 
     // Lexical Analysis
     console.log('Lexical Analysis')
-    const maxLimit = 6 // Limit for keywords
+    const maxLimit = 100 // Limit for keywords
     
-    items.forEach(item => tfidf.addDocument(item.text)) // Send texts
+    items.forEach((item, i) => {
+        console.log('TF-IDF added text of author #', i)
+        tfidf.addDocument(item.text)
+    }) // Send texts
     // items.forEach(item => tfidf.addDocument(item.tokens)) // Send tokens
     // items.forEach(item => tfidf.addDocument(item.keywords)) // Send keywords
 
     console.log('Writing Lexical Analysis')
     items.forEach((item, i) => { // Writing computation terms in items
+        console.log('Added TF-IDF text to author #', i)
         item.terms = tfidf.listTerms(i)
             .reduce((obj, element) => {
                 if (element.tfidf > maxLimit)
                     obj[element.term] = element.tfidf
                 return obj
             }, {})
+    })
+
+    // Delete text from items to make file lighter
+
+    items.forEach(item => {
+        delete item.text
     })
 
 
@@ -139,15 +149,7 @@ fs.readFile(__dirname + '/data/docs-DH2019.json', (err, data) => {
     console.log('Set nodes and edges')
 
     const network = {
-        nodes: items.map(item => {
-            return {
-                'id': item.id,
-                'docs': item.docs,
-                'tokens': item.tokens,
-                'keywords': item.keywords,
-                'terms': item.terms,
-            }
-        }),
+        nodes: items,
         links: []
     }
 
@@ -160,7 +162,7 @@ fs.readFile(__dirname + '/data/docs-DH2019.json', (err, data) => {
         const terms = Object.keys(p1.terms)
             .filter(n => Object.keys(p2.terms).includes(n))
 
-        console.log(i--, 'Terms', terms.length, 'between', p1.id, 'and', p2.id)
+        console.log('#' + i--, '|', terms.length, 'terms between', p2.id, 'and', p1.id)
 
         terms.forEach(term => {
 
@@ -225,10 +227,22 @@ fs.readFile(__dirname + '/data/docs-DH2019.json', (err, data) => {
         console.log('                  network :', setComma(format(network).length), 'kb /', network.nodes.length, 'records')
     })
 
-    fileName = path.resolve(__dirname, './docs/advisors.json')
-    fs.writeFile(fileName, format(advisors), err => {
+    fileName = path.resolve(__dirname, './docs/authors.json')
+    fs.writeFile(fileName, format(authors), err => {
         if (err) throw err
-        console.log('                 advisors :', setComma(format(advisors).length), 'kb /', advisors.length, 'records')
+        console.log('                 authors :', setComma(format(authors).length), 'kb /', authors.length, 'records')
+    })
+
+    fileName = path.resolve(__dirname, './src/data/network.json')
+    fs.writeFile(fileName, stringify(network), err => {
+        if (err) throw err
+        console.log('                  network :', setComma(format(network).length), 'kb /', network.nodes.length, 'records')
+    })
+
+    fileName = path.resolve(__dirname, './src/data/authors.json')
+    fs.writeFile(fileName, format(authors), err => {
+        if (err) throw err
+        console.log('                 authors :', setComma(format(authors).length), 'kb /', authors.length, 'records')
     })
 
 

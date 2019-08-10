@@ -1,26 +1,87 @@
-const fs = require('fs')
-const theses = require('./data/DH2019/DH2019.json')
+/////////////////////////////
+// Libraries
+/////////////////////////////
 
-json = []
+const beautify = require('beautify');
+const fs = require('fs');
+const path = require('path');
+// const convert = require('xml-js');
+const cheerio = require('cheerio')
 
-// "id": "oai:dspace.mit.edu:1721.1/32463",
-// "title": "A microfabricated ElectroQuasiStatic induction turbine-generator",
-// "abstract": "An ElectroQuasiStatic (EQS) induction machine has been fabricated and has generated net electric power. A maximum power output of 192 [mu]W at 235 krpm has been measured under driven excitation of the six phases. Self excited operation was also demonstrated. Under self-excitation, no external drive electronics are required and sufficient power was produced to dimly light four LED's on two of the six phases. This is believed to be the first demonstration of both power generation and self-excited operation of an EQS induction machine of any scale reported in the open literature. The generator comprises 5 silicon layers, fusion bonded together, and annealed at 700⁰C. The turbine rotor, 4 mm in diameter, is supported on gas bearings. The thrust bearings are formed by a shallow etch of 1.5 [mu]m to define the thrust bearing gap. Thrust bearing pressurization is through 10 [mu]m diameter nozzles, etched 100 [mu]m deep. The journal bearing is a precision, ... wide, 300 [mu]m deep annular trench around the periphery of the turbine disk. The generator airgap is 3 [mu]m. The inner radius of the generator is 1.011 mm, and the outer radius 1.87mm. The machine has ].31 poles for each of the 6 phases, for a total of 786 stator electrodes. Precise microfabrication and aligned, full-wafer fusion bonding enabled turbine generator devices to be operated at rotational speeds as high as 850 krpm. A detailed state-space model of the EQS machine and its external parasitics is presented. The external stray capacitances, and their unbalance, play a critical role in the performance of the device. A method for estimating the strays experimentally is discussed.",
-// "advisors": ["Carol Livermore"],
-// "text": "A m
 
-theses.forEach(thesis => {
-    obj = {}
-    obj.id = thesis.paperID
-    obj.title = thesis.title
-    obj.text = thesis.abstract.replace(/[_\*\.\n]/g, ' ')
-    obj.advisors = thesis.authors.split(/;\n/)
-        .filter(d => d.length > 0)
-        .map(d => d.replace(/\([\d,]+\)/, ''))
-        .map(d => d.split(', ').reverse().join(' '));
-    json.push(obj)
+/////////////////////////////
+// Importing and Parsing XMLs to JSON
+/////////////////////////////
+
+const data = fs.readFileSync('./data/DH2019/dh2019.xml')
+const $ = cheerio.load(data, {
+    normalizeWhitespace: false,
+    decodeEntities: true,
 })
 
-console.log(json)
+docs = []
+id=0
 
-fs.writeFileSync('./data/docs-DH2019.json', JSON.stringify(json, null, 2) )
+$('TEI').map((i, doc) => {
+    obj = {}
+
+    // ID
+    id += 1
+    obj.id = id
+    
+    // Title
+    const title = $(doc).find('title').text().replace(/(<([^>]+)>)/ig, ' ').replace(/\s\s+/g, '')
+    obj.title = title
+
+    // Authors
+    const authors = $(doc).find('author').children()//.text().replace(/\s\s+/g, ' ')
+    authors_list = []
+    authors.each(function(i, elem) {
+        if (i%3==0){ // author name only
+            authors_list[i] = $(this).text().replace(/\s\s+/g, ' ').trim();
+        }
+    })
+    obj.authors = authors_list.filter(Boolean)
+
+    // Body
+
+    let $body = $(doc).find('text')
+
+    $body.find('back').remove()
+
+    console.log($body.html())
+
+    console.log()
+    const body = $body.text()
+        .replace(/\s\s+/g, ' ') // removes whitespaces
+        .replace(/ *\([^)]*\) */g, "") // remove parentheses
+        .replace(/['"‘’“”]+/g, '') // remove inverted commas
+        // .replace('&#x2018;', '').replace('&#x2019;', '') // remove inverted commas
+        // .replace('‘', '').replace('’', '') // remove inverted commas
+
+    // const body_clean = ($body.text().replace(/(<([^>]+)>)/ig, '')
+    //                 .replace(/(?:https?):\/\/[\n\S]+/g, '') // removes all https://
+    //                 .replace(/(www?\.[^\s]+|[a-zA-Z0-9._-]+\.com+)/g,"") // removes all www. and ....com
+    //                 .replace(/[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+/g,''))//removes emails (...@...) 
+
+    console.log(body)
+   
+   
+    obj.body = body
+
+    docs.push(obj)
+})
+
+
+/////////////////////////////
+// Writing docs.json
+/////////////////////////////
+
+const format = json => beautify(JSON.stringify(json), { format: 'json' })
+const setComma = x => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+let fileName = path.resolve(__dirname, `./data/docs-DH2019.json`)
+
+fs.writeFile(fileName, format(docs), err => {
+    if (err) throw err
+    console.log('Size of docs.json', setComma(format(docs).length), 'kb')
+})
