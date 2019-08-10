@@ -102,7 +102,7 @@ fs.readFile(__dirname + '/data/docs-DH2019.json', (err, data) => {
 
     // Lexical Analysis
     console.log('Lexical Analysis')
-    const maxLimit = 100 // Limit for keywords
+    const maxLimit = 20 // Limit for keywords
     
     items.forEach((item, i) => {
         console.log('TF-IDF added text of author #', i)

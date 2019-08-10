@@ -20,53 +20,75 @@ const $ = cheerio.load(data, {
 })
 
 docs = []
-id=0
+id = 0
 
-$('TEI').map((i, doc) => {
-    obj = {}
+$('TEI').each((i, doc) => {
+
+    let obj = {}
 
     // ID
-    id += 1
-    obj.id = id
-    
+    obj.id = id += 1
+
+
+    /////////////
     // Title
-    const title = $(doc).find('title').text().replace(/(<([^>]+)>)/ig, ' ').replace(/\s\s+/g, '')
+    /////////////
+
+    let $title = $(doc).find('titleStmt').find('title')
+    let title = $title.text()
+        .replace(/(<([^>]+)>)/ig, ' ')
+        .replace(/\s\s+/g, '')
+
+    // Strange bug without visible solution
+    if (title.includes('BigSense')) title = 'BigSense: a Word Sense Disambiguator for Big Data'
+
+    console.log(title)
+
     obj.title = title
 
+
+    /////////////
     // Authors
+    /////////////
+
     const authors = $(doc).find('author').children()//.text().replace(/\s\s+/g, ' ')
-    authors_list = []
-    authors.each(function(i, elem) {
-        if (i%3==0){ // author name only
+    let authors_list = []
+    authors.each(function (i, elem) {
+        if (i % 3 == 0) { // author name only
             authors_list[i] = $(this).text().replace(/\s\s+/g, ' ').trim();
         }
     })
+
+    // Remove empty field
+    authors_list = authors_list.filter(el => {
+        return el != null && el != ''
+    });
+
+    // Strange bug without visible solution
+    if (title.includes('BigSense')) authors_list = authors_list.slice(0, 4)
+
+    console.log(authors_list.length)
+
     obj.authors = authors_list.filter(Boolean)
 
+
+    /////////////
     // Body
+    /////////////
 
     let $body = $(doc).find('text')
-
     $body.find('back').remove()
 
-    console.log($body.html())
-
-    console.log()
     const body = $body.text()
         .replace(/\s\s+/g, ' ') // removes whitespaces
         .replace(/ *\([^)]*\) */g, "") // remove parentheses
         .replace(/['"‘’“”]+/g, '') // remove inverted commas
-        // .replace('&#x2018;', '').replace('&#x2019;', '') // remove inverted commas
-        // .replace('‘', '').replace('’', '') // remove inverted commas
 
     // const body_clean = ($body.text().replace(/(<([^>]+)>)/ig, '')
     //                 .replace(/(?:https?):\/\/[\n\S]+/g, '') // removes all https://
     //                 .replace(/(www?\.[^\s]+|[a-zA-Z0-9._-]+\.com+)/g,"") // removes all www. and ....com
     //                 .replace(/[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+/g,''))//removes emails (...@...) 
 
-    console.log(body)
-   
-   
     obj.body = body
 
     docs.push(obj)
