@@ -35,6 +35,7 @@
   "dependencies": {
     "cheerio": "^1.0.0-rc.3",
     "d3": "^5.9.7",
-    "js-combinatorics": "^0.5.4"
+    "js-combinatorics": "^0.5.4",
+    "remove-accents": "^0.4.2"
   }
 }

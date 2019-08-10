@@ -10,6 +10,7 @@ const path = require('path')
 const keyword_extractor = require("keyword-extractor")
 const natural = require('natural')
 const tfidf = new natural.TfIdf() // term frequency inverse doc frequency
+const accents = require('remove-accents')
 
 
 
@@ -48,35 +49,55 @@ fs.readFile(__dirname + '/data/docs-DH2019.json', (err, data) => {
         }
     }
 
-    // Merging mispelled authors
-    // for (let i = 0; i < authors.length - 1; i++) {
-    //     for (let j = i + 1; j < authors.length; j++) {
-    //         if (natural.DiceCoefficient(authors[i].id, authors[j].id) > .5) {
-    //             // console.log(authors[i].id, ' - ', authors[j].id,
-    //             //     natural.DiceCoefficient(authors[i].id, authors[j].id))
-    //             // console.log(authors[i])
-    //             // Increase counter
-    //             authors[i].docs += authors[j].docs
-    //             // Merge texts
-    //             authors[i].text += ' ' + authors[j].text
-    //             // Remove second author
-    //             authors = authors.slice(0, j).concat(authors.slice(j + 1, authors.length))
-    //             // Reset j position
-    //             j = j - 1
-    //             // console.log(authors[i])
-    //             console.log('Reducing authors', authors.length)
-    //         }
 
-    //     }
-    // }
+    // 
+    // Merging  authors
+    // 
 
+    let table_merging_authors = []
+
+    for (let i = 0; i < authors.length - 1; i++) {
+        for (let j = i + 1; j < authors.length; j++) {
+
+            // Check accents
+            const equal = accents.remove(authors[i].id) === accents.remove(authors[j].id)
+            
+            // Check similarity
+            const similar = natural.DiceCoefficient(authors[i].id, authors[j].id) > .8
+
+            if (equal || similar) {
+                // Push elements for checking
+                table_merging_authors.push([authors[i].id, authors[j].id])
+                // Increase counter
+                authors[i].docs += authors[j].docs
+                // Merge texts
+                authors[i].text += ' ' + authors[j].text
+                // Remove second author
+                authors = authors.slice(0, j).concat(authors.slice(j + 1, authors.length))
+                // Reset j position
+                j = j - 1
+            }
+
+        }
+    }
+
+    console.table(table_merging_authors)
+
+
+    // 
     // Remove authors with a few documents
+    // 
+
     // for (let i = 0; i < authors.length; i++) {
     //     if ( authors[i].docs < 2 )
     //     authors = authors.slice(0, i).concat(authors.slice(i + 1, authors.length))
     // }
 
-    // Set items for nodes
+
+    // 
+    // Start working on items
+    // 
+
     const items = authors
 
     // Tokenization
@@ -103,7 +124,7 @@ fs.readFile(__dirname + '/data/docs-DH2019.json', (err, data) => {
     // Lexical Analysis
     console.log('Lexical Analysis')
     const maxLimit = 20 // Limit for keywords
-    
+
     items.forEach((item, i) => {
         console.log('TF-IDF added text of author #', i)
         tfidf.addDocument(item.text)
@@ -166,7 +187,7 @@ fs.readFile(__dirname + '/data/docs-DH2019.json', (err, data) => {
 
         terms.forEach(term => {
 
-            
+
             // Check of the link exists or not
             const link = network.links.filter(link =>
                 link.s === p1.id && link.t === p2.id
