@@ -268,8 +268,8 @@ fs.readFile(__dirname + '/data/docs-DH2019.json', (err, data) => {
 
     fs.writeFile('./src/data/authors.json', JSON.stringify(authors), err => { if (err) throw err })
     fs.writeFile('./src/data/network.json', JSON.stringify(network), err => { if (err) throw err })
-    fs.writeFile('./docs/authors.json', JSON.stringify(authors, null, '\t'), err => { if (err) throw err })
-    fs.writeFile('./docs/network.json', JSON.stringify(network, null, '\t'), err => { if (err) throw err })
+    fs.writeFile('./data/authors.json', JSON.stringify(authors, null, '\t'), err => { if (err) throw err })
+    fs.writeFile('./data/network.json', JSON.stringify(network, null, '\t'), err => { if (err) throw err })
 
 
 
