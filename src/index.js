@@ -1,4 +1,4 @@
-import style from "./html/style.css";
+import style from './html/style.css'
 import * as d3 from 'd3'
 // require('!style-loader!css-loader!marx-css/css/marx.css')
 
@@ -13,9 +13,12 @@ const start = graph => {
     simulation()
 }
 
-d3.json('./src/data/network.json')
-    .catch(error => console.error(error))
-    .then(graph => start(graph))
+import graph from './data/network.json'
+console.log(graph)
+
+// d3.json('./src/data/network.json')
+//     .catch(error => console.error(error))
+//     .then(graph => start(graph))
 
 
 
