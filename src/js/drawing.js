@@ -3,9 +3,9 @@ import { s } from './state'
 
 export const drawKeywords = () => {
 
-    const max = 5
+    const max = 10
     const distance = 30
-    const fontSize = 1.5
+    const fontSize = 1.7
     const lineSpacing = 1.5
     const d_min = Math.pow(distance * 2 - 20, 2)
     const d_max = Math.pow(distance * 2 + 20, 2)
@@ -25,12 +25,12 @@ export const drawKeywords = () => {
 
             const x = a / 2 + (d.pair[0].x < d.pair[1].x ? d.pair[0].x : d.pair[1].x)
             const y = b / 2 + (d.pair[0].y < d.pair[1].y ? d.pair[0].y : d.pair[1].y)
-            const height = d.terms.slice(0, max).reduce((int, term) => int += fontSize * Math.log(term[1]) * .5 * lineSpacing, 0)
+            const height = d.terms.slice(0, max).reduce((int, term) => int += fontSize * lineSpacing, 0)
             let shiftY = 0
 
             d.terms.slice(0, max).forEach((term, i) => {
                 s.context.textAlign = 'center'
-                const size = fontSize * Math.log(term[1]) * .5
+                const size = fontSize
                 s.context.font = `normal 300 ${size}pt Helvetica`
                 shiftY += size * lineSpacing
                 s.context.fillText(term[0], x, y + shiftY - height / 2)
@@ -111,7 +111,7 @@ function _computeDensityData() {
 }
 
 export const drawContours = () => {
-    if (s.computed && !s.densityData.length) _computeDensityData();
+    if (s.computed && !s.densityData.length) _computeDensityData()
     
     const path = d3.geoPath().context(s.context)
 

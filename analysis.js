@@ -114,7 +114,6 @@ fs.readFile(__dirname + '/data/docs-DH2019.json', (err, data) => {
     // Token Frequency Analysis
     //
 
-    const tfidfLimit = 30
     const tokenFrequency = new natural.TfIdf() // term frequency inverse doc frequency
     const tokenizer = new natural.WordTokenizer()
     // const stopWords = ['not', 'go', 'http', 'https']
@@ -133,7 +132,7 @@ fs.readFile(__dirname + '/data/docs-DH2019.json', (err, data) => {
     items.forEach(item => item.tokens = sw.removeStopwords(item.tokens, sw.it))
     items.forEach(item => item.tokens = sw.removeStopwords(item.tokens, sw.pt))
 
-    // Singularize
+    // Singularize (TODO Check language and do stemming just for English)
     const inflector = new natural.NounInflector()
     items.forEach(item => item.tokens = item.tokens.map(t => inflector.singularize(t)))
 
@@ -142,10 +141,13 @@ fs.readFile(__dirname + '/data/docs-DH2019.json', (err, data) => {
         tokenFrequency.addDocument(item.tokens)
     })
 
+    const tfidfLimit = 10
+
     items.forEach((item, i) => {
         console.log('Copying tokens for author #', i)
         item.tokens = tokenFrequency.listTerms(i)
-            .filter(el => el.tfidf > tfidfLimit)
+            // .filter(el => el.tfidf > tfidfLimit) // On threshold
+            .slice(0, tfidfLimit) // On top elements
             .reduce((obj, el) => {
                 obj[el.term] = el.tfidf
                 return obj
@@ -232,7 +234,7 @@ fs.readFile(__dirname + '/data/docs-DH2019.json', (err, data) => {
 
         if (tokens.length > 0)
             console.log('#' + i--, '|', tokens.length, 'terms between', p2.id, 'and', p1.id)
-
+        
         tokens.forEach(token => {
 
             const link = network.links.find(link => link.s === p1.id && link.t === p2.id)
