@@ -44,16 +44,20 @@ export const drawKeywords = () => {
 
 export const drawLinks = () => {
 
-    s.context.beginPath()
-    s.context.strokeStyle = d3.rgb(251, 253, 166)
-    s.context.stroke()
+
+
     s.graph.links.forEach(link => {
+        s.context.beginPath()
+        s.context.strokeStyle = d3.rgb(251, 253, 166)
         s.context.moveTo(link.source.x, link.source.y)
         s.context.lineTo(link.target.x, link.target.y)
-        s.context.lineWidth = link.value
+        // s.context.lineWidth = link.value
+        s.context.lineWidth = 5
         // const lineWidth = 1
+        s.context.stroke()
     })
-    
+    // s.context.endPath()
+
 
 }
 
@@ -85,11 +89,11 @@ export const drawNodes = () => {
 //     s.context.fill()
 // }
 
-const z0 = {x:0, y:0, k: 0};
+const z0 = { x: 0, y: 0, k: 0 };
 function _computeDensityData() {
     const ex = d3.extent(s.graph.nodes, d => d.x),
-      ey = d3.extent(s.graph.nodes, d => d.y),
-      em = Math.max(ex[1]-ex[0], ey[1]-ey[0]);
+        ey = d3.extent(s.graph.nodes, d => d.y),
+        em = Math.max(ex[1] - ex[0], ey[1] - ey[0]);
 
     const w = 4 * s.screen.width; // definition of the grid for the contours
     z0.k = w / (em + 1000);
@@ -104,15 +108,15 @@ function _computeDensityData() {
         .bandwidth(30 * z0.k)
         (s.graph.nodes)
     s.densityData.forEach(d => d.coordinates = d.coordinates
-      .map(d => d.map(d => d.map(
-        d => [(d[0] - z0.x) / z0.k, (d[1] - z0.y) / z0.k]
-      )))
+        .map(d => d.map(d => d.map(
+            d => [(d[0] - z0.x) / z0.k, (d[1] - z0.y) / z0.k]
+        )))
     );
 }
 
 export const drawContours = () => {
     if (s.computed && !s.densityData.length) _computeDensityData()
-    
+
     const path = d3.geoPath().context(s.context)
 
     s.densityData.forEach((level, i) => {

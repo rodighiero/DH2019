@@ -1,6 +1,5 @@
 import style from "./html/style.css";
 const d3 = require('d3')
-// import { drawMatches } from './js/drawing'
 // require('!style-loader!css-loader!marx-css/css/marx.css')
 
 import simulation, { ticked } from './js/simulation.js'
@@ -14,8 +13,9 @@ const start = graph => {
     simulation()
 }
 
-const network = require('./data/network.json')
-start(network)
+d3.json('./src/data/network.json')
+    .catch(error => console.error(error))
+    .then(graph => start(graph))
 
 
 
