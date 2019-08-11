@@ -141,7 +141,7 @@ fs.readFile(__dirname + '/data/docs-DH2019.json', (err, data) => {
         tokenFrequency.addDocument(item.tokens)
     })
 
-    const tfidfLimit = 10
+    const tfidfLimit = 15
 
     items.forEach((item, i) => {
         console.log('Copying tokens for author #', i)

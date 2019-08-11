@@ -1,5 +1,4 @@
 import * as d3 from 'd3'
-
 import { s } from './state'
 
 // Click
@@ -18,7 +17,7 @@ export default () => {
                 dy = y - node.y
 
             let tokens = []
-            for (var token in node.terms) {
+            for (var token in node.tokens) {
                 const value = node.tokens[token].toFixed(2)
                 tokens.push(`${token} (${value})`);
             }
@@ -28,7 +27,7 @@ export default () => {
                 text += `<p><strong>${node.id}</strong></p>`
                 text += `<p>Number of papers: ${node.docs}</p>`
                 // text +=  `<p><strong>keywords:</strong> ${Object.values(node.keywords).join(', ')}</p>`
-                text += `<p>Tokens:<br/>${tokens.slice(0,10).join('<br/>')}</p>`
+                text += `<p>Tokens:<br/>${tokens.join('<br/>')}</p>`
                 // text +=  `<p><strong>Tokens:</strong> ${Object.values(node.tokens).join(', ')}</p>`
                 d3.select('#focus').html(text)
             }
