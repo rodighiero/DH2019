@@ -1,5 +1,5 @@
-import style from "./html/style.css"
-import * as d3 from 'd3'
+import style from "./html/style.css";
+const d3 = require('d3')
 // require('!style-loader!css-loader!marx-css/css/marx.css')
 
 import simulation, { ticked } from './js/simulation.js'
