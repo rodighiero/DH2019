@@ -25,12 +25,12 @@ export const drawKeywords = () => {
 
             const x = a / 2 + (d.pair[0].x < d.pair[1].x ? d.pair[0].x : d.pair[1].x)
             const y = b / 2 + (d.pair[0].y < d.pair[1].y ? d.pair[0].y : d.pair[1].y)
-            const height = d.terms.slice(0, max).reduce((int, term) => int += fontSize * Math.log(term[1]) * lineSpacing, 0)
+            const height = d.terms.slice(0, max).reduce((int, term) => int += fontSize * Math.log(term[1]) * .5 * lineSpacing, 0)
             let shiftY = 0
 
             d.terms.slice(0, max).forEach((term, i) => {
                 s.context.textAlign = 'center'
-                const size = fontSize * Math.log(term[1])
+                const size = fontSize * Math.log(term[1]) * .5
                 s.context.font = `normal 300 ${size}pt Helvetica`
                 shiftY += size * lineSpacing
                 s.context.fillText(term[0], x, y + shiftY - height / 2)

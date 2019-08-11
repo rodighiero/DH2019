@@ -35,12 +35,12 @@ export let s = {
         pairs.forEach(pair => {
 
             // Get common terms
-            const commonTerms = Object.keys(pair[0].terms)
-                .filter(n => Object.keys(pair[1].terms).includes(n))
+            const commonTerms = Object.keys(pair[0].tokens)
+                .filter(n => Object.keys(pair[1].tokens).includes(n))
 
             // Create term array
             const terms = commonTerms.reduce((array, term) => {
-                const value = (pair[0].terms[term] + pair[1].terms[term]) / 2
+                const value = (pair[0].tokens[term] + pair[1].tokens[term]) / 2
                 array.push([term, value])
                 return array
             }, []).sort((a, b) => b[1] - a[1])
@@ -50,6 +50,7 @@ export let s = {
                 pair: pair,
                 terms: terms,
             })
+
         })
 
     },

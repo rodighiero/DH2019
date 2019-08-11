@@ -3,10 +3,8 @@
 // Libraries
 /////////////////////////////
 
-const beautify = require('beautify')
 const combinatorics = require('js-combinatorics')
 const fs = require('fs')
-const path = require('path')
 const natural = require('natural')
 const accents = require('remove-accents')
 sw = require('stopword')
@@ -119,7 +117,7 @@ fs.readFile(__dirname + '/data/docs-DH2019.json', (err, data) => {
     const tfidfLimit = 30
     const tokenFrequency = new natural.TfIdf() // term frequency inverse doc frequency
     const tokenizer = new natural.WordTokenizer()
-    // const stopWords = ['of']
+    // const stopWords = ['not', 'go', 'http', 'https']
 
     items.forEach((item, i) => {
         console.log('Computing token for author #', i)
@@ -129,8 +127,15 @@ fs.readFile(__dirname + '/data/docs-DH2019.json', (err, data) => {
     // items.forEach(item => item.tokens = item.tokens.filter(token => !stopWords.includes(token)))
     items.forEach(item => item.tokens = item.tokens.filter(token => !parseInt(token)))
     items.forEach(item => item.tokens = sw.removeStopwords(item.tokens))
+    items.forEach(item => item.tokens = sw.removeStopwords(item.tokens, sw.br))
+    items.forEach(item => item.tokens = sw.removeStopwords(item.tokens, sw.de))
+    items.forEach(item => item.tokens = sw.removeStopwords(item.tokens, sw.fr))
+    items.forEach(item => item.tokens = sw.removeStopwords(item.tokens, sw.it))
+    items.forEach(item => item.tokens = sw.removeStopwords(item.tokens, sw.pt))
 
-    // !(parseInt(token) == item)
+    // Singularize
+    const inflector = new natural.NounInflector()
+    items.forEach(item => item.tokens = item.tokens.map(t => inflector.singularize(t)))
 
     items.forEach((item, i) => {
         console.log('Computing token frequency for author #', i)
@@ -221,7 +226,6 @@ fs.readFile(__dirname + '/data/docs-DH2019.json', (err, data) => {
 
         const p1 = pair[0], p2 = pair[1]
         const t1 = p1.tokens, t2 = p2.tokens
-        // const terms = Object.keys(p1.terms).filter(n => Object.keys(p2.terms).includes(n))
         const tokens = Object.keys(p1.tokens).filter(n => Object.keys(p2.tokens).includes(n))
 
         maxCommonTokens = maxCommonTokens > tokens.length ? maxCommonTokens : tokens.length
@@ -237,11 +241,7 @@ fs.readFile(__dirname + '/data/docs-DH2019.json', (err, data) => {
             if (link) {
                 link.v += value
             } else {
-                network.links.push({
-                    s: p1.id,
-                    t: p2.id,
-                    v: value
-                })
+                network.links.push({ s: p1.id, t: p2.id, v: value })
             }
 
         })
@@ -263,7 +263,7 @@ fs.readFile(__dirname + '/data/docs-DH2019.json', (err, data) => {
     console.log(`   network.json : ${format(network)}kb for ${network.links.length} links`)
     console.log(`   maxLinkValue : ${maxLinkValue}`)
     console.log(`maxCommonTokens : ${maxCommonTokens}`)
-    
+
     fs.writeFile('./src/data/authors.json', JSON.stringify(authors, null, '\t'), err => { if (err) throw err })
     fs.writeFile('./src/data/network.json', JSON.stringify(network, null, '\t'), err => { if (err) throw err })
 

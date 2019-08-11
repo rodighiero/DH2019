@@ -48,9 +48,7 @@ export default () => {
         .force('center', d3.forceCenter(s.screen.width / 2, s.screen.height / 2))
         .force('link', d3.forceLink()
             .id(d => d.id)
-            .strength(d => d.value * 1)
-            // .distance(d=> 1 - d.value)
-            // .distance(distance)
+            .strength(d => d.value * .1)
         )
         // .alphaDecay(.005)
         // .alpha(0.1)
@@ -61,7 +59,7 @@ export default () => {
     const synchronous = true;
     if (synchronous) {
       simulation.stop();
-      simulation.tick(16000)
+      simulation.tick(30000)
       s.computed = true
       ticked();
     } else {
