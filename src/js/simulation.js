@@ -37,12 +37,12 @@ export default () => {
         .force('charge', d3.forceManyBody()
             // .strength(30)
             .strength(-2600)
-        //     .distanceMin(distance)
+            //     .distanceMin(distance)
         )
         .force('collide', d3.forceCollide()
             .radius(distance)
-        //     // .strength(1)
-        //     //     .iterations(5)
+            //     // .strength(1)
+            //     //     .iterations(5)
         )
         .force('center', d3.forceCenter(s.screen.width / 2, s.screen.height / 2))
         .force('link', d3.forceLink()
@@ -55,28 +55,28 @@ export default () => {
     simulation.nodes(s.graph.nodes)
     simulation.force('link').links(s.graph.links)
 
-    simulation
-        .on('tick', () => ticked())
-        .on('end', () => console.log('network has been computed'))
+    // simulation
+    //     .on('tick', () => ticked())
+    //     .on('end', () => console.log('network has been computed'))
 
 
 
-    // const synchronous = true
+    const synchronous = false
 
-    // if (synchronous) {
-    //     simulation.stop()
-    //     simulation.tick(30000)
-    //     s.computed = true
-    //     ticked()
-    // } else {
-    //     // simulation.start()
-    //     simulation
-    //         .on('tick', ticked)
-    //         .on('end', () => {
-    //             s.computed = true
-    //             ticked()
-    //         })
-    // }
+    if (synchronous) {
+        simulation.stop()
+        simulation.tick(100)
+        s.computed = true
+        ticked()
+    } else {
+        // simulation.start()
+        simulation
+            .on('tick', ticked)
+            .on('end', () => {
+                s.computed = true
+                ticked()
+            })
+    }
 
 
 

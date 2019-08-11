@@ -89,11 +89,13 @@ export const drawNodes = () => {
 //     s.context.fill()
 // }
 
-const z0 = { x: 0, y: 0, k: 0 };
-function _computeDensityData() {
+const z0 = { x: 0, y: 0, k: 0 }
+
+const _computeDensityData = () => {
+
     const ex = d3.extent(s.graph.nodes, d => d.x),
         ey = d3.extent(s.graph.nodes, d => d.y),
-        em = Math.max(ex[1] - ex[0], ey[1] - ey[0]);
+        em = Math.max(ex[1] - ex[0], ey[1] - ey[0])
 
     const w = 4 * s.screen.width; // definition of the grid for the contours
     z0.k = w / (em + 1000);
@@ -105,8 +107,10 @@ function _computeDensityData() {
         .y(d => z0.y + d.y * z0.k)
         .weight(d => z0.k * d.docs)
         .size([w, w])
-        .bandwidth(30 * z0.k)
+        .bandwidth(40 * z0.k)
+        // .thresholds(40) 
         (s.graph.nodes)
+
     s.densityData.forEach(d => d.coordinates = d.coordinates
         .map(d => d.map(d => d.map(
             d => [(d[0] - z0.x) / z0.k, (d[1] - z0.y) / z0.k]
