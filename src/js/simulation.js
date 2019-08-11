@@ -4,9 +4,6 @@ import click from './click'
 import { s } from './state'
 
 window.s = s
-
-
-const distance = 40
 s.zoomIdentity = d3.zoomIdentity
 
 
@@ -24,7 +21,7 @@ export const ticked = () => {
     drawKeywords()
     // drawLinks()
     drawNodes()
-    // drawContours()
+    drawContours()
 
     s.context.restore()
 }
@@ -36,11 +33,11 @@ export default () => {
     const simulation = d3.forceSimulation()
         .force('charge', d3.forceManyBody()
             // .strength(30)
-            .strength(-2600)
+            .strength(-600)
             //     .distanceMin(distance)
         )
         .force('collide', d3.forceCollide()
-            .radius(distance)
+            .radius(20)
             //     // .strength(1)
             //     //     .iterations(5)
         )

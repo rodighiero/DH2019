@@ -3,9 +3,9 @@ import { s } from './state'
 
 export const drawKeywords = () => {
 
-    const max = 10
-    const distance = 30
-    const fontSize = 1.7
+    const max = 8
+    const distance = 10
+    const fontSize = 1
     const lineSpacing = 1.5
     const d_min = Math.pow(distance * 2 - 20, 2)
     const d_max = Math.pow(distance * 2 + 20, 2)
@@ -44,8 +44,6 @@ export const drawKeywords = () => {
 
 export const drawLinks = () => {
 
-
-
     s.graph.links.forEach(link => {
         s.context.beginPath()
         s.context.strokeStyle = d3.rgb(251, 253, 166)
@@ -58,7 +56,6 @@ export const drawLinks = () => {
     })
     // s.context.endPath()
 
-
 }
 
 
@@ -68,9 +65,9 @@ export const drawNodes = () => {
     s.context.fillStyle = d3.rgb(251, 253, 166)
     s.graph.nodes.forEach(node => {
         s.context.moveTo(node.x, node.y)
-        s.context.arc(node.x, node.y, 2, 0, 2 * Math.PI)
-        s.context.font = "3pt Helvetica"
-        s.context.fillText(`${node.id} (${node.docs})`, node.x, node.y + 8);
+        s.context.arc(node.x, node.y, .5, 0, 2 * Math.PI)
+        s.context.font = "1.5pt Helvetica"
+        s.context.fillText(`${node.id} (${node.docs})`, node.x, node.y + 4);
     })
 
     s.context.fillStyle = d3.rgb(251, 253, 166)
