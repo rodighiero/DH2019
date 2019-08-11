@@ -4,23 +4,13 @@ import * as d3 from 'd3'
 
 import simulation, { ticked } from './js/simulation.js'
 import { s } from './js/state'
-
-const start = graph => {
-    s.setCanvas()
-    s.setGraph(graph)
-    s.setPairs(graph.nodes)
-    s.setScreen()
-    simulation()
-}
-
 import graph from './data/network.json'
-console.log(graph)
 
-// d3.json('./src/data/network.json')
-//     .catch(error => console.error(error))
-//     .then(graph => start(graph))
-
-
+s.setCanvas()
+s.setGraph(graph)
+s.setPairs(graph.nodes)
+s.setScreen()
+simulation()
 
 // const searchField = d3.select("#searchField").on('input', function(e){ 
 //     const matchingNodes = graph.nodes.filter(d => d.id.toLowerCase().indexOf(this.value.toLowerCase()) !== -1);
