@@ -31,6 +31,7 @@
     "xml-js": "^1.6.11"
   },
   "dependencies": {
+    "beautify": "0.0.8",
     "cheerio": "^1.0.0-rc.3",
     "d3": "^5.9.7",
     "js-combinatorics": "^0.5.4",
