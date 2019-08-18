@@ -3,7 +3,6 @@
 /////////////////////////////
 
 const fs = require('fs')
-// const convert = require('xml-js');
 const cheerio = require('cheerio')
 
 
@@ -101,5 +100,5 @@ $('TEI').each((i, doc) => {
 // Writing docs.json
 /////////////////////////////
 
-fs.writeFile('./data/docs-DH2019.json', JSON.stringify(docs, null, '\t'), err => { if (err) throw err })
+fs.writeFile('./data/docs.json', JSON.stringify(docs, null, '\t'), err => { if (err) throw err })
 
