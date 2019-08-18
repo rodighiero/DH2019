@@ -1,4 +1,4 @@
-const d3 = require('d3')
+import * as d3 from 'd3'
 import combinatorics from 'js-combinatorics'
 
 // const s
@@ -6,13 +6,7 @@ import combinatorics from 'js-combinatorics'
 export let s = {
 
     densityData: [],
-    distance: 40,
-    visibility: {
-        contours: true,
-        keywords: false,
-        links: false,
-        nodes: true,
-    },
+    distance: 30,
     zoomIdentity: null,
 
     setCanvas: () => {
@@ -20,6 +14,9 @@ export let s = {
         s.context = document.querySelector('canvas').getContext('2d')
     },
 
+    setMatches: (matches) => {
+        s.matches = matches;
+    },
 
     // Rename shortened keys (ex. s => source)
     setGraph: graph => {
@@ -38,12 +35,12 @@ export let s = {
         pairs.forEach(pair => {
 
             // Get common terms
-            const commonTerms = Object.keys(pair[0].terms)
-                .filter(n => Object.keys(pair[1].terms).includes(n))
+            const commonTerms = Object.keys(pair[0].tokens)
+                .filter(n => Object.keys(pair[1].tokens).includes(n))
 
             // Create term array
             const terms = commonTerms.reduce((array, term) => {
-                const value = (pair[0].terms[term] + pair[1].terms[term]) / 2
+                const value = (pair[0].tokens[term] + pair[1].tokens[term]) / 2
                 array.push([term, value])
                 return array
             }, []).sort((a, b) => b[1] - a[1])
@@ -53,6 +50,7 @@ export let s = {
                 pair: pair,
                 terms: terms,
             })
+
         })
 
     },

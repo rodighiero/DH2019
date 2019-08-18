@@ -11,30 +11,31 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "@babel/core": "^7.5.4",
-    "@babel/preset-env": "^7.5.4",
+    "@babel/core": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
     "babel-loader": "^8.0.6",
-    "beautify": "0.0.8",
-    "css-loader": "^3.0.0",
+    "css-loader": "^3.2.0",
+    "file-loader": "^4.2.0",
     "franc-min": "^4.1.0",
     "fs": "0.0.2",
     "html-loader": "^0.5.5",
     "html-webpack-plugin": "^3.2.0",
-    "json-loader": "^0.5.7",
-    "mini-css-extract-plugin": "^0.7.0",
+    "keyword-extractor": "0.0.17",
+    "mini-css-extract-plugin": "^0.8.0",
     "natural": "^0.6.3",
-    "path": "^0.12.7",
     "request": "^2.88.0",
     "request-promise": "^4.2.4",
-    "webpack": "^4.35.3",
-    "webpack-cli": "^3.3.5",
-    "webpack-dev-server": "^3.7.2",
+    "webpack": "^4.39.2",
+    "webpack-cli": "^3.3.6",
+    "webpack-dev-server": "^3.8.0",
     "xml-js": "^1.6.11"
   },
   "dependencies": {
+    "beautify": "0.0.8",
+    "cheerio": "^1.0.0-rc.3",
     "d3": "^5.9.7",
-    "franc": "^4.1.0",
     "js-combinatorics": "^0.5.4",
-    "keyword-extractor": "0.0.16"
+    "remove-accents": "^0.4.2",
+    "stopword": "^0.3.3"
   }
 }

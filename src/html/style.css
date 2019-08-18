@@ -64,6 +64,14 @@ a {
 	border: none;
 }
 
+#searchWrapper {
+	background-color: rgba(0,0,0,.5);
+	position: absolute;
+	right: 0;
+	top: 10;
+	border: none;
+}
+
 h1 {
 	font-size: 150%;
 	margin: 5px 15px 5px 15px;

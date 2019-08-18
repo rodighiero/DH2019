@@ -3,13 +3,11 @@
 // Libraries
 /////////////////////////////
 
-const beautify = require('beautify')
 const combinatorics = require('js-combinatorics')
 const fs = require('fs')
-const path = require('path')
-const keyword_extractor = require("keyword-extractor")
 const natural = require('natural')
-const tfidf = new natural.TfIdf() // term frequency inverse doc frequency
+const accents = require('remove-accents')
+sw = require('stopword')
 
 
 
@@ -18,145 +16,140 @@ const tfidf = new natural.TfIdf() // term frequency inverse doc frequency
 // Reading dics.json
 /////////////////////////////
 
-fs.readFile(__dirname + '/src/data/docs-inferno.json', (err, data) => {
-    if (err) throw err
+///data/docs-DH2019.json
+fs.readFile(__dirname + '/data/docs-DH2019.json', (err, data) => {
 
+
+    // 
+    // Set data
+    //
+
+    if (err) throw err
     docs = JSON.parse(data)
 
 
 
+    // 
+    // Assemble by author
+    // 
 
-    /////////////////////////////
-    // Assemble by advisor
-    /////////////////////////////
-
-    let advisors = []
+    let authors = []
 
     for (let doc of docs) {
-        // console.log(doc);
-        if (!doc.advisors) continue // Skip empty advisors
-        for (let advisor of doc.advisors) {
-            const hasAdvisor = advisors.some(adv => adv.id === advisor)
-            if (hasAdvisor) {
-                // Append text to the advisor
-                let _advisor = advisors.filter(adv => adv.id === advisor)
-                _advisor[0].docs++
-                _advisor[0].text += doc.text + ' '
+        for (let author of doc.authors) {
+
+            const existence = authors.some(a => a.id === author)
+            const text = doc.title.toLowerCase() + ' ' + doc.body.toLowerCase() + ' '
+
+            if (existence) {
+                let _author = authors.filter(a => a.id === author)
+                _author[0].docs++
+                _author[0].text += text
             } else {
-                // Create the advisor
-                advisors.push({
-                    id: advisor,
+                authors.push({
+                    id: author,
                     docs: 1,
-                    text: doc.text + ' ',
+                    text: text
                 })
-                console.log('Created advisor', advisors.length)
+
+                console.log('Created author #', authors.length)
             }
         }
     }
 
 
 
+    // 
+    // Merging authors
+    // 
 
-    /////////////////////////////
-    // Merging mispelled authors
-    /////////////////////////////
+    let table_merging_authors = []
 
-    // for (let i = 0; i < advisors.length - 1; i++) {
-    //     for (let j = i + 1; j < advisors.length; j++) {
-    //         if (natural.DiceCoefficient(advisors[i].id, advisors[j].id) > .5) {
-    //             // console.log(advisors[i].id, ' - ', advisors[j].id,
-    //             //     natural.DiceCoefficient(advisors[i].id, advisors[j].id))
-    //             // console.log(advisors[i])
-    //             // Increase counter
-    //             advisors[i].docs += advisors[j].docs
-    //             // Merge texts
-    //             advisors[i].text += ' ' + advisors[j].text
-    //             // Remove second advisor
-    //             advisors = advisors.slice(0, j).concat(advisors.slice(j + 1, advisors.length))
-    //             // Reset j position
-    //             j = j - 1
-    //             // console.log(advisors[i])
-    //             console.log('Reducing advisors', advisors.length)
-    //         }
+    for (let i = 0; i < authors.length - 1; i++) {
+        for (let j = i + 1; j < authors.length; j++) {
 
-    //     }
-    // }
+            const equal = accents.remove(authors[i].id) === accents.remove(authors[j].id) // Check accents
+            const similar = natural.DiceCoefficient(authors[i].id, authors[j].id) > .8 // Check similarity
 
-    /////////////////////////////
+            if (equal || similar) {
+                // Push elements for checking
+                table_merging_authors.push([authors[i].id, authors[j].id])
+                // Increase counter
+                authors[i].docs += authors[j].docs
+                // Merge texts
+                authors[i].text += ' ' + authors[j].text
+                // Remove second author
+                authors = authors.slice(0, j).concat(authors.slice(j + 1, authors.length))
+                // Reset j position
+                j = j - 1
+            }
+
+        }
+    }
+
+    console.table(table_merging_authors)
+
+
+
+    // 
     // Remove authors with a few documents
-    /////////////////////////////
+    // 
 
-    // for (let i = 0; i < advisors.length; i++) {
-    //     if ( advisors[i].docs < 2 )
-    //     advisors = advisors.slice(0, i).concat(advisors.slice(i + 1, advisors.length))
+    // for (let i = 0; i < authors.length; i++) {
+    //     if ( authors[i].docs < 2 )
+    //     authors = authors.slice(0, i).concat(authors.slice(i + 1, authors.length))
     // }
 
 
 
+    // 
+    // Set items
+    // 
 
-
-    /////////////////////////////
-    // Set items for nodes
-    /////////////////////////////
-
-    const items = advisors
-
+    const items = authors
 
 
 
-    /////////////////////////////
-    // Tokenization
-    /////////////////////////////
+    // 
+    // Token Frequency Analysis
+    //
 
-    console.log('Tokenization')
-    // natural.PorterStemmer.attach() // Perter stemmer
-    natural.LancasterStemmer.attach() // Lancaster stemmer
-    items.forEach(item => {
-        item.tokens = item.text.tokenizeAndStem()
+    const tokenFrequency = new natural.TfIdf() // term frequency inverse doc frequency
+    const tokenizer = new natural.WordTokenizer()
+    // const stopWords = ['not', 'go', 'http', 'https']
+
+    items.forEach((item, i) => {
+        console.log('Computing token for author #', i)
+        item.tokens = tokenizer.tokenize(item.text)
     })
 
+    // items.forEach(item => item.tokens = item.tokens.filter(token => !stopWords.includes(token)))
+    items.forEach(item => item.tokens = item.tokens.filter(token => !parseInt(token)))
+    items.forEach(item => item.tokens = sw.removeStopwords(item.tokens))
+    items.forEach(item => item.tokens = sw.removeStopwords(item.tokens, sw.br))
+    items.forEach(item => item.tokens = sw.removeStopwords(item.tokens, sw.de))
+    items.forEach(item => item.tokens = sw.removeStopwords(item.tokens, sw.fr))
+    items.forEach(item => item.tokens = sw.removeStopwords(item.tokens, sw.it))
+    items.forEach(item => item.tokens = sw.removeStopwords(item.tokens, sw.pt))
 
+    // Singularize (TODO Check language and do stemming just for English)
+    const inflector = new natural.NounInflector()
+    items.forEach(item => item.tokens = item.tokens.map(t => inflector.singularize(t)))
 
-
-    /////////////////////////////
-    // Keyword extractor
-    /////////////////////////////
-
-    console.log('Keyword extraction')
-    items.forEach(item => {
-        item.keywords = keyword_extractor.extract(item.text, {
-            language: "english",
-            remove_digits: true,
-            return_chained_words: false,
-            return_changed_case: true,
-            remove_duplicates: true,
-            return_max_ngrams: false,
-        })
+    items.forEach((item, i) => {
+        console.log('Computing token frequency for author #', i)
+        tokenFrequency.addDocument(item.tokens)
     })
 
+    const tfidfLimit = 15
 
-
-
-    /////////////////////////////
-    // Lexical Analysis
-    /////////////////////////////
-    
-    console.log('Lexical Analysis')
-
-    const maxLimit = 5 // Limit for keywords
-
-    // items.forEach(item => tfidf.addDocument(item.text)) // Send text
-    // items.forEach(item => tfidf.addDocument(item.tokens)) // Send tokens
-    items.forEach(item => tfidf.addDocument(item.keywords)) // Send keywords
-
-
-    console.log('Writing Lexical Analysis')
-    
-    items.forEach((item, i) => { // Writing computation terms in items
-        item.terms = tfidf.listTerms(i)
-            .reduce((obj, element) => {
-                if (element.tfidf > maxLimit)
-                    obj[element.term] = element.tfidf
+    items.forEach((item, i) => {
+        console.log('Copying tokens for author #', i)
+        item.tokens = tokenFrequency.listTerms(i)
+            // .filter(el => el.tfidf > tfidfLimit) // On threshold
+            .slice(0, tfidfLimit) // On top elements
+            .reduce((obj, el) => {
+                obj[el.term] = el.tfidf
                 return obj
             }, {})
     })
@@ -164,116 +157,125 @@ fs.readFile(__dirname + '/src/data/docs-inferno.json', (err, data) => {
 
 
 
-    /////////////////////////////
-    // Set pairs
-    /////////////////////////////
+    // 
+    // Stem Frequency Analysis
+    //
 
-    console.log('Set pairs')
+    // const stemFrequency = new natural.TfIdf() // term frequency inverse doc frequency
+    // // natural.PorterStemmer.attach() // Multilanguage stemmer
+    // natural.LancasterStemmer.attach() // English stemmer
 
-    const pairs = combinatorics.bigCombination(items, 2)
+    // items.forEach((item, i) => {
+    //     console.log('Computing stems for author #', i)
+    //     item.stems = item.text.tokenizeAndStem()
+    // })
+
+    // items.forEach((item, i) => {
+    //     console.log('Computing stems frequency for author #', i)
+    //     stemFrequency.addDocument(item.stems)
+    // })
+
+    // items.forEach((item, i) => {
+    //     console.log('Copying stems for author #', i)
+    //     item.stems = stemFrequency.listTerms(i)
+    //         .filter(el => el.tfidf > 20)
+    //         .reduce((obj, el) => {
+    //             obj[el.term] = el.tfidf
+    //             return obj
+    //         }, {})
+    // })
+
+
+
+    // 
+    // Term Frequency Analysis
+    // 
+
+    // const termFrequency = new natural.TfIdf() // term frequency inverse doc frequency
+
+    // items.forEach((item, i) => {
+    //     console.log('Computing terms for author #', i)
+    //     termFrequency.addDocument(item.text)
+    // })
+
+    // items.forEach((item, i) => {
+    //     console.log('Copying terms for author #', i)
+    //     item.terms = termFrequency.listTerms(i)
+    //         .filter(token => token.tfidf > 20)
+    //         .reduce((obj, element) => {
+    //             obj[element.term] = element.tfidf
+    //             return obj
+    //         }, {})
+    // })
+
+
+    // Delete text from items to lighten the file 
+    items.forEach(item => delete item.text)
 
 
 
 
-    /////////////////////////////
-    // Set nodes and edges
-    /////////////////////////////
+    //
+    // Set network
+    //
 
-    console.log('Set nodes and edges')
-
-    const network = {
-        nodes: items.map(item => {
-            return {
-                'id': item.id,
-                'docs': item.docs,
-                'tokens': item.tokens,
-                'keywords': item.keywords,
-                'terms': item.terms,
-            }
-        }),
-        links: []
-    }
+    const pairs = combinatorics.bigCombination(items, 2) // Set pairs
+    const network = { nodes: items, links: [] } // Set network object
+    let i = pairs.length
+    let maxCommonTokens = 0
 
     pairs.forEach(pair => {
 
-        const terms = Object.keys(pair[0].terms)
-            .filter(n => Object.keys(pair[1].terms).includes(n))
+        const p1 = pair[0], p2 = pair[1]
+        const t1 = p1.tokens, t2 = p2.tokens
+        const tokens = Object.keys(p1.tokens).filter(n => Object.keys(p2.tokens).includes(n))
 
-        terms.forEach(term => {
+        maxCommonTokens = maxCommonTokens > tokens.length ? maxCommonTokens : tokens.length
 
-            // Check of the link exists or not
-            const link = network.links.filter(link =>
-                link.s === pair[0].id && link.t === pair[1].id
-            )
+        if (tokens.length > 0)
+            console.log('#' + i--, '|', tokens.length, 'terms between', p2.id, 'and', p1.id)
+        
+        tokens.forEach(token => {
 
-            if (link.length > 0) {
-                // console.log()
-                // console.log(link[0].v)
-                link[0].v += pair[0].terms[term] + pair[1].terms[term]
-                // console.log(link[0].v)
+            const link = network.links.find(link => link.s === p1.id && link.t === p2.id)
+            const value = t1[token] + t2[token]
+
+            if (link) {
+                link.v += value
             } else {
-                network.links.push({
-                    s: pair[0].id,
-                    t: pair[1].id,
-                    v: pair[0].terms[term] + pair[1].terms[term],
-                })
+                network.links.push({ s: p1.id, t: p2.id, v: value })
             }
 
-
         })
+
     })
 
     // Normalizing values between [0,1]
-    const max = network.links.reduce((max, link) => max > link.v ? max : link.v, 0)
-    network.links.forEach(link => link.v = link.v / max)
+    const maxLinkValue = network.links.reduce((max, link) => max > link.v ? max : link.v, 0)
+    network.links.forEach(link => link.v = link.v / maxLinkValue)
 
 
 
+    //
+    // Report and file writing
+    //
 
-    /////////////////////////////
-    // Report
-    /////////////////////////////
+    const format = x => JSON.stringify(x).length.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+    console.log(`   authors.json : ${format(authors)}kb for ${authors.length} authors`)
+    console.log(`   network.json : ${format(network)}kb for ${network.links.length} links`)
+    console.log(`   maxLinkValue : ${maxLinkValue}`)
+    console.log(`maxCommonTokens : ${maxCommonTokens}`)
 
-    console.log()
-    console.log('        Network =>')
-    console.log('                    pairs :', pairs.length)
-    console.log('                    links :', network.links.length)
-    console.log('                    nodes :', network.nodes.length)
-
-
-
-
-    /////////////////////////////
-    // Writing network.json
-    /////////////////////////////
-
-    console.log()
-    console.log('          Files =>')
-
-    const directory = './src/data'
-    const format = json => beautify(JSON.stringify(json), { format: 'json' })
-    const setComma = x => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-    let fileName
-
-    fileName = path.resolve(__dirname, `${directory}/network.json`)
-    fs.writeFile(fileName, format(network), err => {
-        if (err) throw err
-        console.log('                  network :', setComma(format(network).length), 'kb /', network.nodes.length, 'records')
-    })
-
-    fileName = path.resolve(__dirname, `${directory}/advisors.json`)
-    fs.writeFile(fileName, format(advisors), err => {
-        if (err) throw err
-        console.log('                 advisors :', setComma(format(advisors).length), 'kb /', advisors.length, 'records')
-    })
+    fs.writeFile('./src/data/network.json', JSON.stringify(network), err => { if (err) throw err })
+    fs.writeFile('./data/authors.json', JSON.stringify(authors, null, '\t'), err => { if (err) throw err })
+    fs.writeFile('./data/network.json', JSON.stringify(network, null, '\t'), err => { if (err) throw err })
 
 
-    // End of computation
+
+    //
+    // END
+    //
+
 
 
 })
-
-
-
-
-

@@ -7,6 +7,12 @@ module.exports = {
     // filename: 'bundle.js',
     // filename: '[name].bundle.js',
     path: path.resolve(__dirname, 'docs')
+    // chunkFilename: '[name].bundle.js'
+  },
+  optimization: {
+    splitChunks: {
+      chunks: 'all'
+    }
   },
   module: {
     rules: [
@@ -29,6 +35,17 @@ module.exports = {
       {
         test: /\.css$/,
         use: [MiniCssExtractPlugin.loader, "css-loader"]
+      },
+      {
+        type: 'javascript/auto',
+        test: /\.json$/,
+        use: [{
+          loader: 'file-loader',
+          options: {
+            name: "[name].[ext]"
+          }
+        }
+        ]
       }
     ]
   },
