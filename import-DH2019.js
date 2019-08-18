@@ -2,9 +2,7 @@
 // Libraries
 /////////////////////////////
 
-const beautify = require('beautify');
-const fs = require('fs');
-const path = require('path');
+const fs = require('fs')
 // const convert = require('xml-js');
 const cheerio = require('cheerio')
 
@@ -103,11 +101,5 @@ $('TEI').each((i, doc) => {
 // Writing docs.json
 /////////////////////////////
 
-const format = json => beautify(JSON.stringify(json), { format: 'json' })
-const setComma = x => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-let fileName = path.resolve(__dirname, `./data/docs-DH2019.json`)
+fs.writeFile('./data/docs-DH2019.json', JSON.stringify(docs, null, '\t'), err => { if (err) throw err })
 
-fs.writeFile(fileName, format(docs), err => {
-    if (err) throw err
-    console.log('Size of docs.json', setComma(format(docs).length), 'kb')
-})

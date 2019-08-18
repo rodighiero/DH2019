@@ -14,6 +14,7 @@
     "@babel/core": "^7.5.5",
     "@babel/preset-env": "^7.5.5",
     "babel-loader": "^8.0.6",
+    "cheerio": "^1.0.0-rc.3",
     "css-loader": "^3.2.0",
     "file-loader": "^4.2.0",
     "franc-min": "^4.1.0",
@@ -23,19 +24,16 @@
     "keyword-extractor": "0.0.17",
     "mini-css-extract-plugin": "^0.8.0",
     "natural": "^0.6.3",
+    "remove-accents": "^0.4.2",
     "request": "^2.88.0",
     "request-promise": "^4.2.4",
+    "stopword": "^0.3.3",
     "webpack": "^4.39.2",
     "webpack-cli": "^3.3.6",
-    "webpack-dev-server": "^3.8.0",
-    "xml-js": "^1.6.11"
+    "webpack-dev-server": "^3.8.0"
   },
   "dependencies": {
-    "beautify": "0.0.8",
-    "cheerio": "^1.0.0-rc.3",
     "d3": "^5.9.7",
-    "js-combinatorics": "^0.5.4",
-    "remove-accents": "^0.4.2",
-    "stopword": "^0.3.3"
+    "js-combinatorics": "^0.5.4"
   }
 }
