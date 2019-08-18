@@ -1,7 +1,9 @@
 import * as d3 from 'd3'
-import { drawKeywords, drawLinks, drawNodes, drawContours, drawMatches } from './drawing'
-import click from './click'
 import { s } from './state'
+
+import click from './click'
+import nodes from './drawNodes'
+import contours from './drawContours'
 
 window.s = s
 s.zoomIdentity = d3.zoomIdentity
@@ -23,9 +25,8 @@ export const ticked = () => {
     s.context.scale(k, k)
 
     // drawKeywords()
-    // drawLinks()
-    drawNodes()
-    drawContours()
+    nodes()
+    contours()
 
     s.context.restore()
 }
@@ -64,9 +65,9 @@ export default () => {
     // Simulation start
     //
 
-    const dynamic = false
+    const animation = true
 
-    if (dynamic) {
+    if (animation) {
         simulation
             .on('tick', ticked)
             .on('end', () => {
