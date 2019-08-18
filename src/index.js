@@ -10,8 +10,7 @@ import { s } from './js/state'
 //import update_researcher_autocomplete from './js/search.js'
 
 import {init_researcher_autocomplete} from "./js/search.js";
-import simulation, { ticked } from './js/simulation.js'
-import { s } from './js/state'
+// import simulation, { ticked } from './js/simulation.js'
 import json from './data/network.json'
 
 
