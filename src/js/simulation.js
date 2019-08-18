@@ -7,6 +7,10 @@ window.s = s
 s.zoomIdentity = d3.zoomIdentity
 
 
+//
+// Ticked
+//
+
 export const ticked = () => {
 
     const x = s.zoomIdentity.x * s.screen.density
@@ -18,7 +22,7 @@ export const ticked = () => {
     s.context.translate(x, y)
     s.context.scale(k, k)
 
-    drawKeywords()
+    // drawKeywords()
     // drawLinks()
     drawNodes()
     drawContours()
@@ -28,18 +32,20 @@ export const ticked = () => {
 
 export default () => {
 
-    // Simulation
+    //
+    // Configuration
+    //
 
     const simulation = d3.forceSimulation()
         .force('charge', d3.forceManyBody()
             // .strength(30)
             .strength(-600)
-            //     .distanceMin(distance)
+            // .distanceMin(distance)
         )
         .force('collide', d3.forceCollide()
             .radius(20)
-            //     // .strength(1)
-            //     //     .iterations(5)
+            // .strength(1)
+            // .iterations(5)
         )
         .force('center', d3.forceCenter(s.screen.width / 2, s.screen.height / 2))
         .force('link', d3.forceLink()
@@ -52,32 +58,34 @@ export default () => {
     simulation.nodes(s.graph.nodes)
     simulation.force('link').links(s.graph.links)
 
-    // simulation
-    //     .on('tick', () => ticked())
-    //     .on('end', () => console.log('network has been computed'))
 
 
+    //
+    // Simulation start
+    //
 
-    const synchronous = false
+    const dynamic = false
 
-    if (synchronous) {
-        simulation.stop()
-        simulation.tick(100)
-        s.computed = true
-        ticked()
-    } else {
-        // simulation.start()
+    if (dynamic) {
         simulation
             .on('tick', ticked)
             .on('end', () => {
-                s.computed = true
+                s.end = true
                 ticked()
             })
+
+    } else {
+        simulation.stop()
+        simulation.tick(100)
+        s.end = true
+        ticked()
     }
 
 
 
+    //
     // Zoom
+    //
 
     s.zoom = d3.zoom().on('zoom', () => {
         s.zoomIdentity = d3.event.transform
@@ -91,7 +99,5 @@ export default () => {
 
 
     click()
-
-
 
 }

@@ -94,8 +94,9 @@ const _computeDensityData = () => {
         ey = d3.extent(s.graph.nodes, d => d.y),
         em = Math.max(ex[1] - ex[0], ey[1] - ey[0])
 
-    const w = 4 * s.screen.width; // definition of the grid for the contours
-    z0.k = w / (em + 1000);
+    // const w = 4 * s.screen.width; // definition of the grid for the contours
+    const w = ex[1] - ex[0]
+    z0.k = w / em
     z0.x = -ex[0] * z0.k;
     z0.y = -ey[0] * z0.k;
 
@@ -116,7 +117,9 @@ const _computeDensityData = () => {
 }
 
 export const drawContours = () => {
-    if (s.computed && !s.densityData.length) _computeDensityData()
+
+    if (s.end && !s.densityData.length) _computeDensityData()
+    // _computeDensityData()
 
     const path = d3.geoPath().context(s.context)
 
