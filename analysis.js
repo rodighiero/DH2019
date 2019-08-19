@@ -141,7 +141,8 @@ fs.readFile(__dirname + '/data/docs.json', (err, data) => {
         tokenFrequency.addDocument(item.tokens)
     })
 
-    const tfidfLimit = 15
+    // 15 is a good value for final version; it can be lowered for testing
+    const tfidfLimit = 5
 
     items.forEach((item, i) => {
         console.log('Copying tokens for author #', i)
@@ -165,7 +166,8 @@ fs.readFile(__dirname + '/data/docs.json', (err, data) => {
     //
 
     const pairs = combinatorics.bigCombination(items, 2) // Set pairs
-    const network = { nodes: items, links: [] } // Set network object
+    const nodes = items // Set node object
+    const links = [] // Set link object
     let i = pairs.length
     let maxCommonTokens = 0
 
@@ -177,25 +179,24 @@ fs.readFile(__dirname + '/data/docs.json', (err, data) => {
 
         maxCommonTokens = maxCommonTokens > tokens.length ? maxCommonTokens : tokens.length
 
-        // if (tokens.length > 0)
         console.log('#' + i--, '|', tokens.length, 'terms between', p2.id, 'and', p1.id)
 
         tokens.forEach(token => {
 
-            const link = network.links.find(link => link.s === p1.id && link.t === p2.id)
+            const link = links.find(link => link.s === p1.id && link.t === p2.id)
             const value = t1[token] + t2[token]
 
             if (link) {
                 link.v += value
-                link.t.token = value
+                link.tokens[token] = value
             } else {
-                network.links.push(
+                links.push(
                     {
                         s: p1.id,
                         t: p2.id,
                         v: value,
-                        t: {
-                            token: value,
+                        tokens: {
+                            [token]: value,
                         }
                     }
                 )
@@ -206,8 +207,8 @@ fs.readFile(__dirname + '/data/docs.json', (err, data) => {
     })
 
     // Normalizing values between [0,1]
-    const maxLinkValue = network.links.reduce((max, link) => max > link.v ? max : link.v, 0)
-    network.links.forEach(link => link.v = link.v / maxLinkValue)
+    const maxLinkValue = links.reduce((max, link) => max > link.v ? max : link.v, 0)
+    links.forEach(link => link.v = link.v / maxLinkValue)
 
 
 
@@ -216,14 +217,15 @@ fs.readFile(__dirname + '/data/docs.json', (err, data) => {
     //
 
     const format = x => JSON.stringify(x).length.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-    console.log(`   authors.json : ${format(authors)}kb for ${authors.length} authors`)
-    console.log(`   network.json : ${format(network)}kb for ${network.links.length} links`)
+    console.log(`     nodes.json : ${format(nodes)}kb for ${nodes.length} authors`)
+    console.log(`     links.json : ${format(links)}kb for ${links.length} links`)
     console.log(`   maxLinkValue : ${maxLinkValue}`)
     console.log(`maxCommonTokens : ${maxCommonTokens}`)
 
-    fs.writeFile('./src/data/network.json', JSON.stringify(network), err => { if (err) throw err })
-    fs.writeFile('./data/authors.json', JSON.stringify(authors, null, '\t'), err => { if (err) throw err })
-    fs.writeFile('./data/network.json', JSON.stringify(network, null, '\t'), err => { if (err) throw err })
+    fs.writeFile('./src/data/nodes.json', JSON.stringify(nodes), err => { if (err) throw err })
+    fs.writeFile('./src/data/links.json', JSON.stringify(links), err => { if (err) throw err })
+    fs.writeFile('./data/nodes.json', JSON.stringify(nodes, null, '\t'), err => { if (err) throw err })
+    fs.writeFile('./data/links.json', JSON.stringify(links, null, '\t'), err => { if (err) throw err })
 
 
 
