@@ -157,35 +157,6 @@ fs.readFile(__dirname + '/data/docs.json', (err, data) => {
 
 
 
-    // 
-    // Stem Frequency Analysis
-    //
-
-    // const stemFrequency = new natural.TfIdf() // term frequency inverse doc frequency
-    // // natural.PorterStemmer.attach() // Multilanguage stemmer
-    // natural.LancasterStemmer.attach() // English stemmer
-
-    // items.forEach((item, i) => {
-    //     console.log('Computing stems for author #', i)
-    //     item.stems = item.text.tokenizeAndStem()
-    // })
-
-    // items.forEach((item, i) => {
-    //     console.log('Computing stems frequency for author #', i)
-    //     stemFrequency.addDocument(item.stems)
-    // })
-
-    // items.forEach((item, i) => {
-    //     console.log('Copying stems for author #', i)
-    //     item.stems = stemFrequency.listTerms(i)
-    //         .filter(el => el.tfidf > 20)
-    //         .reduce((obj, el) => {
-    //             obj[el.term] = el.tfidf
-    //             return obj
-    //         }, {})
-    // })
-
-
 
     // 
     // Term Frequency Analysis
@@ -232,9 +203,9 @@ fs.readFile(__dirname + '/data/docs.json', (err, data) => {
 
         maxCommonTokens = maxCommonTokens > tokens.length ? maxCommonTokens : tokens.length
 
-        if (tokens.length > 0)
-            console.log('#' + i--, '|', tokens.length, 'terms between', p2.id, 'and', p1.id)
-        
+        // if (tokens.length > 0)
+        console.log('#' + i--, '|', tokens.length, 'terms between', p2.id, 'and', p1.id)
+
         tokens.forEach(token => {
 
             const link = network.links.find(link => link.s === p1.id && link.t === p2.id)
@@ -242,8 +213,18 @@ fs.readFile(__dirname + '/data/docs.json', (err, data) => {
 
             if (link) {
                 link.v += value
+                link.t.token = value
             } else {
-                network.links.push({ s: p1.id, t: p2.id, v: value })
+                network.links.push(
+                    {
+                        s: p1.id,
+                        t: p2.id,
+                        v: value,
+                        t: {
+                            token: value,
+                        }
+                    }
+                )
             }
 
         })
