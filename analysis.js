@@ -154,32 +154,6 @@ fs.readFile(__dirname + '/data/docs.json', (err, data) => {
             }, {})
     })
 
-
-
-
-
-    // 
-    // Term Frequency Analysis
-    // 
-
-    // const termFrequency = new natural.TfIdf() // term frequency inverse doc frequency
-
-    // items.forEach((item, i) => {
-    //     console.log('Computing terms for author #', i)
-    //     termFrequency.addDocument(item.text)
-    // })
-
-    // items.forEach((item, i) => {
-    //     console.log('Copying terms for author #', i)
-    //     item.terms = termFrequency.listTerms(i)
-    //         .filter(token => token.tfidf > 20)
-    //         .reduce((obj, element) => {
-    //             obj[element.term] = element.tfidf
-    //             return obj
-    //         }, {})
-    // })
-
-
     // Delete text from items to lighten the file 
     items.forEach(item => delete item.text)
 
