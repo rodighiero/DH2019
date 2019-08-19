@@ -10,10 +10,9 @@ const _computeDensityData = () => {
         em = Math.max(ex[1] - ex[0], ey[1] - ey[0])
 
     // const w = 4 * s.screen.width; // definition of the grid for the contours
-    const width = ex[1] - ex[0] // This is important for the computation weight, it should be zoomable
-    const height = ey[1] - ey[0] // This is important for the computation weight, it should be zoomable
-    console.log(ex, ey, em)
-    // console.log(width, height)
+    const width = ex[1] - ex[0]
+    const height = ey[1] - ey[0]
+    
     z.k = width / em
     z.x = -ex[0] * z.k
     z.y = -ey[0] * z.k
