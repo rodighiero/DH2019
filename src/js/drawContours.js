@@ -5,8 +5,8 @@ const z = { x: 0, y: 0, k: 0 }
 
 const _computeDensityData = () => {
 
-    const ex = d3.extent(s.graph.nodes, d => d.x),
-        ey = d3.extent(s.graph.nodes, d => d.y),
+    const ex = d3.extent(s.nodes, d => d.x),
+        ey = d3.extent(s.nodes, d => d.y),
         em = Math.max(ex[1] - ex[0], ey[1] - ey[0])
 
     // const w = 4 * s.screen.width; // definition of the grid for the contours
@@ -25,7 +25,7 @@ const _computeDensityData = () => {
         .cellSize(1) // Crispness (1 = best resolution)
         .bandwidth(20) // Expansion of reliefs (40 = high simplification)
         .thresholds(10) // Indicative number of levels
-        (s.graph.nodes)
+        (s.nodes)
 
     s.densityData.forEach(d => d.coordinates = d.coordinates
         .map(d => d.map(d => d.map(

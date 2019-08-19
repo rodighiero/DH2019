@@ -187,14 +187,14 @@ fs.readFile(__dirname + '/data/docs.json', (err, data) => {
             const value = t1[token] + t2[token]
 
             if (link) {
-                link.v += value
+                link.value += value
                 link.tokens[token] = value
             } else {
                 links.push(
                     {
-                        s: p1.id,
-                        t: p2.id,
-                        v: value,
+                        source: p1.id,
+                        target: p2.id,
+                        value: value,
                         tokens: {
                             [token]: value,
                         }
@@ -207,8 +207,8 @@ fs.readFile(__dirname + '/data/docs.json', (err, data) => {
     })
 
     // Normalizing values between [0,1]
-    const maxLinkValue = links.reduce((max, link) => max > link.v ? max : link.v, 0)
-    links.forEach(link => link.v = link.v / maxLinkValue)
+    const maxLinkValue = links.reduce((max, link) => max > link.value ? max : link.value, 0)
+    links.forEach(link => link.value = link.value / maxLinkValue)
 
 
 

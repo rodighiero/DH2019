@@ -26,7 +26,7 @@ export const ticked = () => {
 
     // drawKeywords()
     nodes()
-    contours()
+    // contours()
 
     s.context.restore()
 }
@@ -56,8 +56,8 @@ export default () => {
     // .alphaDecay(.005)
     // .alpha(0.1)
 
-    simulation.nodes(s.graph.nodes)
-    simulation.force('link').links(s.graph.links)
+    simulation.nodes(s.nodes)
+    simulation.force('link').links(s.links)
 
 
 
@@ -99,6 +99,6 @@ export default () => {
     s.canvas.call(s.zoom)
 
 
-    click()
+    // click()
 
 }

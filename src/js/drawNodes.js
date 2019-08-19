@@ -13,7 +13,7 @@ export default () => {
     s.context.fillStyle = color
     s.context.font = fontStyle
 
-    s.graph.nodes.forEach(node => {
+    s.nodes.forEach(node => {
         s.context.moveTo(node.x, node.y)
         s.context.arc(node.x, node.y, radius, 0, degrees)
         s.context.fillText(`${node.id} (${node.docs})`, node.x, node.y + shift)

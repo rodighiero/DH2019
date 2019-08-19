@@ -16,16 +16,16 @@ Promise.all([
     d3.json(nodes),
     d3.json(links)
 ]).then(([nodes, links]) => {
-    console.log('nodes', nodes)
-    console.log('links', links)
     s.setScreen()
-    s.setLinks(links)
-    s.setNodes(nodes)
+    s.links = links
+    s.nodes = nodes
+    console.log('nodes', s.nodes.length)
+    console.log('links', s.links.length)
+    simulation()
 });
 
 
 //         // init_researcher_autocomplete()
-//         simulation()
 //         // d3.select('.autocomplete').on('click', function(){
 //         //       console.log('here', this);
 //         //   })

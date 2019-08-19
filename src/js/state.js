@@ -1,5 +1,4 @@
 import * as d3 from 'd3'
-import combinatorics from 'js-combinatorics'
 
 // const s
 
@@ -28,17 +27,6 @@ export let s = {
             .style('width', `${div.clientWidth}px`).style('height', `${div.clientHeight}px`)
             .attr('width', s.screen.width).attr('height', s.screen.height)
 
-    },
-
-    setLinks: links => {
-        s.links = links.map(link => {
-            link['source'] = link.s, link['target'] = link.t, link['value'] = link.v
-            delete link.s, delete link.t, delete link.v
-        })
-    },
-
-    setNodes: nodes => {
-        s.nodes = nodes
     },
 
     // setMatches: (matches) => {
