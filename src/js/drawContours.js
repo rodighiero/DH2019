@@ -21,10 +21,10 @@ const _computeDensityData = () => {
         .x(d => z.x + d.x * z.k)
         .y(d => z.y + d.y * z.k)
         .weight(d => d.docs)
-        .size([width, height])
-        .cellSize(1) // Crispness (1 = best resolution)
-        .bandwidth(20) // Expansion of reliefs (40 = high simplification)
-        .thresholds(10) // Indicative number of levels
+        .size([width/2, height/10])
+        // .cellSize(4) // Crispness (1 = best resolution)
+        // .bandwidth(10) // Expansion of reliefs (40 = high simplification)
+        // .thresholds(10) // Indicative number of levels
         (s.nodes)
 
     s.densityData.forEach(d => d.coordinates = d.coordinates
@@ -38,16 +38,16 @@ const color = d3.rgb(251, 253, 166)
 
 export default () => {
 
-    if (s.end && !s.densityData.length) _computeDensityData()
-    // _computeDensityData()
+    // if (s.end && !s.densityData.length) _computeDensityData()
+    _computeDensityData()
     const path = d3.geoPath().context(s.context)
 
     s.densityData
         .forEach((level, i) => {
             s.context.beginPath()
+            path(level)
             s.context.strokeStyle = color
             s.context.lineWidth = (.8 + (.1 * i))
-            path(level)
             s.context.stroke()
         })
 

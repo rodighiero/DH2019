@@ -142,7 +142,7 @@ fs.readFile(__dirname + '/data/docs.json', (err, data) => {
     })
 
     // 15 is a good value for final version; it can be lowered for testing
-    const tfidfLimit = 5
+    const tfidfLimit = 15
 
     items.forEach((item, i) => {
         console.log('Copying tokens for author #', i)
@@ -183,7 +183,7 @@ fs.readFile(__dirname + '/data/docs.json', (err, data) => {
 
         tokens.forEach(token => {
 
-            const link = links.find(link => link.s === p1.id && link.t === p2.id)
+            const link = links.find(link => link.source === p1.id && link.target === p2.id)
             const value = t1[token] + t2[token]
 
             if (link) {

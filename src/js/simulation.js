@@ -3,6 +3,7 @@ import { s } from './state'
 
 import click from './click'
 import nodes from './drawNodes'
+import keywords from './drawKeywords'
 import contours from './drawContours'
 
 window.s = s
@@ -24,9 +25,9 @@ export const ticked = () => {
     s.context.translate(x, y)
     s.context.scale(k, k)
 
-    // drawKeywords()
+    keywords()
     nodes()
-    // contours()
+    contours()
 
     s.context.restore()
 }
@@ -72,14 +73,14 @@ export default () => {
             .on('tick', ticked)
             .on('end', () => {
                 s.end = true
-                ticked()
+                // ticked()
             })
 
     } else {
         simulation.stop()
-        simulation.tick(100)
+        simulation.tick(1000)
         s.end = true
-        ticked()
+        // ticked()
     }
 
 

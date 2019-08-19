@@ -12,6 +12,7 @@ export default () => {
     s.context.beginPath()
     s.context.fillStyle = color
     s.context.font = fontStyle
+    s.context.textAlign = 'center'
 
     s.nodes.forEach(node => {
         s.context.moveTo(node.x, node.y)
