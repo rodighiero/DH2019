@@ -1,41 +1,44 @@
 # Lexical Network
 
-This visualization represents an exhercise to design a map of individuals from their documents. The visual method is based on the idea that authors can be described using their documents, and the vocabulary that authors share is an efficient way to situate individual in a space. Individuals that make use of the same terms are situated nearby, and this is true for all of them. The result should be a continuos lexical space composed of individuals in a lexical and continuos backgound of terms.
+This visualization represents a map of individuals starting from their documents. It is based on the idea that authors can be described using their documents and that the vocabulary that authors share is an efficient way to draw a space. Individuals that make use of the same terms are situated nearby, beyond any social distance. The result is a continuo lexical space composed of individuals and terms.
+
+The project is available at this URL [https://rodighiero.github.io/LexicalNetwork/](https://rodighiero.github.io/LexicalNetwork/)
+
+## To run the visualization on your local host
+
+Clone the repository, which is built with JavaScript and Node. Then install the needed libraries by typing: `npm install`
+
+The project can be tested on the local host by using `npm run start` and opening this [URL](http://localhost:8080) in your browser. The project can also be built typing `npm run build`
   
-The repositories is build with JavaScript and Node. To contiribute tot he repository you have to install the Node libraries typing:  
-`npm install`
-  
-Currently the project hosts two datasets, one of MIT thesis presenting the cartography of advisors, and one associated to the Digital Humanities Conference 2019. Both of them can be imported from the _data folder_ typing:  
+Currently the project hosts two datasets, one of MIT thesis presenting the cartography of advisors, and one associated to the Digital Humanities Conference 2019. Both of them can be imported from the _data_ folder typing:  
 `node import-DH2019` or `node import-MIT`  
   
 
-The import is strored into the same folder in a file called docs-XXX.json that contains the normalized documents, each of them being composed in this way:
+The import sores in the same folder a file called _docs.json_ that contains the documents in this way:
+
 ```
   {
     "id":
     "title":
-    "text": 
-    "advisors": []]
+    “body”: 
+    “authors”: []]
   }
 ```
-P.S. "Advisors has to be renamed with a more generic authors"  
+
   
-The docs-XXX.json is then loaded and parsed in the _analysis.js_, collecting texts by author and running text analysis to create different metrics. To run the analysis type:  
+The _docs.json_ is then loaded and parsed using _analysis.js_, that collects texts by author and runs text analysis to compute the lexical distance. To run the analysis type:  
 `node analysis`  
 
-The analysis produced the _advisors.json_ (to be renamed _authors.json_), which is an array of obejcts composed in this form:
+The analysis produced the _authors.json_, which is an array of objects composed in this form:
 ```
 {
     "id":  
     "docs":  
-    "text":  
-    "tokens": []  
-    "keywords": []  
-    "terms": {
-        "term": value,
+    [ 
+    "tokens": {
+        “token”: value,
     }
 },
 ```
-  
-  
-The project can be tested on localhost by using `npm run start` and opening this [URL](http://localhost:8080) in your browser. Inversely the project can be built typing `npm run build`
+
+Furthermore the analysis creates also the network used for rendering, which is composed of _nodes.js_ and _links.js_
