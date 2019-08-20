@@ -1,17 +1,15 @@
 import * as d3 from 'd3'
 import { s } from './state'
 
-const fontStyle = '1.5pt Helvetica'
 const radius = .5
 const degrees = 2 * Math.PI
-const color = d3.rgb(251, 253, 166)
 const shift = 4
 
 export default () => {
 
     s.context.beginPath()
-    s.context.fillStyle = color
-    s.context.font = fontStyle
+    s.context.fillStyle = s.colors.nodes
+    s.context.font = s.style.fontNodes
     s.context.textAlign = 'center'
 
     s.nodes.forEach(node => {

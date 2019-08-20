@@ -5,12 +5,8 @@ export default () => {
 
     const max = 3
     const distance = 10
-    const fontSize = 1.2
-    const lineSpacing = fontSize * 2
     const d_min = Math.pow(distance * 2 - 20, 2)
     const d_max = Math.pow(distance * 2 + 20, 2)
-
-
 
     s.links.forEach(link => {
 
@@ -23,14 +19,14 @@ export default () => {
             const tokens = Object.getOwnPropertyNames(link.tokens).slice(0, max)
             const x = deltaX / 2 + (link.source.x < link.target.x ? link.source.x : link.target.x)
             const y = deltaY / 2 + (link.source.y < link.target.y ? link.source.y : link.target.y)
-            const height = tokens.length * lineSpacing
+            const height = tokens.length * s.style.lineHeightKeywords
 
             tokens.forEach((token, i) => {
                 s.context.beginPath()
-                s.context.fillStyle = d3.rgb(251, 253, 166)
+                s.context.fillStyle = s.colors.keywords
                 s.context.textAlign = 'center'
-                s.context.font = `normal 300 ${fontSize}pt Helvetica`
-                s.context.fillText(token, x, y + height / 2 + i * lineSpacing)
+                s.context.font = s.style.fontKeywords
+                s.context.fillText(token, x, y + height / 2 + i * s.style.lineHeightKeywords)
                 s.context.fill()
             })
 

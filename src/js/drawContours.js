@@ -24,7 +24,7 @@ const _computeDensityData = () => {
         .size([width/2, height/10])
         // .cellSize(4) // Crispness (1 = best resolution)
         // .bandwidth(10) // Expansion of reliefs (40 = high simplification)
-        // .thresholds(10) // Indicative number of levels
+        // .thresholds(5) // Indicative number of levels
         (s.nodes)
 
     s.densityData.forEach(d => d.coordinates = d.coordinates
@@ -34,7 +34,6 @@ const _computeDensityData = () => {
     )
 }
 
-const color = d3.rgb(251, 253, 166)
 
 export default () => {
 
@@ -46,7 +45,7 @@ export default () => {
         .forEach((level, i) => {
             s.context.beginPath()
             path(level)
-            s.context.strokeStyle = color
+            s.context.strokeStyle = s.colors.contours
             s.context.lineWidth = (.8 + (.1 * i))
             s.context.stroke()
         })

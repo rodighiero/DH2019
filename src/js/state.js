@@ -1,8 +1,24 @@
 import * as d3 from 'd3'
 
-// const s
+const fontSizeKeywords = 1.2
 
 export let s = {
+
+    // Yellow d3.rgb(251, 253, 166)
+
+    colors: {
+        backgroundLeft: d3.rgb(255, 144, 104),
+        backgroundRight: d3.rgb(253, 116, 108),
+        contours: d3.rgb(251, 253, 166),
+        keywords: d3.rgb(39, 72, 100),
+        nodes: d3.rgb(39, 72, 100),
+    },
+
+    style: {
+        fontKeywords: `normal 300 ${fontSizeKeywords}pt Helvetica`,
+        lineHeightKeywords: fontSizeKeywords * 2,
+        fontNodes: `bold 1.8pt Helvetica`
+    },
 
     densityData: [],
     distance: 30,
@@ -26,6 +42,10 @@ export let s = {
         s.canvas
             .style('width', `${div.clientWidth}px`).style('height', `${div.clientHeight}px`)
             .attr('width', s.screen.width).attr('height', s.screen.height)
+
+        s.gradient = s.context.createLinearGradient(0, 0, s.screen.width / 2, 0)
+        s.gradient.addColorStop(0, s.colors.backgroundLeft)
+        s.gradient.addColorStop(1, s.colors.backgroundRight)
 
     },
 

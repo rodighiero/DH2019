@@ -11,8 +11,8 @@ export default () => {
             y = s.zoomIdentity.invertY(event.y * s.screen.density),
             radius = 30
 
-        for (let i = s.graph.nodes.length - 1; i >= 0; --i) {
-            const node = s.graph.nodes[i],
+        for (let i = s.nodes.length - 1; i >= 0; --i) {
+            const node = s.nodes[i],
                 dx = x - node.x,
                 dy = y - node.y
 

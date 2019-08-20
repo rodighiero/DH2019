@@ -14,6 +14,8 @@ s.zoomIdentity = d3.zoomIdentity
 // Ticked
 //
 
+
+
 export const ticked = () => {
 
     const x = s.zoomIdentity.x * s.screen.density
@@ -22,12 +24,16 @@ export const ticked = () => {
 
     s.context.save()
     s.context.clearRect(0, 0, s.screen.width, s.screen.height)
+
+    s.context.fillStyle = s.gradient
+    s.context.fillRect(0, 0, s.screen.width, s.screen.height)
+
     s.context.translate(x, y)
     s.context.scale(k, k)
 
+    contours()
     keywords()
     nodes()
-    contours()
 
     s.context.restore()
 }
@@ -45,8 +51,8 @@ export default () => {
             // .distanceMin(distance)
         )
         .force('collide', d3.forceCollide()
-            .radius(20)
-            // .strength(1)
+            .radius(40)
+            .strength(.2)
             // .iterations(5)
         )
         .force('center', d3.forceCenter(s.screen.width / 2, s.screen.height / 2))
@@ -100,6 +106,6 @@ export default () => {
     s.canvas.call(s.zoom)
 
 
-    // click()
+    click()
 
 }
