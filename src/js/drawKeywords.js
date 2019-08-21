@@ -4,7 +4,7 @@ import { s } from './state'
 export default () => {
 
     const max = 3
-    const distance = 10
+    const distance = 20
     const d_min = Math.pow(distance * 2 - 20, 2)
     const d_max = Math.pow(distance * 2 + 20, 2)
 

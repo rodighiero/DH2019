@@ -22,9 +22,9 @@ const _computeDensityData = () => {
         .y(d => z.y + d.y * z.k)
         .weight(d => d.docs)
         .size([width/2, height/10])
-        // .cellSize(4) // Crispness (1 = best resolution)
+        .cellSize(2) // Crispness (1 = best resolution)
         // .bandwidth(10) // Expansion of reliefs (40 = high simplification)
-        // .thresholds(5) // Indicative number of levels
+        // .thresholds(6) // Indicative number of levels
         (s.nodes)
 
     s.densityData.forEach(d => d.coordinates = d.coordinates

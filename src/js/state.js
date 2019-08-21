@@ -4,6 +4,11 @@ const fontSizeKeywords = 1.2
 
 export let s = {
 
+    distance: 30,
+    densityData: [],
+    zoomIdentity: null,
+    screen: {},
+
     // Yellow d3.rgb(251, 253, 166)
 
     colors: {
@@ -20,15 +25,11 @@ export let s = {
         fontNodes: `bold 1.8pt Helvetica`
     },
 
-    densityData: [],
-    distance: 30,
-    zoomIdentity: null,
-    screen: {},
-
     setScreen: () => {
 
         s.canvas = d3.select('canvas')
         s.context = document.querySelector('canvas').getContext('2d')
+        s.context.scale(2,2)
 
         // if ('devicePixelRatio' in window && window.devicePixelRatio > 1)
         //     s.screen.density = window.devicePixelRatio
