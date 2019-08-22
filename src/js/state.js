@@ -14,9 +14,10 @@ export let s = {
     colors: {
         backgroundLeft: d3.rgb(255, 144, 104),
         backgroundRight: d3.rgb(253, 116, 108),
-        contours: d3.rgb(251, 253, 166),
-        keywords: d3.rgb(39, 72, 100),
-        nodes: d3.rgb(39, 72, 100),
+        // contours: d3.rgb(251, 253, 166), // Lemon
+        contours: d3.rgb(251, 158, 129), // Pompelmus
+        keywords: d3.rgb(100, 79, 39),
+        nodes: d3.rgb(39, 72, 100), // Blue
     },
 
     style: {
