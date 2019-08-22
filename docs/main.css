@@ -21,6 +21,7 @@ body, html, canvas {
 	/* color: rgb(251,253,166); */
 	color: rgb(255,255,255);
 	overflow: hidden;
+	margin: 0;
 }
 
 a {
