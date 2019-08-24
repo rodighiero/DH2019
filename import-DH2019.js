@@ -21,6 +21,8 @@ id = 0
 
 $('TEI').each((i, doc) => {
 
+    console.log('-----------------')
+
     let obj = {}
 
     // ID
@@ -50,9 +52,14 @@ $('TEI').each((i, doc) => {
 
     const authors = $(doc).find('author').children()//.text().replace(/\s\s+/g, ' ')
     let authors_list = []
+    // console.log(authors.html())
+    // console.log(authors.html())
     authors.each(function (i, elem) {
         if (i % 3 == 0) { // author name only
-            authors_list[i] = $(this).text().replace(/\s\s+/g, ' ').trim();
+            const forename = $(this).find('forename').text()
+            const surname = $(this).find('surname').text()
+            authors_list[i] = `${surname}, ${forename}`
+            // authors_list[i] = $(this).text().replace(/\s\s+/g, ' ').trim()
         }
     })
 

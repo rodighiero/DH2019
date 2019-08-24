@@ -15,6 +15,11 @@ export default () => {
 
         if ((d_min < distance) && (distance < d_max)) {
 
+            // Idea: filter keywords both by zoom level and font size
+            // Bigger fonts are visible from a distant point of view
+            // Small fonts will be visible when closer
+            // Selec on the list the closer size
+
             const x = deltaX / 2 + (link.source.x < link.target.x ? link.source.x : link.target.x)
             const y = deltaY / 2 + (link.source.y < link.target.y ? link.source.y : link.target.y)
 
