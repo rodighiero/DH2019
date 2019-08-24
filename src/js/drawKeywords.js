@@ -20,12 +20,18 @@ export default () => {
             // Small fonts will be visible when closer
             // Selec on the list the closer size
 
+            // Zoom Extent [.3, 10]
+            // Keyword extent [, 4562]
+
+            // console.log(s.zoomIdentity)
+
             const x = deltaX / 2 + (link.source.x < link.target.x ? link.source.x : link.target.x)
             const y = deltaY / 2 + (link.source.y < link.target.y ? link.source.y : link.target.y)
 
             const tokens = Object.entries(link.tokens).slice(0, max)
 
             for (const [key, value] of tokens) {
+                // console.log(value)
                 s.context.beginPath()
                 s.context.fillStyle = s.colors.keywords
                 s.context.textAlign = 'center'

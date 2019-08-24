@@ -116,7 +116,7 @@ fs.readFile(__dirname + '/data/docs.json', (err, data) => {
 
     const tokenFrequency = new natural.TfIdf() // term frequency inverse doc frequency
     const tokenizer = new natural.WordTokenizer()
-    const stopWords = ['humanity', 'digital', 'data', 'dh']
+    const stopWords = ['humanity', 'digital', 'data', 'dh', 'https', 'www', '00', 'la']
 
     items.forEach((item, i) => {
         console.log('Computing token for author #', i)
@@ -208,6 +208,7 @@ fs.readFile(__dirname + '/data/docs.json', (err, data) => {
 
     // Normalizing values between [0,1]
     const maxLinkValue = links.reduce((max, link) => max > link.value ? max : link.value, 0)
+    const minLinkValue = links.reduce((min, link) => min < link.value ? min : link.value, 100000)
     links.forEach(link => link.value = link.value / maxLinkValue)
 
 
@@ -220,6 +221,7 @@ fs.readFile(__dirname + '/data/docs.json', (err, data) => {
     console.log(`     nodes.json : ${format(nodes)}kb for ${nodes.length} authors`)
     console.log(`     links.json : ${format(links)}kb for ${links.length} links`)
     console.log(`   maxLinkValue : ${maxLinkValue}`)
+    console.log(`   minLinkValue : ${minLinkValue}`)
     console.log(`maxCommonTokens : ${maxCommonTokens}`)
 
     fs.writeFile('./src/data/nodes.json', JSON.stringify(nodes), err => { if (err) throw err })
