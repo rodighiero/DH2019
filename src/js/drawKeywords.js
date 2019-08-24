@@ -3,10 +3,9 @@ import { s } from './state'
 
 export default () => {
 
-    const max = 3
-    const distance = 20
-    const d_min = Math.pow(distance * 2 - 20, 2)
-    const d_max = Math.pow(distance * 2 + 20, 2)
+    const max = 1
+    const d_min = Math.pow(s.distance * 2, 2)
+    const d_max = Math.pow(s.distance * 4, 2)
 
     s.links.forEach(link => {
 
@@ -16,19 +15,19 @@ export default () => {
 
         if ((d_min < distance) && (distance < d_max)) {
 
-            const tokens = Object.getOwnPropertyNames(link.tokens).slice(0, max)
             const x = deltaX / 2 + (link.source.x < link.target.x ? link.source.x : link.target.x)
             const y = deltaY / 2 + (link.source.y < link.target.y ? link.source.y : link.target.y)
-            const height = tokens.length * s.style.lineHeightKeywords
 
-            tokens.forEach((token, i) => {
+            const tokens = Object.entries(link.tokens).slice(0, max)
+
+            for (const [key, value] of tokens) {
                 s.context.beginPath()
                 s.context.fillStyle = s.colors.keywords
                 s.context.textAlign = 'center'
-                s.context.font = s.style.fontKeywords
-                s.context.fillText(token, x, y + height / 2 + i * s.style.lineHeightKeywords)
+                s.context.font = `normal 300 ${value * .1}pt Helvetica`
+                s.context.fillText(key, x, y)
                 s.context.fill()
-            })
+            }
 
         }
 

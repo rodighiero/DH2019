@@ -4,7 +4,7 @@ const fontSizeKeywords = 1.2
 
 export let s = {
 
-    distance: 30,
+    distance: 20,
     densityData: [],
     zoomIdentity: null,
     screen: {},
@@ -21,8 +21,6 @@ export let s = {
     },
 
     style: {
-        fontKeywords: `normal 300 ${fontSizeKeywords}pt Helvetica`,
-        lineHeightKeywords: fontSizeKeywords * 2,
         fontNodes: `bold 1.8pt Helvetica`
     },
 

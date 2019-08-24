@@ -20,14 +20,14 @@ export default () => {
 
     const simulation = d3.forceSimulation()
         .force('charge', d3.forceManyBody()
-            .strength(-500)
-            .distanceMin(60)
+            .strength(-2000)
+            // .distanceMin(60)
             // .distanceMax(400)
         )
         .force('collide', d3.forceCollide()
             .radius(s.distance)
             .strength(.2)
-            .iterations(5)
+            // .iterations(5)
         )
         .force('center', d3.forceCenter(s.screen.width / 2, s.screen.height / 2))
         .force('link', d3.forceLink()
@@ -53,7 +53,7 @@ export default () => {
             .on('tick', ticked)
             .on('end', () => {
                 s.end = true
-                // ticked()
+                ticked()
             })
 
     } else {

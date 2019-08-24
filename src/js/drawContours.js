@@ -32,8 +32,8 @@ const _computeDensityData = () => {
 
 export default () => {
 
-    // if (s.end && !s.densityData.length) _computeDensityData()
-    _computeDensityData()
+    if (s.end && !s.densityData.length) _computeDensityData()
+    // _computeDensityData()
     const path = d3.geoPath().context(s.context)
 
     s.densityData
