@@ -116,14 +116,14 @@ fs.readFile(__dirname + '/data/docs.json', (err, data) => {
 
     const tokenFrequency = new natural.TfIdf() // term frequency inverse doc frequency
     const tokenizer = new natural.WordTokenizer()
-    // const stopWords = ['not', 'go', 'http', 'https']
+    const stopWords = ['humanity', 'digital', 'data', 'dh']
 
     items.forEach((item, i) => {
         console.log('Computing token for author #', i)
         item.tokens = tokenizer.tokenize(item.text)
     })
 
-    // items.forEach(item => item.tokens = item.tokens.filter(token => !stopWords.includes(token)))
+    items.forEach(item => item.tokens = item.tokens.filter(token => !stopWords.includes(token)))
     items.forEach(item => item.tokens = item.tokens.filter(token => !parseInt(token)))
     items.forEach(item => item.tokens = sw.removeStopwords(item.tokens))
     items.forEach(item => item.tokens = sw.removeStopwords(item.tokens, sw.br))
