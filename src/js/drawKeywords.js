@@ -7,6 +7,29 @@ export default () => {
     const d_min = Math.pow(s.distance * 2, 2)
     const d_max = Math.pow(s.distance * 4, 2)
 
+    // const values = {
+    //     min: s.links.reduce((min, link) => {
+    //         const tokens = Object.entries(link.tokens)
+    //         for (const [key, value] of tokens) {
+    //             return min < value ? min : value
+    //         }
+    //     }, 100000),
+    //     max: s.links.reduce((min, link) => {
+    //         const tokens = Object.entries(link.tokens)
+    //         for (const [key, value] of tokens) {
+    //             return min > value ? min : value
+    //         }
+    //     }, 0)
+    // }
+
+    // // console.log([values.min, values.max])
+
+    // // return
+
+    // const scale = d3.scaleLinear()
+    //     .domain([values.min, values.max])
+    //     .range([.3, 10])
+
     s.links.forEach(link => {
 
         const deltaX = Math.abs(link.source.x - link.target.x)
@@ -31,6 +54,8 @@ export default () => {
             const tokens = Object.entries(link.tokens).slice(0, max)
 
             for (const [key, value] of tokens) {
+                // console.log(scale(value), s.zoomIdentity.k)
+                // if ((scale(value) + .1 > s.zoomIdentity.k) && (scale(value) - .1 < s.zoomIdentity.k)) {
                 // console.log(value)
                 s.context.beginPath()
                 s.context.fillStyle = s.colors.keywords
@@ -38,6 +63,7 @@ export default () => {
                 s.context.font = `normal 300 ${value * .1}pt Helvetica`
                 s.context.fillText(key, x, y)
                 s.context.fill()
+                // }
             }
 
         }
