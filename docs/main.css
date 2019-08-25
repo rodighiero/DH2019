@@ -15,13 +15,16 @@
 }
 
 body, html, canvas {
-	width: 100%;
-	height: 100%;
-	background-color:black;
-	/* color: rgb(251,253,166); */
 	color: rgb(255,255,255);
 	overflow: hidden;
 	margin: 0;
+}
+
+canvas {
+	top: 0;
+	left: 0;
+	display: block;
+	position: absolute;
 }
 
 a {

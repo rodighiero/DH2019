@@ -26,26 +26,38 @@ export let s = {
 
     setScreen: () => {
 
-        s.canvas = d3.select('canvas')
-        s.context = document.querySelector('canvas').getContext('2d')
-        s.context.scale(2,2)
+        if ('devicePixelRatio' in window && window.devicePixelRatio > 1) {
+            s.screen.density = window.devicePixelRatio
+            console.log('screen density:', s.screen.density)
+        }
 
-        // if ('devicePixelRatio' in window && window.devicePixelRatio > 1)
-        //     s.screen.density = window.devicePixelRatio
-        // desnsity is set at 1 to simplifying coding at this moment
+        const body = document.querySelector('body')
 
-        s.screen.density = 1
-        const div = document.getElementById('simulation')
-        s.screen.width = div.clientWidth * s.screen.density
-        s.screen.height = div.clientHeight * s.screen.density
+        s.screen.width = body.clientWidth * s.screen.density
+        s.screen.height = body.clientHeight * s.screen.density
+
+        s.canvas = d3.select('#visualization')
+
+        s.context = document.querySelector('#visualization').getContext('2d')
+        s.context.scale(s.screen.density, s.screen.density)
 
         s.canvas
-            .style('width', `${div.clientWidth}px`).style('height', `${div.clientHeight}px`)
+            .style('width', `${body.clientWidth}px`).style('height', `${body.clientHeight}px`)
             .attr('width', s.screen.width).attr('height', s.screen.height)
 
-        s.gradient = s.context.createLinearGradient(0, 0, s.screen.width / 2, 0)
-        s.gradient.addColorStop(0, s.colors.backgroundLeft)
-        s.gradient.addColorStop(1, s.colors.backgroundRight)
+        d3.select('#background')
+            .style('width', `${body.clientWidth}px`).style('height', `${body.clientHeight}px`)
+            .attr('width', s.screen.width).attr('height', s.screen.height)
+
+        const bgContext = document.querySelector('#background').getContext('2d', { alpha: false })
+        
+        const gradient = bgContext.createLinearGradient(0, 0, s.screen.width / 2, 0)
+        
+        gradient.addColorStop(0, s.colors.backgroundLeft)
+        gradient.addColorStop(1, s.colors.backgroundRight)
+        
+        bgContext.fillStyle = gradient
+        bgContext.fillRect(0, 0, s.screen.width, s.screen.height)
 
     },
 
