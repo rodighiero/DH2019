@@ -55,7 +55,7 @@ export default () => {
 
             tokens.forEach(([key, value]) => {
 
-                s.context.font = `normal 300 ${value * .1}pt Helvetica`
+                s.context.font = `normal 300 ${value * .05}pt Helvetica`
                 s.context.fillText(key, x, y)
                 
                 const rect = [
