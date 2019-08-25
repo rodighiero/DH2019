@@ -126,7 +126,7 @@ fs.readFile(__dirname + '/data/docs.json', (err, data) => {
     items.forEach(item => item.tokens = item.tokens.map(t => inflector.singularize(t)))
 
     // Cleaning
-    const stopWords = ['humanity', 'digital', 'data', 'dh', 'http', 'https', 'www', '00', 'la', 'research', 'thi', 'community', 'project']
+    const stopWords = ['humanity', 'digital', 'data', 'dh', 'http', 'www', '00', 'la', 'research', 'thi', 'community', 'project', 'ko']
     items.forEach(item => item.tokens = item.tokens.filter(token => !stopWords.includes(token)))
     items.forEach(item => item.tokens = item.tokens.filter(token => !parseInt(token)))
     items.forEach(item => item.tokens = sw.removeStopwords(item.tokens))
@@ -144,7 +144,7 @@ fs.readFile(__dirname + '/data/docs.json', (err, data) => {
     })
 
     // 15 is a good value for final version; it can be lowered for testing
-    const tfidfLimit = 15
+    const tfidfLimit = 20
 
     items.forEach((item, i) => {
         console.log('Reducing tokens for author #', i)

@@ -50,14 +50,14 @@ export default () => {
             const tokens = Object.entries(link.tokens)
                 .filter(token => {
                     const scale = s.keywordScale(token[1])
-                    return (s.zoomIdentity.k - 1 <= scale && scale <= s.zoomIdentity.k + 1)
+                    return (s.zoomIdentity.k <= scale && scale <= s.zoomIdentity.k + 2)
                 })
                 .filter(token => {
                     const rect = [
                         x,
                         y,
-                        s.context.measureText(token[0]).width,
-                        s.context.measureText('M').width * 1.5
+                        s.context.measureText(token[0]).width * 1.1,
+                        s.context.measureText('M').width * 1.8
                     ]
                     const result = !overlap(rect)
                     return result
@@ -70,14 +70,14 @@ export default () => {
 
             tokens.forEach(([key, value]) => {
 
-                s.context.font = `normal 300 ${value * .05}pt Helvetica`
+                s.context.font = `normal 300 ${value * .08}pt Helvetica`
                 s.context.fillText(key, x, y)
 
                 const rect = [
                     x,
                     y,
-                    s.context.measureText(key).width,
-                    s.context.measureText('M').width * 1.5
+                    s.context.measureText(key).width * 1.1,
+                    s.context.measureText('M').width * 1.8
                 ]
 
                 rectangles.push(rect)
