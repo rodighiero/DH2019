@@ -3,9 +3,6 @@ import { s } from './state'
 
 export default () => {
 
-    const max = 1
-    const d_min = Math.pow(s.distance * 2, 2)
-    const d_max = Math.pow(s.distance * 4, 2)
 
     // const values = {
     //     min: s.links.reduce((min, link) => {
@@ -29,6 +26,10 @@ export default () => {
     // const scale = d3.scaleLinear()
     //     .domain([values.min, values.max])
     //     .range([.3, 10])
+
+    const max = 1
+    const d_min = Math.pow(s.distance * 1.5, 2)
+    const d_max = Math.pow(s.distance * 2.5, 2)
 
     s.links.forEach(link => {
 
@@ -60,7 +61,8 @@ export default () => {
                 s.context.beginPath()
                 s.context.fillStyle = s.colors.keywords
                 s.context.textAlign = 'center'
-                s.context.font = `normal 300 ${value * .1}pt Helvetica`
+                s.context.font = `normal 300 ${value * .05}pt Helvetica`
+                // s.context.font = `normal 300 2pt Helvetica`
                 s.context.fillText(key, x, y)
                 s.context.fill()
                 // }

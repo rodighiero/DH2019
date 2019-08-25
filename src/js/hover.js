@@ -1,8 +1,6 @@
 import * as d3 from 'd3'
 import { s } from './state'
 
-// Click
-
 export default () => {
 
     const hover = () => {
@@ -24,13 +22,11 @@ export default () => {
                     return tokens
                 }, [])
 
-                let text = ''
-                text += `<p><strong>${node.id}</strong></p>`
+                let text = `<p><strong>${node.id}</strong></p>`
                 text += `<p>Number of papers: ${node.docs}</p>`
                 text += `<p>Tokens:<br/>${tokens.join('<br/>')}</p>`
                 d3.select('#focus').html(text)
 
-                break
             }
         }
 
