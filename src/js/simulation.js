@@ -74,8 +74,8 @@ export default () => {
         ticked()
     })
 
-    s.zoom.scaleExtent([.1, 10])
-    s.zoom.scaleTo(s.canvas, .3)
+    s.zoom.scaleExtent(s.zoomExtent)
+    s.zoom.scaleTo(s.canvas, s.zoomExtent[0])
 
     s.canvas.call(s.zoom)
 

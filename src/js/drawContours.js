@@ -32,18 +32,20 @@ const _computeDensityData = () => {
 
 export default () => {
 
-    if (s.end && !s.densityData.length) _computeDensityData()
+    if (s.end) _computeDensityData()
     // _computeDensityData()
     const path = d3.geoPath().context(s.context)
 
+    s.context.beginPath()
+    s.context.strokeStyle = s.colors.contours
+
     s.densityData
         .forEach((level, i) => {
-            s.context.beginPath()
             path(level)
-            s.context.strokeStyle = s.colors.contours
-            s.context.lineWidth = 1
-            // s.context.lineWidth = (.8 + (.1 * i))
-            s.context.stroke()
+            // s.context.lineWidth = 1
+            s.context.lineWidth = (.8 + (.1 * i))
         })
+
+    s.context.stroke()
 
 }

@@ -16,9 +16,10 @@ Promise.all([
     d3.json(nodes),
     d3.json(links)
 ]).then(([nodes, links]) => {
-    s.setScreen()
     s.links = links
     s.nodes = nodes
+    s.setScreen()
+    s.setVaribles()
     console.log('nodes', s.nodes.length)
     console.log('links', s.links.length)
     simulation()

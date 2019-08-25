@@ -7,6 +7,7 @@ export let s = {
     distance: 20,
     densityData: [],
     zoomIdentity: null,
+    zoomExtent: [1, 10],
     screen: {},
 
     // Yellow d3.rgb(251, 253, 166)
@@ -22,6 +23,29 @@ export let s = {
 
     style: {
         fontNodes: `bold 1.8pt Helvetica`
+    },
+
+    setVaribles: () => {
+
+        s.linkExtent = [
+            s.links.reduce((min, link) => {
+                const tokens = Object.entries(link.tokens)
+                for (const [key, value] of tokens) {
+                    return min < value ? min : value
+                }
+            }, Infinity),
+            s.links.reduce((min, link) => {
+                const tokens = Object.entries(link.tokens)
+                for (const [key, value] of tokens) {
+                    return min > value ? min : value
+                }
+            }, 0)
+        ]
+
+        s.keywordScale = d3.scaleLinear()
+            .domain(s.linkExtent)
+            .range(s.zoomExtent)
+
     },
 
     setScreen: () => {
@@ -56,12 +80,12 @@ export let s = {
             .attr('width', s.screen.width).attr('height', s.screen.height)
 
         const bgContext = document.querySelector('#background').getContext('2d', { alpha: false })
-        
+
         const gradient = bgContext.createLinearGradient(0, 0, s.screen.width / 2, 0)
-        
+
         gradient.addColorStop(0, s.colors.backgroundLeft)
         gradient.addColorStop(1, s.colors.backgroundRight)
-        
+
         bgContext.fillStyle = gradient
         bgContext.fillRect(0, 0, s.screen.width, s.screen.height)
 
