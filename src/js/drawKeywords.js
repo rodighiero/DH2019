@@ -5,7 +5,6 @@ export default () => {
     const max = 1
     const d_min = Math.pow(s.distance * 1.5, 2)
     const d_max = Math.pow(s.distance * 2.5, 2)
-
     let rectangles = []
 
     const overlap = current => {
@@ -21,7 +20,21 @@ export default () => {
         return result
     }
 
-    s.links.forEach(link => {
+    // const outside = (x, y) => {
+    //     let result = false
+    //     const invertX = s.zoomIdentity.invertX(x) * s.screen.density
+    //     const invertY = s.zoomIdentity.invertY(y) * s.screen.density
+    //     if (invertX < 0 || invertX > s.screen.width || invertY < 0 || invertX > s.screen.height) {
+    //         result = true
+    //     }
+    //     console.log(result, invertX, invertY)
+    //     return result
+    // }
+
+    // s.links.forEach(link => {
+    for (let i = 0; i < s.links.length; i++) {
+
+        const link = s.links[i]
 
         const deltaX = Math.abs(link.source.x - link.target.x)
         const deltaY = Math.abs(link.source.y - link.target.y)
@@ -31,6 +44,8 @@ export default () => {
 
             const x = (deltaX / 2 + (link.source.x < link.target.x ? link.source.x : link.target.x))
             const y = (deltaY / 2 + (link.source.y < link.target.y ? link.source.y : link.target.y))
+
+            // if (outside(x, y)) continue
 
             const tokens = Object.entries(link.tokens)
                 .filter(token => {
@@ -57,7 +72,7 @@ export default () => {
 
                 s.context.font = `normal 300 ${value * .05}pt Helvetica`
                 s.context.fillText(key, x, y)
-                
+
                 const rect = [
                     x,
                     y,
@@ -74,6 +89,6 @@ export default () => {
 
         }
 
-    })
+    }
 
 }
