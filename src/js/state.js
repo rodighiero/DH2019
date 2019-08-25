@@ -46,6 +46,8 @@ export let s = {
             .domain(s.linkExtent)
             .range(s.zoomExtent)
 
+        s.geoPath = d3.geoPath().context(s.context)
+
     },
 
     setScreen: () => {
