@@ -26,15 +26,19 @@ export let s = {
 
     setScreen: () => {
 
+        const body = document.querySelector('body')
+
+        // Screen density
+
         if ('devicePixelRatio' in window && window.devicePixelRatio > 1) {
             s.screen.density = window.devicePixelRatio
             console.log('screen density:', s.screen.density)
         }
 
-        const body = document.querySelector('body')
-
         s.screen.width = body.clientWidth * s.screen.density
         s.screen.height = body.clientHeight * s.screen.density
+
+        // Visualization canvas
 
         s.canvas = d3.select('#visualization')
 
@@ -44,6 +48,8 @@ export let s = {
         s.canvas
             .style('width', `${body.clientWidth}px`).style('height', `${body.clientHeight}px`)
             .attr('width', s.screen.width).attr('height', s.screen.height)
+
+        // Background canvas
 
         d3.select('#background')
             .style('width', `${body.clientWidth}px`).style('height', `${body.clientHeight}px`)
