@@ -11,13 +11,10 @@ export default () => {
     s.context.save()
     s.context.clearRect(0, 0, s.screen.width, s.screen.height)
 
-    // s.context.fillStyle = s.gradient
-    // s.context.fillRect(0, 0, s.screen.width, s.screen.height)
-
     s.context.translate(x, y)
     s.context.scale(k, k)
 
-    contours()
+    // contours()
     keywords()
     nodes()
 

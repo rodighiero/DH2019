@@ -42,9 +42,9 @@ export let s = {
             }, 0)
         ]
 
-        s.keywordScale = d3.scaleLinear()
+        s.keywordScale = d3.scalePow()
             .domain(s.linkExtent)
-            .range(s.zoomExtent)
+            .range([s.zoomExtent[1], s.zoomExtent[0]])
 
         s.geoPath = d3.geoPath().context(s.context)
 
