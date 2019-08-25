@@ -10,10 +10,12 @@ export default () => {
     s.context.textAlign = 'center'
 
     s.nodes.forEach(node => {
-        const name = node.id.split(', ')
-        s.context.fillText(name[1], node.x, node.y - shift)
-        s.context.fillText(name[0], node.x, node.y)
-        s.context.fillText(`(${node.docs})`, node.x, node.y + shift)
+        const name = node.id.split(', '),
+            x = ~~node.x,
+            y = ~~node.y
+        s.context.fillText(name[1], x, y - shift)
+        s.context.fillText(name[0], x, y)
+        s.context.fillText(`(${node.docs})`, x, y + shift)
     })
 
     s.context.fill()

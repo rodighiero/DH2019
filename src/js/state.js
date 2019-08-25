@@ -42,7 +42,7 @@ export let s = {
             }, 0)
         ]
 
-        s.keywordScale = d3.scalePow()
+        s.keywordScale = d3.scaleLog()
             .domain(s.linkExtent)
             .range([s.zoomExtent[1], s.zoomExtent[0]])
 
