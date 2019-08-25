@@ -1,6 +1,6 @@
-import nodes from './drawNodes'
-import keywords from './drawKeywords'
 import contours from './drawContours'
+import keywords from './drawKeywords'
+import nodes from './drawNodes'
 
 export default () => {
 
@@ -9,8 +9,8 @@ export default () => {
     const k = s.zoomIdentity.k
 
     s.context.save()
-    s.context.clearRect(0, 0, s.screen.width, s.screen.height)
 
+    s.context.clearRect(0, 0, s.screen.width, s.screen.height)
     s.context.translate(x, y)
     s.context.scale(k, k)
 
@@ -19,4 +19,5 @@ export default () => {
     nodes()
 
     s.context.restore()
+
 }
