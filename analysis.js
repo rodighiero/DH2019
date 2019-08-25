@@ -111,18 +111,22 @@ fs.readFile(__dirname + '/data/docs.json', (err, data) => {
 
 
     // 
-    // Token Frequency Analysis
+    // Text Analysis
     //
 
-    const tokenFrequency = new natural.TfIdf() // term frequency inverse doc frequency
+    // Tokenizer
     const tokenizer = new natural.WordTokenizer()
-    const stopWords = ['humanity', 'digital', 'data', 'dh', 'https', 'www', '00', 'la']
-
     items.forEach((item, i) => {
         console.log('Computing token for author #', i)
         item.tokens = tokenizer.tokenize(item.text)
     })
 
+    // Singularize
+    const inflector = new natural.NounInflector()
+    items.forEach(item => item.tokens = item.tokens.map(t => inflector.singularize(t)))
+
+    // Cleaning
+    const stopWords = ['humanity', 'digital', 'data', 'dh', 'https', 'www', '00', 'la', 'research', 'thi', 'community', 'project']
     items.forEach(item => item.tokens = item.tokens.filter(token => !stopWords.includes(token)))
     items.forEach(item => item.tokens = item.tokens.filter(token => !parseInt(token)))
     items.forEach(item => item.tokens = sw.removeStopwords(item.tokens))
@@ -132,10 +136,8 @@ fs.readFile(__dirname + '/data/docs.json', (err, data) => {
     items.forEach(item => item.tokens = sw.removeStopwords(item.tokens, sw.it))
     items.forEach(item => item.tokens = sw.removeStopwords(item.tokens, sw.pt))
 
-    // Singularize (TODO Check language and do stemming just for English)
-    const inflector = new natural.NounInflector()
-    items.forEach(item => item.tokens = item.tokens.map(t => inflector.singularize(t)))
-
+    // TF-IDF
+    const tokenFrequency = new natural.TfIdf()
     items.forEach((item, i) => {
         console.log('Computing token frequency for author #', i)
         tokenFrequency.addDocument(item.tokens)
@@ -145,7 +147,7 @@ fs.readFile(__dirname + '/data/docs.json', (err, data) => {
     const tfidfLimit = 15
 
     items.forEach((item, i) => {
-        console.log('Copying tokens for author #', i)
+        console.log('Reducing tokens for author #', i)
         item.tokens = tokenFrequency.listTerms(i)
             // .filter(el => el.tfidf > tfidfLimit) // On threshold
             .slice(0, tfidfLimit) // On top elements

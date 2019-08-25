@@ -7,31 +7,33 @@ export default () => {
 
     const hover = () => {
 
-        const x = s.zoomIdentity.invertX(event.x * s.screen.density),
-            y = s.zoomIdentity.invertY(event.y * s.screen.density),
-            radius = 30
+        const radius = 20,
+            x = s.zoomIdentity.invertX(event.x) * s.screen.density,
+            y = s.zoomIdentity.invertY(event.y) * s.screen.density
 
         for (let i = s.nodes.length - 1; i >= 0; --i) {
+
             const node = s.nodes[i],
                 dx = x - node.x,
                 dy = y - node.y
 
-            let tokens = []
-            for (var token in node.tokens) {
-                const value = node.tokens[token].toFixed(2)
-                tokens.push(`${token} (${value})`);
-            }
-
             if (dx * dx + dy * dy < radius * radius) {
+
+                const tokens = Object.entries(node.tokens).reduce((tokens, token) => {
+                    tokens.push(`${token[0]} (${token[1].toFixed(2)})`)
+                    return tokens
+                }, [])
+
                 let text = ''
                 text += `<p><strong>${node.id}</strong></p>`
                 text += `<p>Number of papers: ${node.docs}</p>`
-                // text +=  `<p><strong>keywords:</strong> ${Object.values(node.keywords).join(', ')}</p>`
                 text += `<p>Tokens:<br/>${tokens.join('<br/>')}</p>`
-                // text +=  `<p><strong>Tokens:</strong> ${Object.values(node.tokens).join(', ')}</p>`
                 d3.select('#focus').html(text)
+
+                break
             }
         }
+
     }
 
     s.canvas.on('mousemove', hover)

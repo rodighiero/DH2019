@@ -1,7 +1,7 @@
 import * as d3 from 'd3'
 import { s } from './state'
 import ticked from './ticked'
-import click from './click'
+import hover from './hover'
 
 window.s = s
 s.zoomIdentity = d3.zoomIdentity
@@ -20,7 +20,7 @@ export default () => {
 
     const simulation = d3.forceSimulation()
         .force('charge', d3.forceManyBody()
-            .strength(-800)
+            .strength(-300)
             // .distanceMin(60)
             // .distanceMax(400)
         )
@@ -80,6 +80,7 @@ export default () => {
     s.canvas.call(s.zoom)
 
 
-    click()
+    // Enable hover
+    hover()
 
 }
