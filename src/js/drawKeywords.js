@@ -5,6 +5,15 @@ export default () => {
     const max = 1
     const d_min = ~~Math.pow(s.distance * 1.5, 2)
     const d_max = ~~Math.pow(s.distance * 2.5, 2)
+    const rectangles = []
+    const overlap = current => {
+        // [left, top, right, bottom]
+        rectangles.forEach(previous => {
+            if (current[1] < previous[3] || previous[1] < current[3]) return false // Check top and bottom
+            if (current[2] < previous[0] || previous[2] < current[0]) return false // Check left and right
+        })
+        return true
+    }
 
     s.links.forEach(link => {
 
@@ -20,23 +29,23 @@ export default () => {
             const tokens = Object.entries(link.tokens)
                 .filter(token => {
                     const scale = ~~s.keywordScale(token[1])
-                    // console.log(scale, s.zoomIdentity.k)
-                    return (s.zoomIdentity.k -1 <= scale && scale <= s.zoomIdentity.k + 1)
+                    return (s.zoomIdentity.k - 1 <= scale && scale <= s.zoomIdentity.k + 1)
+                })
+                .filter(token => {
+                    const result = overlap([x, y, x + s.context.measureText(token[0]).width, y + token[1] * .1])
+                    return result
                 })
                 .slice(0, max)
-
 
             s.context.beginPath()
             s.context.fillStyle = s.colors.keywords
             s.context.textAlign = 'center'
 
-            tokens.forEach(([key, value], i) => {
-
-                // const scale = ~~s.keywordScale(value)
-                // console.log(scale, s.zoomIdentity.k)
-
+            tokens.forEach(([key, value]) => {
+                // console.log(s.context.measureText(key).width, value * .1)
                 s.context.font = `normal 300 ${value * .1}pt Helvetica`
                 s.context.fillText(key, x, y)
+                rectangles.push([x, y, x + s.context.measureText(key).width, y + value * .1])
             })
 
             s.context.fill()
