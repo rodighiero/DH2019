@@ -18,7 +18,7 @@ const _computeDensityData = () => {
         .weight(d => d.docs)
         .size([width, height])
         // .cellSize(10) // Crispness (1 = best resolution)
-        // .bandwidth(10) // Expansion of reliefs (40 = high simplification)
+        // .bandwidth(20) // Expansion of reliefs (40 = high simplification)
         // .thresholds(10) // Indicative number of levels
         (s.nodes)
 
@@ -32,20 +32,19 @@ const _computeDensityData = () => {
 
 export default () => {
 
-    if (s.end) {
-        _computeDensityData()
+    if (s.end && !s.densityData.length) _computeDensityData()
+    // _computeDensityData()
 
-        s.context.beginPath()
-        s.context.strokeStyle = s.colors.contours
+    s.context.beginPath()
+    s.context.strokeStyle = s.colors.contours
 
-        s.densityData
-            .forEach((level, i) => {
-                s.geoPath(level)
-                // s.context.lineWidth = 1
-                s.context.lineWidth = (.8 + (.1 * i))
-            })
+    s.densityData
+        .forEach((level, i) => {
+            s.geoPath(level)
+            // s.context.lineWidth = 1
+            s.context.lineWidth = .1 + (.15 * i)
+        })
 
-        s.context.stroke()
-    }
+    s.context.stroke()
 
 }

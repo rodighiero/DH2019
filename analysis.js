@@ -126,7 +126,7 @@ fs.readFile(__dirname + '/data/docs.json', (err, data) => {
     items.forEach(item => item.tokens = item.tokens.map(t => inflector.singularize(t)))
 
     // Cleaning
-    const stopWords = ['humanity', 'digital', 'data', 'dh', 'http', 'www', '00', 'la', 'research', 'thi', 'community', 'project', 'ko']
+    const stopWords = ['humanity', 'digital', 'data', 'dh', 'http', 'www', '00', 'la', 'research', 'thi', 'community', 'project', 'ko', 'colavizza']
     items.forEach(item => item.tokens = item.tokens.filter(token => !stopWords.includes(token)))
     items.forEach(item => item.tokens = item.tokens.filter(token => !parseInt(token)))
     items.forEach(item => item.tokens = sw.removeStopwords(item.tokens))

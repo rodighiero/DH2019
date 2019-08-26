@@ -7,7 +7,7 @@ export let s = {
     distance: 20,
     densityData: [],
     zoomIdentity: null,
-    zoomExtent: [1, 10],
+    zoomExtent: [.8, 8],
     screen: {},
 
     // Yellow d3.rgb(251, 253, 166)
@@ -22,7 +22,7 @@ export let s = {
     },
 
     style: {
-        fontNodes: `bold 1.8pt Helvetica`
+        fontNodes: `bold 2.5pt Helvetica`
     },
 
     setVaribles: () => {
@@ -42,9 +42,18 @@ export let s = {
             }, 0)
         ]
 
-        s.keywordScale = d3.scaleLog()
+        s.keywordScale = d3.scaleLinear()
             .domain(s.linkExtent)
-            .range([s.zoomExtent[1], s.zoomExtent[0]])
+            .range([s.zoomExtent[1] + 1, s.zoomExtent[0] - 10])
+
+        s.fontScale = d3.scaleLinear()
+            .domain(s.linkExtent)
+            .range([s.zoomExtent[0], s.zoomExtent[1] -10])
+
+        // Good results
+        // s.keywordScale = d3.scaleLinear()
+        //     .domain(s.linkExtent)
+        //     .range([s.zoomExtent[1] + 1, s.zoomExtent[0] - 20])
 
         s.geoPath = d3.geoPath().context(s.context)
 

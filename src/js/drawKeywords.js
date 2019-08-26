@@ -3,8 +3,8 @@ import { s } from './state'
 export default () => {
 
     const max = 1
-    const d_min = Math.pow(s.distance * 1.5, 2)
-    const d_max = Math.pow(s.distance * 2.5, 2)
+    const d_min = Math.pow(s.distance, 2)
+    const d_max = Math.pow(s.distance * 2, 2)
     let rectangles = []
 
     const overlap = current => {
@@ -42,8 +42,8 @@ export default () => {
 
         if (d_min < distance && distance < d_max) {
 
-            const x = (deltaX / 2 + (link.source.x < link.target.x ? link.source.x : link.target.x))
-            const y = (deltaY / 2 + (link.source.y < link.target.y ? link.source.y : link.target.y))
+            const x = deltaX / 2 + (link.source.x < link.target.x ? link.source.x : link.target.x)
+            const y = deltaY / 2 + (link.source.y < link.target.y ? link.source.y : link.target.y)
 
             // if (outside(x, y)) continue
 
@@ -53,11 +53,13 @@ export default () => {
                     return (s.zoomIdentity.k <= scale && scale <= s.zoomIdentity.k + 2)
                 })
                 .filter(token => {
+                    const width = s.context.measureText(token[0]).width * 1.1
+                    const height = s.context.measureText('M').width * 1.5
                     const rect = [
-                        x,
-                        y,
-                        s.context.measureText(token[0]).width * 1.1,
-                        s.context.measureText('M').width * 1.8
+                        x - width/2,
+                        y - height/2,
+                        width,
+                        height
                     ]
                     const result = !overlap(rect)
                     return result
@@ -70,14 +72,17 @@ export default () => {
 
             tokens.forEach(([key, value]) => {
 
-                s.context.font = `normal 300 ${value * .08}pt Helvetica`
+                s.context.font = `normal 300 ${value * .1}pt Helvetica`
+                // s.context.font = `normal 300 ${s.fontScale(value) * 100}pt Helvetica`
                 s.context.fillText(key, x, y)
 
+                const width = s.context.measureText(key).width * 1.1
+                const height = s.context.measureText('M').width * 1.5
                 const rect = [
-                    x,
-                    y,
-                    s.context.measureText(key).width * 1.1,
-                    s.context.measureText('M').width * 1.8
+                    x - width/2,
+                    y - height/2,
+                    width,
+                    height
                 ]
 
                 rectangles.push(rect)
