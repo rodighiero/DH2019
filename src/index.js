@@ -32,10 +32,50 @@ Promise.all([
 //         //   })
 
 
-// const searchField = d3.select("#searchField").on('input', function(e){ 
-//     const matchingNodes = graph.nodes.filter(d => d.id.toLowerCase().indexOf(this.value.toLowerCase()) !== -1);
-//     console.log("matching", matchingNodes);
-//     s.setMatches(matchingNodes);
-//     ticked();
-// });
-// console.log(searchField);
+d3.select("#searchField")
+    .on('input', function () {
+        const matchingNode = s.nodes.find(d => d.id.toLowerCase().indexOf(this.value.toLowerCase()) !== -1)
+        d3.select('#searchResults').html('')
+        d3.select('#searchResults').append('p').text(`Press the key 'enter' to zoom to ${matchingNode.id}`)
+        console.log("matching", matchingNode)
+        s.zoomTo = matchingNode
+        // s.setMatches(matchingNodes);
+        // ticked();
+    })
+    .on("keypress", function () {
+        if (d3.event.keyCode === 32 || d3.event.keyCode === 13) {
+            console.log("Congrats, you pressed enter or space!")
+            console.log(s.zoomTo.x, s.zoomTo.y)
+            s.zoomIdentity.scale(10)
+
+        //      =            {
+        //         k: 10,
+        //         x: s.zoomTo.x,
+        //         y: s.zoomTo.y
+        //     }
+
+        //     const transformation = zoomIdentity
+        //         .translate(s.screen.width / 2 / s.screen.density, s.screen.height / 2 / s.screen.density)
+        //         .scale(k)
+        //         .translate(-node.x, -node.y)
+
+            // console.log(newZoomIdentity)
+            // s.zoomIdentity.k = 10
+
+            s.canvas.transition().duration(2000).call(s.zoom.transform, s.zoomIdentity)
+        }
+    })
+
+    export const zoomToLab = (graph, lab) => {
+
+            let node = graph.nodes.find(node => node.attr.name === lab)
+        
+            const k = Math.min(s.screen.width, s.screen.height) / ((s.client.isMobile && !s.client.isTablet ? 150 : 200) * s.screen.density)
+            const transformation = zoomIdentity
+                .translate(s.screen.width / 2 / s.screen.density, s.screen.height / 2 / s.screen.density)
+                .scale(k)
+                .translate(-node.x, -node.y)
+        
+            state.canvas.transition().duration(2000).call(state.zoom.transform, transformation)
+        
+        }
