@@ -68,7 +68,8 @@ export let s = {
         if ('devicePixelRatio' in window && window.devicePixelRatio > 1) {
             s.screen.density = window.devicePixelRatio
             console.log('screen density:', s.screen.density)
-        }
+        } else s.screen.density = 1
+
 
         s.screen.width = body.clientWidth * s.screen.density
         s.screen.height = body.clientHeight * s.screen.density
