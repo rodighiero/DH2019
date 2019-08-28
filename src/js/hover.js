@@ -6,8 +6,8 @@ export default () => {
     const hover = () => {
 
         const radius = 20,
-            x = s.zoomIdentity.invertX(event.x) * s.screen.density,
-            y = s.zoomIdentity.invertY(event.y) * s.screen.density
+            x = s.zoomState.invertX(event.x) * s.screen.density,
+            y = s.zoomState.invertY(event.y) * s.screen.density
 
         for (let i = s.nodes.length - 1; i >= 0; --i) {
 

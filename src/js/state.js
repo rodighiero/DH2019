@@ -6,7 +6,7 @@ export let s = {
 
     distance: 20,
     densityData: [],
-    zoomIdentity: null,
+    zoomState: null,
     zoomExtent: [.8, 8],
     screen: {},
 
@@ -25,7 +25,7 @@ export let s = {
         fontNodes: `bold 2.5pt Helvetica`
     },
 
-    setVaribles: () => {
+    setVariables: () => {
 
         s.linkExtent = [
             s.links.reduce((min, link) => {

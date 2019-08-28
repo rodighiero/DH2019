@@ -4,7 +4,7 @@ import ticked from './ticked'
 import hover from './hover'
 
 window.s = s
-s.zoomIdentity = d3.zoomIdentity
+s.zoomState = d3.zoomIdentity
 
 
 
@@ -70,7 +70,7 @@ export default () => {
     //
 
     s.zoom = d3.zoom().on('zoom', () => {
-        s.zoomIdentity = d3.event.transform
+        s.zoomState = d3.event.transform
         ticked()
     })
 
@@ -78,9 +78,6 @@ export default () => {
     s.zoom.scaleTo(s.canvas, s.zoomExtent[0])
 
     s.canvas.call(s.zoom)
-
-    // s.canvas.transition().duration(750).call(zoom.transform, d3.zoomIdentity);
-
 
 
     // Enable hover

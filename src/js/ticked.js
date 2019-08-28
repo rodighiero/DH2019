@@ -4,9 +4,9 @@ import nodes from './drawNodes'
 
 export default () => {
 
-    const x = s.zoomIdentity.x * s.screen.density
-    const y = s.zoomIdentity.y * s.screen.density
-    const k = s.zoomIdentity.k
+    const x = s.zoomState.x * s.screen.density
+    const y = s.zoomState.y * s.screen.density
+    const k = s.zoomState.k
 
     s.context.save()
 

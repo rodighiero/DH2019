@@ -22,8 +22,8 @@ export default () => {
 
     // const outside = (x, y) => {
     //     let result = false
-    //     const invertX = s.zoomIdentity.invertX(x) * s.screen.density
-    //     const invertY = s.zoomIdentity.invertY(y) * s.screen.density
+    //     const invertX = s.zoomState.invertX(x) * s.screen.density
+    //     const invertY = s.zoomState.invertY(y) * s.screen.density
     //     if (invertX < 0 || invertX > s.screen.width || invertY < 0 || invertX > s.screen.height) {
     //         result = true
     //     }
@@ -50,7 +50,7 @@ export default () => {
             const tokens = Object.entries(link.tokens)
                 .filter(token => {
                     const scale = s.keywordScale(token[1])
-                    return (s.zoomIdentity.k <= scale && scale <= s.zoomIdentity.k + 2)
+                    return (s.zoomState.k <= scale && scale <= s.zoomState.k + 2)
                 })
                 .filter(token => {
                     const width = s.context.measureText(token[0]).width * 1.1

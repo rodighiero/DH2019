@@ -16,7 +16,7 @@ Promise.all([
     s.links = links
     s.nodes = nodes
     s.setScreen()
-    s.setVaribles()
+    s.setVariables()
     console.log('nodes', s.nodes.length)
     console.log('links', s.links.length)
     simulation()
