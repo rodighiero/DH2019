@@ -37,7 +37,7 @@ d3.select("#searchField")
             const y = s.zoomTo.y
             const k = 10
             console.log("Enter press")
-            console.log(s.zoomTo)
-            console.log(x, y, k)
+            s.zoomState = d3.zoomIdentity.translate(s.screen.width / 2 - x * k, s.screen.height / 2 -y * k).scale(k);
+            s.canvas.transition().duration(1250).call(s.zoom.transform, s.zoomState);
         }
     })
