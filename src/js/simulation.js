@@ -79,6 +79,9 @@ export default () => {
 
     s.canvas.call(s.zoom)
 
+    // s.canvas.transition().duration(750).call(zoom.transform, d3.zoomIdentity);
+
+
 
     // Enable hover
     hover()
