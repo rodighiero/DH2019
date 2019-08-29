@@ -27,7 +27,7 @@ d3.select("#searchField")
     .on('input', function () {
         const matchingNode = s.nodes.find(d => d.id.toLowerCase().indexOf(this.value.toLowerCase()) !== -1)
         d3.select('#searchResults').html('')
-        d3.select('#searchResults').append('p').text(`Press the key 'enter' to zoom to ${matchingNode.id}`)
+        d3.select('#searchResults').append('p').html(`Press the key 'enter'<br\>to focus on ${matchingNode.id}`)
         console.log("matching", matchingNode)
         s.zoomTo = matchingNode
     })

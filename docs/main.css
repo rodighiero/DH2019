@@ -35,42 +35,39 @@ a {
 	 * Containers		
 ******************************************************************************/
 
-#focus {
+#focus, #title, #searchWrapper {
 	background-color: rgba(255,255,255,.1);
 	position: absolute;
+	border: none;
+	padding: 10px;
+}
+#focus {
 	left: 0;
 	top: 10;
-	border: none;
 }
 
 #title {
-	background-color: rgba(255,255,255,.1);
-	position: absolute;
 	right: 0;
 	bottom: 10;
-	border: none;
 }
 
 #searchWrapper {
-	background-color: rgba(0,0,0,.5);
-	position: absolute;
 	right: 0;
 	top: 10;
-	border: none;
 }
 
 h1 {
 	font-size: 150%;
-	margin: 5px 15px 5px 15px;
+	margin: 5px 0;
 }
 
 h2 {
 	font-size: 100%;
-	margin: 5px 15px;
+	margin: 5px 0;
 }
 
 p {
 	font-size: 70%;
-	margin: 5px 15px;
+	margin: 5px 0;
 	line-height: 1.4;
 }
