@@ -46,7 +46,7 @@ export default () => {
     // Simulation start
     //
 
-    const animation = false
+    const animation = true
 
     if (animation) {
         simulation
@@ -60,7 +60,6 @@ export default () => {
         simulation.stop()
         simulation.tick(100)
         s.end = true
-        // ticked()
     }
 
 
