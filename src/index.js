@@ -33,11 +33,18 @@ d3.select("#searchField")
     })
     .on("keypress", function () {
         if (d3.event.keyCode === 32 || d3.event.keyCode === 13) {
-            const x = s.zoomTo.x
-            const y = s.zoomTo.y
-            const k = 10
-            console.log("Enter press")
-            s.zoomState = d3.zoomIdentity.translate(s.screen.width / 2 - x * k, s.screen.height / 2 -y * k).scale(k);
-            s.canvas.transition().duration(1250).call(s.zoom.transform, s.zoomState);
+
+            const k = 8
+            const tx = (s.screen.width / 2 - s.zoomTo.x * k) / s.screen.density
+            const ty = (s.screen.height / 2 - s.zoomTo.y * k) / s.screen.density
+
+            s.zoomState = d3.zoomIdentity
+                .translate(tx, ty)
+                .scale(k)
+
+            s.canvas.transition()
+                .duration(2000)
+                .call(s.zoom.transform, s.zoomState);
+
         }
     })
