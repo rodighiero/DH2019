@@ -7,7 +7,7 @@ export let s = {
     distance: 20,
     densityData: [],
     zoomState: null,
-    zoomExtent: [1, 8],
+    zoomExtent: [.5, 8],
     screen: {},
 
     // Yellow d3.rgb(251, 253, 166)

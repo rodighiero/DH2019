@@ -10,6 +10,7 @@ export default () => {
     s.context.textAlign = 'center'
 
     s.nodes.forEach(node => {
+        // console.log(node.id)
         const name = node.id.split(', '),
             x = node.x,
             y = node.y

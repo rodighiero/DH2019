@@ -32,5 +32,5 @@ export default () => {
 
     }
 
-    s.canvas.on('mousemove', hover)
+    // s.canvas.on('mousemove', hover)
 }

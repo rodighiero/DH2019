@@ -20,18 +20,6 @@ export default () => {
         return result
     }
 
-    // const outside = (x, y) => {
-    //     let result = false
-    //     const invertX = s.zoomState.invertX(x) * s.screen.density
-    //     const invertY = s.zoomState.invertY(y) * s.screen.density
-    //     if (invertX < 0 || invertX > s.screen.width || invertY < 0 || invertX > s.screen.height) {
-    //         result = true
-    //     }
-    //     console.log(result, invertX, invertY)
-    //     return result
-    // }
-
-    // s.links.forEach(link => {
     for (let i = 0; i < s.links.length; i++) {
 
         const link = s.links[i]
@@ -44,8 +32,6 @@ export default () => {
 
             const x = deltaX / 2 + (link.source.x < link.target.x ? link.source.x : link.target.x)
             const y = deltaY / 2 + (link.source.y < link.target.y ? link.source.y : link.target.y)
-
-            // if (outside(x, y)) continue
 
             const tokens = Object.entries(link.tokens)
                 .filter(token => {

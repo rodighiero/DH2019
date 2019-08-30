@@ -7,6 +7,7 @@ const combinatorics = require('js-combinatorics')
 const fs = require('fs')
 const natural = require('natural')
 const accents = require('remove-accents')
+const d3 = require('d3')
 sw = require('stopword')
 
 
@@ -144,7 +145,7 @@ fs.readFile(__dirname + '/data/docs.json', (err, data) => {
     })
 
     // 15 is a good value for final version; it can be lowered for testing
-    const tfidfLimit = 20
+    const tfidfLimit = 15
 
     items.forEach((item, i) => {
         console.log('Reducing tokens for author #', i)
@@ -157,7 +158,7 @@ fs.readFile(__dirname + '/data/docs.json', (err, data) => {
             }, {})
     })
 
-    // Delete text from items to lighten the file 
+    // Lighten nodes
     items.forEach(item => delete item.text)
 
 
@@ -216,22 +217,77 @@ fs.readFile(__dirname + '/data/docs.json', (err, data) => {
 
 
     //
+    // Simulation
+    //
+
+    const simulation = d3.forceSimulation()
+        .force('charge', d3.forceManyBody()
+            .strength(-600)
+        )
+        .force('collide', d3.forceCollide()
+            .radius(20)
+            .strength(.1)
+        )
+        // .force('center', d3.forceCenter(s.screen.width / 2, s.screen.height / 2))
+        .force('link', d3.forceLink()
+            .id(d => d.id)
+            .strength(d => d.value)
+        )
+
+    simulation.nodes(nodes)
+    simulation.force('link').links(links)
+
+    // const animation = true
+
+    // if (animation) {
+    simulation
+        .on('tick', (i) => {
+            console.log('Simulation tick', i)
+        })
+        .on('end', () => {
+            // s.end = true
+            ticked()
+        })
+    // } else {
+    //     simulation.stop()
+    //     simulation.tick(300)
+    //     s.end = true
+    // }
+
+    //
     // Report and file writing
     //
 
-    const format = x => JSON.stringify(x).length.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-    console.log(`     nodes.json : ${format(nodes)}kb for ${nodes.length} authors`)
-    console.log(`     links.json : ${format(links)}kb for ${links.length} links`)
-    console.log(`   maxLinkValue : ${maxLinkValue}`)
-    console.log(`   minLinkValue : ${minLinkValue}`)
-    console.log(`maxCommonTokens : ${maxCommonTokens}`)
+    const ticked = () => {
 
-    fs.writeFile('./src/data/nodes.json', JSON.stringify(nodes), err => { if (err) throw err })
-    fs.writeFile('./src/data/links.json', JSON.stringify(links), err => { if (err) throw err })
-    fs.writeFile('./data/nodes.json', JSON.stringify(nodes, null, '\t'), err => { if (err) throw err })
-    fs.writeFile('./data/links.json', JSON.stringify(links, null, '\t'), err => { if (err) throw err })
+        // Lighten links
+        _links = JSON.parse(JSON.stringify(links))
+        
+        link = _links.forEach(link => {
+            delete link.source.tokens
+            delete link.target.tokens
+            delete link.source.vx
+            delete link.source.vy
+            delete link.target.vx
+            delete link.target.vy
+            delete link.source.docs
+            delete link.target.docs
+        })
 
 
+        const format = x => JSON.stringify(x).length.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+        console.log(`     nodes.json : ${format(nodes)}kb for ${nodes.length} authors`)
+        console.log(`     links.json : ${format(links)}kb for ${links.length} links`)
+        console.log(`   maxLinkValue : ${maxLinkValue}`)
+        console.log(`   minLinkValue : ${minLinkValue}`)
+        console.log(`maxCommonTokens : ${maxCommonTokens}`)
+
+        fs.writeFile('./src/data/nodes.json', JSON.stringify(nodes), err => { if (err) throw err })
+        fs.writeFile('./src/data/links.json', JSON.stringify(links), err => { if (err) throw err })
+        fs.writeFile('./data/nodes.json', JSON.stringify(nodes, null, '\t'), err => { if (err) throw err })
+        fs.writeFile('./data/links.json', JSON.stringify(links, null, '\t'), err => { if (err) throw err })
+
+    }
 
     //
     // END

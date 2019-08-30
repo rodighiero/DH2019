@@ -4,6 +4,8 @@ import nodes from './drawNodes'
 
 export default () => {
 
+    console.log('ticked')
+
     const x = s.zoomState.x * s.screen.density
     const y = s.zoomState.y * s.screen.density
     const k = s.zoomState.k
@@ -17,7 +19,6 @@ export default () => {
     contours()
     keywords()
     nodes()
-
 
     s.context.restore()
 

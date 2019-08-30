@@ -5,6 +5,7 @@ import simulation from './js/simulation.js'
 import { s } from './js/state'
 import nodes from './data/nodes.json'
 import links from './data/links.json'
+import ticked from './js/ticked'
 
 window.d3 = d3
 window.s = s
@@ -20,12 +21,14 @@ Promise.all([
     console.log('nodes', s.nodes.length)
     console.log('links', s.links.length)
     simulation()
+    // ticked()
 })
 
 
 d3.select("#searchField")
     .on('input', function () {
-        const matchingNode = s.nodes.find(d => d.id.toLowerCase().indexOf(this.value.toLowerCase()) !== -1)
+        const value = this.value.toLowerCase()
+        const matchingNode = s.nodes.find(d => d.id.toLowerCase().includes(value))
         d3.select('#searchResults').html('')
         d3.select('#searchResults').append('p').html(`Press the key 'enter'<br\>to focus on ${matchingNode.id}`)
         console.log("matching", matchingNode)

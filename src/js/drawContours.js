@@ -32,8 +32,8 @@ const _computeDensityData = () => {
 
 export default () => {
 
-    if (s.end && !s.densityData.length) _computeDensityData()
-    // _computeDensityData()
+    // if (s.end && !s.densityData.length) _computeDensityData()
+    _computeDensityData()
 
     s.context.beginPath()
     s.context.strokeStyle = s.colors.contours
