@@ -2,6 +2,7 @@ import * as d3 from 'd3'
 import { s } from './state'
 import ticked from './ticked'
 import hover from './hover'
+import search from './search'
 
 window.s = s
 s.zoomState = d3.zoomIdentity
@@ -79,7 +80,7 @@ export default () => {
     s.canvas.call(s.zoom)
 
 
-    // Enable hover
+    // Enable hover and search
     hover()
-
+    search()
 }

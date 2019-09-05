@@ -4,7 +4,7 @@ const fontSizeKeywords = 1.2
 
 export let s = {
 
-    distance: 20,
+    distance: 25,
     densityData: [],
     zoomState: null,
     zoomExtent: [1, 8],
