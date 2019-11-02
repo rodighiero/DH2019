@@ -11,13 +11,13 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "@babel/core": "^7.5.5",
-    "@babel/preset-env": "^7.5.5",
+    "@babel/core": "^7.6.4",
+    "@babel/preset-env": "^7.6.3",
     "babel-loader": "^8.0.6",
     "cheerio": "^1.0.0-rc.3",
     "css-loader": "^3.2.0",
     "file-loader": "^4.2.0",
-    "franc-min": "^4.1.0",
+    "franc-min": "^4.1.1",
     "fs": "0.0.2",
     "html-loader": "^0.5.5",
     "html-webpack-plugin": "^3.2.0",
@@ -27,12 +27,12 @@
     "remove-accents": "^0.4.2",
     "request": "^2.88.0",
     "request-promise": "^4.2.4",
-    "stopword": "^0.3.3",
-    "webpack": "^4.39.3",
-    "webpack-cli": "^3.3.8",
-    "webpack-dev-server": "^3.8.0"
+    "stopword": "^0.3.4",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10",
+    "webpack-dev-server": "^3.9.0"
   },
   "dependencies": {
-    "d3": "^5.11.0"
+    "d3": "^5.12.0"
   }
 }
