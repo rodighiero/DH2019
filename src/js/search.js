@@ -5,7 +5,7 @@ export default () => {
 
     d3.select("#searchField")
         .on('input', function () {
-            const matchingNode = s.nodes.find(d => {
+            let matchingNode = s.nodes.find(d => {
                 console.log(this)
                 return d.id.toLowerCase().indexOf(this.value.toLowerCase()) !== -1
             })
