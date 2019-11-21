@@ -1,18 +1,18 @@
 {
-  "name": "webpack-4-quickstart",
+  "name": "Cartography of DH2019",
   "version": "1.0.0",
-  "description": "",
+  "description": "A map showing the lexical distance between authors within a conference",
   "main": "index.js",
   "scripts": {
     "start": "webpack-dev-server --mode development",
     "build": "webpack --mode production"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["data visualization", "academia", "map", "NLP", "conferences", "community"],
+  "author": "Dario Rodighiero",
   "license": "MIT",
   "devDependencies": {
-    "@babel/core": "^7.6.4",
-    "@babel/preset-env": "^7.6.3",
+    "@babel/core": "^7.7.2",
+    "@babel/preset-env": "^7.7.1",
     "babel-loader": "^8.0.6",
     "cheerio": "^1.0.0-rc.3",
     "css-loader": "^3.2.0",
@@ -26,13 +26,13 @@
     "natural": "^0.6.3",
     "remove-accents": "^0.4.2",
     "request": "^2.88.0",
-    "request-promise": "^4.2.4",
+    "request-promise": "^4.2.5",
     "stopword": "^0.3.4",
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.10",
     "webpack-dev-server": "^3.9.0"
   },
   "dependencies": {
-    "d3": "^5.12.0"
+    "d3": "^5.14.2"
   }
 }
