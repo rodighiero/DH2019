@@ -214,6 +214,11 @@ fs.readFile(__dirname + '/data/docs.json', (err, data) => {
     links.forEach(link => link.value = link.value / maxLinkValue)
 
 
+    // Cleaning for spherical projection
+    // nodes.forEach(item => delete item.tokens)
+    // links.forEach(item => delete item.tokens)
+
+
 
     //
     // Report and file writing
