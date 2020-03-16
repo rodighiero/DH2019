@@ -1,38 +1,45 @@
 {
-  "name": "Cartography of DH2019",
+  "name": "cartography-of-dh2019",
   "version": "1.0.0",
-  "description": "A map showing the lexical distance between authors within a conference",
+  "description": "A map based on the lexical distance between authors",
   "main": "index.js",
   "scripts": {
     "start": "webpack-dev-server --mode development",
     "build": "webpack --mode production"
   },
-  "keywords": ["data visualization", "academia", "map", "NLP", "conferences", "community"],
+  "keywords": [
+    "data visualization",
+    "academia",
+    "map",
+    "NLP",
+    "conferences",
+    "community"
+  ],
   "author": "Dario Rodighiero",
   "license": "MIT",
   "devDependencies": {
-    "@babel/core": "^7.7.2",
-    "@babel/preset-env": "^7.7.1",
+    "@babel/core": "^7.8.7",
+    "@babel/preset-env": "^7.8.7",
     "babel-loader": "^8.0.6",
     "cheerio": "^1.0.0-rc.3",
-    "css-loader": "^3.2.0",
-    "file-loader": "^4.2.0",
-    "franc-min": "^4.1.1",
+    "css-loader": "^3.4.2",
+    "file-loader": "^5.1.0",
+    "franc-min": "^5.0.0",
     "fs": "0.0.2",
     "html-loader": "^0.5.5",
     "html-webpack-plugin": "^3.2.0",
-    "js-combinatorics": "^0.5.4",
-    "mini-css-extract-plugin": "^0.8.0",
+    "js-combinatorics": "^0.5.5",
+    "mini-css-extract-plugin": "^0.9.0",
     "natural": "^0.6.3",
     "remove-accents": "^0.4.2",
-    "request": "^2.88.0",
+    "request": "^2.88.2",
     "request-promise": "^4.2.5",
-    "stopword": "^0.3.4",
-    "webpack": "^4.41.2",
-    "webpack-cli": "^3.3.10",
-    "webpack-dev-server": "^3.9.0"
+    "stopword": "^0.3.5",
+    "webpack": "^4.42.0",
+    "webpack-cli": "^3.3.11",
+    "webpack-dev-server": "^3.10.3"
   },
   "dependencies": {
-    "d3": "^5.14.2"
+    "d3": "^5.15.0"
   }
 }
